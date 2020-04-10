@@ -1,4 +1,6 @@
-.cbp
+*.depend
+*.layout
+*.cbp
 .exe
 bin
 obj
