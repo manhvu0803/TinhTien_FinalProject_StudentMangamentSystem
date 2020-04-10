@@ -1,5 +1,5 @@
 #include <iostream>
-#include "dataStructer.hpp"
+#include "dataStructure.hpp"
 
 using namespace std;
 
