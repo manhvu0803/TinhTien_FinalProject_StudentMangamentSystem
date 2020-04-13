@@ -1,9 +1,13 @@
 #include <iostream>
-#include "dataStructure.hpp"
+#include "accountControl.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "";
+    cout << "Welcome to Tinh Tien's Student Management System\n";
+
+    cout << login();
+
+    return 0;
 }
