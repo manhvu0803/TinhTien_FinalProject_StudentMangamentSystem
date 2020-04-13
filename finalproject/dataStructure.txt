@@ -1,6 +1,3 @@
-#ifndef DATASTRUCTER_HPP_INCLUDED
-#define DATASTRUCTER_HPP_INCLUDED
-
 #include <string>
 #include <vector>
 
@@ -29,12 +26,10 @@ struct course
     int id;
     std::string name;
     std::string className;
-    std::string lecturer
-    std::string room;
+    std::string lecturer;
     int DoW; // date of week, Monday is 0, Tuesday is 1,...
     date startDate, endDate;
     time startTime, endTime;
-    std::vector<student *> students;
+    //std::vector<student *> students;
+    std::string room;
 };
-
-#endif // DATASTRUCTER_HPP_INCLUDED
