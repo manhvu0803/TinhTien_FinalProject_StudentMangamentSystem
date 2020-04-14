@@ -41,6 +41,29 @@ bool newAccount(loginMap &loginInfo)
     return true;
 }
 
+string passwordBuffer()
+{
+    char c;
+    string password;
+
+    do {
+        c = _getch();
+        if (c == '\b' && password.length() > 0) {           // '\b' is backspace char
+            cout << "\b \b";                                // back 1 char, write a space to override that char, and back 1 char
+            password.erase(password.length() - 1, 1);
+        }
+        else if (c != '\r' && c != '\0' && c != '\b') {
+            cout << '*';
+            password += c;
+        }
+    }
+    while (c != '\r');          // read until enter char
+
+    //cout << '\n' << password << '\n';
+
+    return password;
+}
+
 int login()
 {
     string username, password;
@@ -65,19 +88,10 @@ int login()
 
         //getline(cin, password);
 
-        char c;
-        do {
-            c = _getch();
-            if (c != '\r') {
-                cout << "*";
-                password += c;
-            }
-        }
-        while (c != '\r');
-
-        if (password.compare(password) == 0)
+        if (currentAcc.password.compare(passwordBuffer()) == 0)
             break;
-        cout << "Wrong password";
+        cout << "Wrong password\n";
+        password = "";
     }
     while (true);
 
