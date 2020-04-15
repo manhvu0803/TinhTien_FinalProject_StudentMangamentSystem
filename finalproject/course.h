@@ -17,5 +17,9 @@ void scanCourse(ifstream& myFile, vector<Course>& List);
 void saveCourse(ofstream& myFile, vector<Course>List);
 void input1Course(vector<Course>& List);
 void inputCourse(vector<Course>& List, int& n);
+void output1Course(Course course);
 void outputCourse(vector<Course> List);
+void delete1Course(vector<Course>& List, int n);
+void editCourse(vector<Course>& List, int n);
+void sortList(vector<Course>& List);
 #endif
