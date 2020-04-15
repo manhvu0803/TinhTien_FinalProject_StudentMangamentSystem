@@ -13,8 +13,12 @@ struct account
     int type; // 1 is student, 2 is lecturer, 3 is academic staff
 };
 
-typedef unordered_map<string, account> loginMap;
+account login();
 
-int login();
+void showProfile(account user);
+
+void changePassword(account user);
+
+void saveAccount();
 
 #endif // ACCOUNTCONTROL_H_INCLUDED

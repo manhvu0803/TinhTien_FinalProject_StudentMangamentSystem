@@ -3,6 +3,66 @@
 #include <iostream>
 #include <conio.h>
 
+typedef unordered_map<string, account> loginMap;
+
+loginMap loginInfo;
+
+string passwordBuffer()
+{
+    char c;
+    string password;
+
+    do {
+        c = _getch();
+        if (c == '\b' && password.length() > 0) {           // '\b' is backspace char
+            cout << "\b \b";                                // back 1 char, write a space to override that char, and back 1 char
+            password.erase(password.length() - 1, 1);
+        }
+        else if (c != '\r' && c != '\0' && c != '\b') {
+            cout << '*';
+            password += c;
+        }
+    }
+    while (c != '\r');          // read until enter char
+
+    //cout << '\n' << password << '\n';
+
+    return password;
+}
+
+
+void showProfile(account user)
+{
+    cout << "Username: " << user.username << "\nAccount type: ";
+    switch (user.type) {
+        case 1:
+            cout << "student\n";
+            break;
+        case 2:
+            cout << "lecturer\n";
+            break;
+        case 3:
+            cout << "academic staff\n";
+            break;
+        case 4:
+            cout << "admin\n";
+            break;
+        default:
+            cout << "false account\n";
+    }
+}
+
+void changePassword(account user)
+{
+    cout << "Please enter your old password";
+
+}
+
+void saveAccount()
+{
+
+}
+
 bool loadLoginInfo(loginMap &loginInfo, const char *loginFileName = "login.dat")
 {
     account user;
@@ -41,36 +101,12 @@ bool newAccount(loginMap &loginInfo)
     return true;
 }
 
-string passwordBuffer()
-{
-    char c;
-    string password;
-
-    do {
-        c = _getch();
-        if (c == '\b' && password.length() > 0) {           // '\b' is backspace char
-            cout << "\b \b";                                // back 1 char, write a space to override that char, and back 1 char
-            password.erase(password.length() - 1, 1);
-        }
-        else if (c != '\r' && c != '\0' && c != '\b') {
-            cout << '*';
-            password += c;
-        }
-    }
-    while (c != '\r');          // read until enter char
-
-    //cout << '\n' << password << '\n';
-
-    return password;
-}
-
-int login()
+account login()
 {
     string username, password;
-    loginMap loginInfo;
 
     if (!loadLoginInfo(loginInfo))
-        return 0;
+        return {"", "", 0};
 
     do {
         cout << "Please enter your username:\n";
@@ -83,9 +119,8 @@ int login()
 
     account currentAcc = loginInfo.at(username);
 
+    cout << "Please enter your password:\n";
     do {
-        cout << "Please enter your password:\n";
-
         //getline(cin, password);
 
         if (currentAcc.password.compare(passwordBuffer()) == 0)
@@ -95,5 +130,5 @@ int login()
     }
     while (true);
 
-    return currentAcc.type;
+    return currentAcc;
 }
