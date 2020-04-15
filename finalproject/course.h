@@ -7,14 +7,17 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <algorithm>
+#include <cmath>
 
 using namespace std;
 struct Course {
 	int No;
-	string Id, Name, Class, Account, startDate, endDate, DoW, startHour, endHour, Room;
+	string Id, Name, Class, Account, startDate, endDate, DoWTheory, startHourTheory, endHourTheory, Room, DoWExcercise, startHourExcercise, endHourExcercise;
+
 };
-void scanCourse(ifstream& myFile, vector<Course>& List);
-void saveCourse(ofstream& myFile, vector<Course>List);
+void scanCourse( vector<Course>& List);
+void saveCourse( vector<Course>List);
 void input1Course(vector<Course>& List);
 void inputCourse(vector<Course>& List, int& n);
 void output1Course(Course course);
