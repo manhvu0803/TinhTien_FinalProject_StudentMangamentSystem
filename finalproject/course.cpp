@@ -9,10 +9,10 @@ void scanCourse(vector<Course>& List)
 		string line;
 		string token;
 		Course temp;
-
+		getline(myFile, line);
 		while (!myFile.eof())
 		{
-			getline(myFile, line);
+
 			if (line[0] == 'N')
 			{
 
@@ -50,6 +50,7 @@ void scanCourse(vector<Course>& List)
 				temp.Room = token;
 				List.push_back(temp);
 			}
+			getline(myFile, line);
 		}
 	}
 	myFile.close();
@@ -133,20 +134,25 @@ void outputCourse(vector<Course> List)
 		output1Course(List[i]);
 	}
 }
-void delete1Course(vector<Course>& List)
+void remove1Course(vector<Course>& List)
 {
-	int n;
+	int choice;
+	cout << "Please choose No of Course to remove: " << endl;
 	while (true)
 	{
-		cout << "Choose No of course: ";
-		cin >> n;
-		if (n > 0 || n <= List.size() + 1)
+		cin >> choice;
+		if (choice > 0 || choice <= List.size())
 		{
 			break;
 		}
-		cout << "Error!" << endl;
+		else
+		{
+			cout << "Error!!!" << endl;
+			cout << "Please choose again:" << endl;
+		}
 	}
-	List.erase(List.begin() + n - 1);
+	List.erase(List.begin() + choice - 1);
+	List.shrink_to_fit();
 }
 void editCourse(vector<Course>& List, int n)// n là No của course
 {
