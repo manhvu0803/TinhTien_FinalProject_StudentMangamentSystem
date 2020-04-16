@@ -19,10 +19,10 @@ struct Course {
 void scanCourse( vector<Course>& List);
 void saveCourse( vector<Course>List);
 void input1Course(vector<Course>& List);
-void inputCourse(vector<Course>& List, int& n);
+void inputCourse(vector<Course>& List);
 void output1Course(Course course);
 void outputCourse(vector<Course> List);
-void remove1Course(vector<Course>& List, int n);
-void editCourse(vector<Course>& List, int n);
+void remove1Course(vector<Course>& List);
+void editCourse(vector<Course>& List);
 void sortList(vector<Course>& List);
 #endif
