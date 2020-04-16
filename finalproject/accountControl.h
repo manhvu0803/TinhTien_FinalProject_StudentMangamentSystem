@@ -17,8 +17,10 @@ account login();
 
 void showProfile(account user);
 
-void changePassword(account user);
+void changePassword(account &user);
 
 void saveAccount();
+
+void mapThing();
 
 #endif // ACCOUNTCONTROL_H_INCLUDED
