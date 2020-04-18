@@ -17,15 +17,14 @@ struct Student
 struct Course {
 	int No=NULL;
 	string Id, Name, Class, Account, startDate, endDate, DoWTheory, startHourTheory, endHourTheory, Room, DoWExcercise, startHourExcercise, endHourExcercise;
-	vector<Student> student;
 };
-void scanCourse(vector<Course>& List);
-void saveCourse(vector<Course>List);
+void scanCourse(ifstream& myFile, vector<Course>& List);
+void saveCourse(ofstream& myFile, vector<Course>List);
 void input1Course(vector<Course>& List);
-void inputCourse(vector<Course>& List);
+void inputCourse(vector<Course>& List, int& n);
 void output1Course(Course course);
 void outputCourse(vector<Course> List);
-void remove1Course(vector<Course>& List);
-void editCourse(vector<Course>& List);
+void delete1Course(vector<Course>& List, int n);
+void editCourse(vector<Course>& List, int n);
 void sortList(vector<Course>& List);
 #endif
