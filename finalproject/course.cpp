@@ -154,7 +154,7 @@ void remove1Course(vector<Course>& List)
 	List.erase(List.begin() + choice - 1);
 	List.shrink_to_fit();
 }
-void editCourse(vector<Course>& List, int n)// n là No của course
+void editCourse(vector<Course>& List)// n là No của course
 {
 	int n;
 	while (true)
