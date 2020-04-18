@@ -16,8 +16,8 @@ struct Student
 	string lastName, firstName, Gender, DoB;
 };
 struct Course {
-	int No = NULL;
-	string Id, Name, Class, Account, startDate, endDate, DoWTheory, startHourTheory, endHourTheory, Room, DoWExcercise, startHourExcercise, endHourExcercise;
+	int No;
+	string Id, Name, Class, Account, startDate, endDate, DoW, startHour, endHour, Room;
 	vector<Student> student;
 };
 void scanCourse(vector<Course>& List);
