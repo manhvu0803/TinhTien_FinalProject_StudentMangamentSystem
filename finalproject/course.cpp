@@ -271,7 +271,7 @@ void viewStudentList(Course courseName)
 void inputNewStudent(vector<Course>& List)
 {
 	scanCourse(List);
-	if (List.size == 0)
+	if (List.size() == 0)
 	{
 		cout << "There is no course this semester!" << endl;
 		return;
