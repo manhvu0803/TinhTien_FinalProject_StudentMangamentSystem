@@ -169,6 +169,36 @@ void remove1Course(vector<Course>& List)
 	List.shrink_to_fit();
 	cout << "Course has been remove!" << endl;
 }
+bool realDate(date A)
+{
+	time_t rawtime;
+	struct tm* info;
+	time(&rawtime);
+	info = gmtime(&rawtime);
+	if (info->tm_year + 1900 - A.year <= 12 || info->tm_year + 100 - A.year >= 60)
+	{
+		return false;
+	}
+	if (A.month <= 0 || A.month > 12)
+	{
+		return false;
+	}
+	if (A.day <= 0 || A.day > maxdayinmonth(A.month, A.year));
+}
+date inputDate()
+{
+	date temp;
+	do
+	{
+		cout << "Input Year : ";
+		cin >> temp.year;
+		cout << "Input month: ";
+		cin >> temp.month;
+		cout << "Input day :";
+		cin >> temp.day;
+	} while (realDate(temp));
+	return temp;
+}
 void editCourse(vector<Course>& List)
 {
 	int n;
@@ -288,17 +318,31 @@ void viewStudentList(Course courseName)
 	cout << "No" << "Id" << "Last name" << "First name" << "Day of birth";
 	for (int i = 0; i < courseName.student.size(); ++i)
 	{
-		cout << courseName.student[i].Id;
+		cout << courseName.student[i].id;
 	}
 }
-void input1Student(Student& newStudent)
+void input1Student(student& newStudent)
 {
-	cout << "Id :"; cin >> newStudent.Id;
+	cout << "Id :"; cin >> newStudent.id;
 	cin.ignore(1);
-	cout << "Last name: "; getline(cin, newStudent.lastName);
-	cout << "First name: "; getline(cin, newStudent.firstName);
-	cout << "Gender : "; getline(cin, newStudent.Gender);
-	cout << "Day of birth : "; getline(cin, newStudent.DoB);
+	cout << "Last name: "; getline(cin, newStudent.Lastname);
+	cout << "First name: "; getline(cin, newStudent.Firstname);
+	while (true)
+	{
+		cout << "Enter 0: Male " << endl;
+		cout << "Enter 1: Female " << endl;
+		cout << "Gender : "; cin >> newStudent.gender;
+		if (newStudent.gender == '0' || newStudent.gender == '1')
+		{
+			break;
+		}
+		else
+		{
+			cout << "False";
+		}
+	}
+	cout << "Day of birth : ";
+	newStudent.DoB = inputDate();
 }
 void inputNewStudent(vector<Course>& List)
 {
@@ -327,11 +371,11 @@ void inputNewStudent(vector<Course>& List)
 			cout << "Please choose again:" << endl;
 		}
 	}
-	Student newStudent;
+	student newStudent;
 	input1Student(newStudent);
 	for (int i = 0; i < List.size(); ++i)
 	{
-		if (newStudent.Id == List[course - 1].student[i].Id)
+		if (newStudent.id == List[course - 1].student[i].id)
 		{
 			cout << "Student has already been attended!" << endl;
 			return;

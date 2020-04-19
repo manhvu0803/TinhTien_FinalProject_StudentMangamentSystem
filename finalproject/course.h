@@ -8,16 +8,13 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <ctime>
+#include "class.h"
 using namespace std;
-struct Student
-{
-	int Id=NULL;
-	string lastName, firstName, Gender, DoB;
-};
 struct Course {
 	int No=NULL;
 	string Id, Name, Class, Account, startDate, endDate, DoWTheory, startHourTheory, endHourTheory, Room, DoWExcercise, startHourExcercise, endHourExcercise;
-	vector<Student> student;
+	vector<student> student;
 };
 void scanCourse(vector<Course>& List);
 void saveCourse(vector<Course>List);
@@ -30,6 +27,8 @@ void remove1Course(vector<Course>& List);
 void editCourse(vector<Course>& List);
 void sortList(vector<Course>& List);
 void viewStudentList(Course courseName);
-void input1Student(Student& newStudent);
+void input1Student(student& newStudent);
 void inputNewStudent(vector<Course>& List);
+bool realDate(date A);
+date inputDate();
 #endif
