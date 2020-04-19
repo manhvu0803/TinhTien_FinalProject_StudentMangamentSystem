@@ -2,7 +2,6 @@
 
 void scanCourse(vector<Course>& List)
 {
-
 	ifstream myFile("course/courseList.csv");
 	if (myFile.is_open())
 	{
@@ -12,13 +11,11 @@ void scanCourse(vector<Course>& List)
 		getline(myFile, line);
 		while (!myFile.eof())
 		{
-
 			if (line[0] == 'N')
-			{
-
-			}
+			{			}
 			else
 			{
+				string filePath("course/courseClass/");
 				stringstream check(line);
 				getline(check, token, ',');
 				temp.No = stoi(token);
@@ -28,6 +25,8 @@ void scanCourse(vector<Course>& List)
 				temp.Name = token;
 				getline(check, token, ',');
 				temp.Class = token;
+/*Lay danh sach hoc sinh*/filePath.append(token);
+/*Lay danh sach hoc sinh*/filePath.append(".csv");
 				getline(check, token, ',');
 				temp.Account = token;
 				getline(check, token, ',');
@@ -134,10 +133,23 @@ void outputCourse(vector<Course> List)
 		output1Course(List[i]);
 	}
 }
+void outputCourseList(vector<Course> List)
+{
+	cout << "Course: " << endl;
+	int n = List.size();
+	for (int i = 0; i < n; ++i)
+	{
+		cout << List[i].No << " - " << List[i].Name << "(" << List[i].Id << ")"<<endl;
+	}
+}
 void remove1Course(vector<Course>& List)
 {
 	int choice;
 	cout << "Please choose No of Course to remove: " << endl;
+	for (int i = 0; i < List.size(); ++i)
+	{
+		cout << "Enter " << i + 1 << ": " << List[i].Id << endl;
+	}
 	while (true)
 	{
 		cin >> choice;
@@ -157,7 +169,7 @@ void remove1Course(vector<Course>& List)
 	List.shrink_to_fit();
 	cout << "Course has been remove!" << endl;
 }
-void editCourse(vector<Course>& List)// n là No của course
+void editCourse(vector<Course>& List)
 {
 	int n;
 	while (true)
@@ -208,8 +220,18 @@ void editCourse(vector<Course>& List)// n là No của course
 		cout << " Name :"; getline(cin, List[n].Name);
 		break;
 	case 3:
-		cout << " Class : "; getline(cin, List[n].Class);
+	{
+		string filePath1 = "....", filePath2 = "...";
+		filePath1.append(List[n].Class);
+		filePath1.append(".csv");
+		string temp;
+		cout << " Class : "; getline(cin, temp);
+		filePath2.append(temp);
+		filePath2.append(".csv");
+		rename(filePath1.c_str(), filePath2.c_str());
+		List[n].Class = temp;
 		break;
+	}
 	case 4:
 		cout << " Account : "; getline(cin, List[n].Account);
 		break;
@@ -245,7 +267,6 @@ void editCourse(vector<Course>& List)// n là No của course
 	cout << "After edit: " << endl;
 	output1Course(List[n]);
 	sortList(List);
-
 }
 void sortList(vector<Course>& List)
 {
@@ -261,4 +282,60 @@ void sortList(vector<Course>& List)
 	{
 		List[i].No = i + 1;
 	}
+}
+void viewStudentList(Course courseName)
+{
+	cout << "No" << "Id" << "Last name" << "First name" << "Day of birth";
+	for (int i = 0; i < courseName.student.size(); ++i)
+	{
+		cout << courseName.student[i].Id;
+	}
+}
+void input1Student(Student& newStudent)
+{
+	cout << "Id :"; cin >> newStudent.Id;
+	cin.ignore(1);
+	cout << "Last name: "; getline(cin, newStudent.lastName);
+	cout << "First name: "; getline(cin, newStudent.firstName);
+	cout << "Gender : "; getline(cin, newStudent.Gender);
+	cout << "Day of birth : "; getline(cin, newStudent.DoB);
+}
+void inputNewStudent(vector<Course>& List)
+{
+	scanCourse(List);
+	if (List.size() == 0)
+	{
+		cout << "There is no course this semester!" << endl;
+		return;
+	}
+	int course;
+	cout << "Please choose No of Course to add student: " << endl;
+	for (int i = 0; i < List.size(); ++i)
+	{
+		cout << "(" << i + 1 << "): " << List[i].Id << endl;
+	}
+	while (true)
+	{
+		cin >> course;
+		if (course > 0 || course <= List.size())
+		{
+			break;
+		}
+		else
+		{
+			cout << "Error!!!" << endl;
+			cout << "Please choose again:" << endl;
+		}
+	}
+	Student newStudent;
+	input1Student(newStudent);
+	for (int i = 0; i < List.size(); ++i)
+	{
+		if (newStudent.Id == List[course - 1].student[i].Id)
+		{
+			cout << "Student has already been attended!" << endl;
+			return;
+		}
+	}
+	List[course - 1].student.push_back(newStudent);
 }

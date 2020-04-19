@@ -25,7 +25,11 @@ void input1Course(vector<Course>& List);
 void inputCourse(vector<Course>& List);
 void output1Course(Course course);
 void outputCourse(vector<Course> List);
+void outputCourseList(vector<Course> List);
 void remove1Course(vector<Course>& List);
 void editCourse(vector<Course>& List);
 void sortList(vector<Course>& List);
+void viewStudentList(Course courseName);
+void input1Student(Student& newStudent);
+void inputNewStudent(vector<Course>& List);
 #endif
