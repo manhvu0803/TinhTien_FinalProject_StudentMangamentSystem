@@ -11,7 +11,7 @@
 using namespace std;
 struct Student
 {
-	int Id;
+	int Id=NULL;
 	string lastName, firstName, Gender, DoB;
 };
 struct Course {
