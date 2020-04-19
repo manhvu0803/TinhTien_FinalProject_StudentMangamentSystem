@@ -151,8 +151,11 @@ void remove1Course(vector<Course>& List)
 			cout << "Please choose again:" << endl;
 		}
 	}
+	List[choice - 1].student.clear();
+	List[choice - 1].student.shrink_to_fit();
 	List.erase(List.begin() + choice - 1);
 	List.shrink_to_fit();
+	cout << "Course has been remove!" << endl;
 }
 void editCourse(vector<Course>& List)// n là No của course
 {
@@ -167,6 +170,7 @@ void editCourse(vector<Course>& List)// n là No của course
 		}
 		cout << "Error!" << endl;
 	}
+	output1Course(List[n]);
 	int choice;
 	cout << " (1) Id" << endl;
 	cout << " (2) Name" << endl;
