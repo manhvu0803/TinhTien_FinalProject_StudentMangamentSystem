@@ -7,19 +7,26 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
+#include <algorithm>
 using namespace std;
-struct Course {
-	int No;
-	string Id, Name, Class, Account, startDate, endDate, DoW, startHour, endHour, Room;
+
+struct Student
+{
+	int Id;
+	string lastName, firstName, Gender, DoB;
 };
-void scanCourse(ifstream& myFile, vector<Course>& List);
-void saveCourse(ofstream& myFile, vector<Course>List);
+struct Course {
+	int No = NULL;
+	string Id, Name, Class, Account, startDate, endDate, DoWTheory, startHourTheory, endHourTheory, Room, DoWExcercise, startHourExcercise, endHourExcercise;
+	vector<Student> student;
+};
+void scanCourse(vector<Course>& List);
+void saveCourse(vector<Course>List);
 void input1Course(vector<Course>& List);
-void inputCourse(vector<Course>& List, int& n);
+void inputCourse(vector<Course>& List);
 void output1Course(Course course);
 void outputCourse(vector<Course> List);
-void delete1Course(vector<Course>& List, int n);
-void editCourse(vector<Course>& List, int n);
+void remove1Course(vector<Course>& List);
+void editCourse(vector<Course>& List);
 void sortList(vector<Course>& List);
 #endif
