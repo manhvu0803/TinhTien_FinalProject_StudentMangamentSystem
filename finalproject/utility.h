@@ -35,8 +35,8 @@ namespace tt
             size_t _size;
     };
 
-    template <typename T> size_t vector<T>::initCapacity = 5;
-    template <typename T> size_t vector<T>::capToIncrease = 10;
+    template <typename T> size_t vector<T>::initCapacity = 50;
+    template <typename T> size_t vector<T>::capToIncrease = 50;
 
     // Constructor
     template <typename T> vector<T>::vector()
