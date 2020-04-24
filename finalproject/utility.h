@@ -6,8 +6,8 @@ namespace tt
     template <typename T> class vector
     {
         public:
-            static size_t initCapacity;
-            static size_t capToIncrease;
+            size_t initCapacity = 50;
+            size_t capToIncrease = 50;
             // Constructor and destructor
             vector();
             ~vector();
@@ -27,16 +27,12 @@ namespace tt
             // Modifier
             void push_back(T value);
             void pop_back();
-            void reserve(size_t newCap);
 
         private:
             T* ptr;
             size_t _capacity;
             size_t _size;
     };
-
-    template <typename T> size_t vector<T>::initCapacity = 5;
-    template <typename T> size_t vector<T>::capToIncrease = 10;
 
     // Constructor
     template <typename T> vector<T>::vector()
@@ -101,7 +97,6 @@ namespace tt
     // Modifier
     template <typename T> inline void vector<T>::push_back(T value)
     {
-        if (_size >= _capacity) reserve(_capacity + capToIncrease);
         ptr[_size] = value;
         ++_size;
     }
@@ -109,15 +104,6 @@ namespace tt
     template <typename T> inline void vector<T>::pop_back()
     {
         --_size;
-    }
-
-    template <typename T> void vector<T>::reserve(size_t newCap)
-    {
-        T* tmp = new T[newCap];
-        memcpy(tmp, ptr, sizeof(T) * _size);
-        delete [] ptr;
-        ptr = tmp;
-        _capacity = newCap;
     }
 }
 
