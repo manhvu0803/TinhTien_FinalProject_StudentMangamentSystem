@@ -1,32 +1,47 @@
 #include <iostream>
 #include <conio.h>
 #include "accountControl.h"
-#include "utility.h"
-#include <algorithm>
 
 using namespace std;
 
 int main()
 {
-    tt::vector<float> vec;
+    cout << "Welcome to Tinh Tien's Student Management System\nPlease log out before closing the program";
 
-    for (int i = 0; i < 10; ++i) {
-        vec.push_back(0.15 - i);
+    account user = login();
+    if (user.type == 0)
+        return 0;
+
+    do {
+        cout << "Please choose an option:\n";
+        cout << "Press 1: View profile\n";
+        cout << "Press 2: Change password\n";
+        cout << "Press 3: Log out\n";
+
+        int choice;
+        cin >> choice;
+
+        switch (choice) {
+            case 1:
+                showProfile(user);
+                break;
+            case 2:
+                changePassword(user);
+                break;
+            case 3:
+                saveAccount();
+                cout << "Logged out\n";
+                user = login();
+                break;
+            default:
+                cout << "Invalid choice\n";
+                _getch();
+        }
+
+        if (choice == 4)
+            break;
     }
-
-    tt::vector<float> vec2;
-
-    vec2 = vec;
-
-    for (int i = 0; i < vec2.size(); ++i)
-        cout << vec2[i] << ' ';
-
-
-    cout << '\n';
-    sort(vec2.begin(), vec2.end());
-
-    for (int i = 0; i < vec2.size(); ++i)
-        cout << vec2[i] << ' ';
+    while (true);
 
     return 0;
 }
