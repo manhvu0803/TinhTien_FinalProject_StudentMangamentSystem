@@ -1,6 +1,9 @@
 #ifndef UTILITY_H_INCLUDED
 #define UTILITY_H_INCLUDED
 
+#include <iostream>
+#include <stdexcept>
+
 namespace tt
 {
     template <typename T> class vector
@@ -8,117 +11,219 @@ namespace tt
         public:
             static size_t initCapacity;
             static size_t capToIncrease;
+
             // Constructor and destructor
             vector();
             ~vector();
+
             // Assignment
             vector<T>* operator=(vector<T>& vecToCopy);
+            void assign(T* aBegin, T* aEnd);
+
             // Pointers
             T* begin();
             T* end();
+
             // Capacity
             size_t size() const;
             size_t capacity() const;
+            void shrink_to_fit();
+
             // Access
-            T operator[](size_t pos);
-            T at(size_t pos);
-            T front(size_t pos);
-            T back(size_t pos);
+            T& operator[](size_t pos);
+            T& at(size_t pos);
+            T& front();
+            T& back();
+
             // Modifier
             void push_back(T value);
             void pop_back();
+            void insert(size_t pos);
+            void erase(size_t pos);
+            void eraseSelect(size_t aSize, T pos[]);
             void reserve(size_t newCap);
+            void clear();
+            void resize(size_t newSize);
+            void resize(size_t newSize, T value);
 
         private:
             T* ptr;
             size_t _capacity;
             size_t _size;
+
+            void reallocate(size_t newCap);
     };
+}
 
-    template <typename T> size_t vector<T>::initCapacity = 50;
-    template <typename T> size_t vector<T>::capToIncrease = 50;
 
-    // Constructor
-    template <typename T> vector<T>::vector()
-    {
-        _capacity = initCapacity;
-        ptr = new T[_capacity];
-        _size = 0;
-    }
+using namespace tt;
 
-    // Destructor
-    template <typename T> vector<T>::~vector()
-    {
-        delete [] ptr;
-    }
+template <typename T> size_t vector<T>::initCapacity = 50;
+template <typename T> size_t vector<T>::capToIncrease = 50;
 
-    // Assignment
-    template <typename T> vector<T>* vector<T>::operator=(vector<T>& vecToCopy)
-    {
-        delete [] ptr;
+// Constructor
+template <typename T> vector<T>::vector()
+{
+    _capacity = initCapacity;
+    ptr = new T[_capacity];
+    _size = 0;
+}
 
-        _capacity = vecToCopy.capacity();
-        _size = vecToCopy.size();
-        ptr = new T[_size];
-        memcpy(ptr, vecToCopy.ptr, sizeof(T) * _size);
+// Destructor
+template <typename T> vector<T>::~vector()
+{
+    delete [] ptr;
+}
 
-        return this;
-    }
+// Assignment
+template <typename T> vector<T>* vector<T>::operator=(vector<T>& vecToCopy)
+{
+    delete [] ptr;
 
-    // Pointer
-    template <typename T> inline T* vector<T>::begin()
-    {
-        return ptr;
-    }
+    _capacity = vecToCopy.capacity();
+    _size = vecToCopy.size();
+    ptr = new T[_size];
+    memcpy(ptr, vecToCopy.ptr, sizeof(T) * _size);
 
-    template <typename T> inline T* vector<T>::end()
-    {
-        return ptr + _size;
-    }
+    return this;
+}
 
-    // Capacity
-    template <typename T> inline size_t vector<T>::size() const
-    {
-        return _size;
-    }
+template <typename T> void vector<T>::assign(T* aBegin, T* aEnd)
+{
+    _size = aEnd - aBegin;
+    _capacity = _size + capToIncrease;
+    delete [] ptr;
+    ptr = new T[_capacity];
 
-    template <typename T> size_t vector<T>::capacity() const
-    {
-        return _capacity;
-    }
+    for (size_t i = 0; i < _size; ++i)
+        ptr[i] = aBegin[i];
+}
 
-    // Access
-    template <typename T> inline T vector<T>::operator[](size_t pos)
-    {
-        return ptr[pos];
-    }
+// Pointer
+template <typename T> inline T* vector<T>::begin()
+{
+    return ptr;
+}
 
-    template <typename T> inline T vector<T>::at(size_t pos)
-    {
-        return ptr[pos];
-    }
+template <typename T> inline T* vector<T>::end()
+{
+    return ptr + _size;
+}
 
-    // Modifier
-    template <typename T> inline void vector<T>::push_back(T value)
-    {
-        if (_size >= _capacity) reserve(_capacity + capToIncrease);
-        ptr[_size] = value;
-        ++_size;
-    }
+// Capacity
+template <typename T> inline size_t vector<T>::size() const
+{
+    return _size;
+}
 
-    template <typename T> inline void vector<T>::pop_back()
-    {
-        --_size;
-    }
+template <typename T> size_t vector<T>::capacity() const
+{
+    return _capacity;
+}
 
-    template <typename T> void vector<T>::reserve(size_t newCap)
-    {
-        T* tmp = new T[newCap];
-        memcpy(tmp, ptr, sizeof(T) * _size);
-        delete [] ptr;
-        ptr = tmp;
-        _capacity = newCap;
-    }
+template <typename T> void vector<T>::shrink_to_fit()
+{
+    T* tmp = new T[_size];
+
+    for (size_t i = 0; i < _size; ++i)
+        tmp[i] = ptr[i];
+
+    delete [] ptr;
+    ptr = tmp;
+    _capacity = _size;
+}
+
+// Access
+template <typename T> inline T& vector<T>::operator[](size_t pos)
+{
+    return ptr[pos];
+}
+
+template <typename T> inline T& vector<T>::at(size_t pos)
+{
+    if (pos >= _size || pos < 0) throw std::out_of_range("Out of range");
+
+    return ptr[pos];
+}
+
+template <typename T> inline T& vector<T>::front()
+{
+    return ptr[0];
+}
+
+template <typename T> inline T& vector<T>::back()
+{
+    return ptr[_size - 1];
+}
+
+// Modifier
+template <typename T> inline void vector<T>::push_back(T value)
+{
+    if (_size >= _capacity) reserve(_capacity + capToIncrease);
+    ptr[_size] = value;
+    ++_size;
+}
+
+template <typename T> inline void vector<T>::pop_back()
+{
+    --_size;
+}
+
+template <typename T> void vector<T>::erase(size_t pos)
+{
+    if (pos >= _size || pos < 0) throw std::out_of_range("Out of range");
+
+    for (size_t i = pos - 1; i < _size; ++i)
+        ptr[i] = ptr[i + 1];
+
+    --_size;
+}
+
+template <typename T> void vector<T>::eraseSelect(size_t aSize, T pos[])
+{
+    for (size_t i = 0; i < aSize; ++i)
+        if (pos[i] < 0 || pos[i] > _size) throw std::out_of_range("Out of range");
+
+    for (size_t i = pos[0], j = 0; i < _size; ++i)
+        if (i == pos[j]) ++j;
+        else ptr[i] = ptr[i - j];
+
+    _size -= aSize;
+}
+
+template <typename T> void vector<T>::reserve(size_t newCap)
+{
+    if (newCap < _capacity) throw std::invalid_argument("New capacity is not bigger than old capacity");
+
+    reallocate(newCap);
+}
+
+template <typename T> void vector<T>::clear()
+{
+    _size = 0;
+}
+
+template <typename T> void vector<T>::resize(size_t newSize)
+{
+    _size = newSize;
+    if (newSize > _capacity) reserve(newSize + capToIncrease);
+}
+
+template <typename T> void vector<T>::resize(size_t newSize, T value)
+{
+    if (newSize > _capacity) reserve(newSize + capToIncrease);
+    for (size_t i = _size; i < newSize; ++i)
+        ptr[i] = value;
+    _size = newSize;
+}
+
+template <typename T> void vector<T>::reallocate(size_t newCap)
+{
+    T* tmp = new T[newCap];
+    memcpy(tmp, ptr, sizeof(T) * _size);
+    delete [] ptr;
+    ptr = tmp;
+    _capacity = newCap;
 }
 
 #endif // UTILITY_H_INCLUDED
