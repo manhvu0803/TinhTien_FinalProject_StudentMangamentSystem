@@ -1,22 +1,239 @@
 ﻿#include "course.h"
 
-void scanCourse(vector<Course>& List)
+void courseMenu(int year, string semester)
 {
-	ifstream myFile("course/courseList.csv");
-	if (myFile.is_open())
+	string filePath = ("data/course/");
+	filePath.append(to_string(year));
+	filePath.append("-");
+	filePath.append(to_string(year + 1));
+	filePath.append("/");
+	filePath.append(semester);
+	filePath.append("/");
+	bool First = true;
+	int cont = 0;
+	int choice = 0;
+	vector<course> List;
+	while (true)
+	{
+		cout << " Enter 1: Import course" << endl;
+		cout << " Enter 2: Add new course" << endl;
+		cout << " Enter 3: Edit course" << endl;
+		cout << " Enter 4: Remove a course" << endl;
+		cout << " Enter 5: View course list" << endl;
+		cout << " Enter 6: Add a student to a course" << endl;
+		cout << " Enter 7: Remove a student" << endl;
+		cout << " Enter 8: View student list" << endl;
+		cin >> choice;
+		if (choice >= 1 && choice <= 8)
+		{
+			break;
+		}
+		else
+		{
+			cout << "Error! Choose agian:" << endl << endl;
+		}
+	}
+
+	switch (choice)
+	{
+	case 1:
+	{
+		importCsvFile(List, filePath);
+		outputCourseList(List);
+		saveCourseList(List, filePath + "courses.dat");
+		First = false;
+		break;
+	}
+	case 2:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		course temp;
+		input1Course(temp);
+		if (temp.No != -1)
+		{
+			List.push_back(temp);
+		}
+		saveCourseList(List, filePath + "courses.dat");
+		break;
+	}
+	case 3:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		outputCourseList(List);
+		editCourse(List, filePath);
+		saveCourseList(List, filePath + "courses.dat");
+		break;
+	}
+	case 4:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		deleteCourse(List, filePath + "courses.dat");
+		break;
+	}
+	case 5:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		outputSchedule(List);
+		break;
+	}
+	case 6:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		int n, check;
+		outputCourseList(List);
+		while (true)
+		{
+			cout << "Input the course No: "; cin >> n;
+			int listSize = List.size();
+			if (n <= 0 || n > listSize)
+			{
+				cout << "Error!!!No available course!!!" << endl;
+				cout << "Input (0) to break or (1) to continue: ";
+				cin >> check;
+				if (check == 0)
+				{
+					return;
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+		add1Student(List[n - 1]);
+		saveCourseList(List, filePath + "courses.dat");
+		break;
+	}
+	case 7:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		int n, check;
+		outputCourseList(List);
+		while (true)
+		{
+			check = -1;
+			cout << "Input the course No: "; cin >> n;
+			int listSize = List.size();
+			if (n <= 0 || n > listSize)
+			{
+				cout << "Error!!!No available course!!!" << endl;
+				cout << "Input (0) to break or (1) to continue: ";
+				cin >> check;
+				if (check == 0)
+				{
+					break;
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+		if (check == -1)
+		{
+			remove1Student(List[n - 1]);
+			saveCourseList(List, filePath + "courses.dat");
+		}
+		break;
+	}
+	case 8:
+	{
+		if (!First)
+		{
+			loadDatFile(List, filePath);
+		}
+		int n, check;
+		outputCourseList(List);
+		while (true)
+		{
+			check = -1;
+			cout << "Input the course No: "; cin >> n;
+			int listSize = List.size();
+			if (n <= 0 || n > listSize)
+			{
+				cout << "Error!!!No available course!!!" << endl;
+				cout << "Input (0) to break or (1) to continue: ";
+				cin >> check;
+				if (check == 0)
+				{
+					break;
+				}
+			}
+			else
+			{
+				break;
+			}
+		}
+		if (check == -1)
+			viewStudentList(List[n - 1]);
+		break;
+	}
+	}
+
+}
+void upperCase(string& name)
+{
+	int n = name.size();
+	for (int i = 0; i < n; ++i)
+	{
+		if (97 <= name[i] && name[i] <= 122)
+			name[i] -= 32;
+	}
+}
+void loadCsvFile(vector<course>& list, string filePath)
+{
+	if (filePath.compare(filePath.size() - 4, 4, ".csv") != 0)
+	{
+		if (filePath[filePath.size() - 6] == '.' || filePath[filePath.size() - 5] == '.')
+		{
+			cout << "Wrong data file";
+			return;
+		}
+		else
+			filePath.append(".csv");
+	}
+	int n = filePath.size();
+	for (int i = 0; i < n; ++i)
+	{
+		if (filePath[i] == '\\')
+			filePath[i] = '/';
+	}
+	ifstream csvFile(filePath);
+	if (csvFile.is_open())
 	{
 		string line;
 		string token;
-		Course temp;
-		getline(myFile, line);
-		while (!myFile.eof())
+		getline(csvFile, line);
+		vector<student> studentList;
+		vector <string> notFound;
+		while (!csvFile.eof())
 		{
+			course temp;
 			if (line[0] == 'N')
-			{			}
+			{
+			}
 			else
 			{
-				string filePath("course/courseClass/");
 				stringstream check(line);
+				string classFilePath("data/classes/");
 				getline(check, token, ',');
 				temp.No = stoi(token);
 				getline(check, token, ',');
@@ -25,361 +242,804 @@ void scanCourse(vector<Course>& List)
 				temp.Name = token;
 				getline(check, token, ',');
 				temp.Class = token;
-/*Lay danh sach hoc sinh*/filePath.append(token);
-/*Lay danh sach hoc sinh*/filePath.append(".csv");
+				upperCase(token);
+				classFilePath.append(token);
+				classFilePath.append(".csv");
+				ifstream classFile(classFilePath);
+				if (classFile.is_open())
+				{
+					loadfromdatfile(classFile, studentList);
+					int n = studentList.size();
+					for (int i = 0; i < n; ++i)
+					{
+						temp.studentId.push_back(studentList[i].id);
+					}
+				}
+				else
+				{
+					temp.No = -1;
+					notFound.push_back(token);
+				}
+				classFile.close();
 				getline(check, token, ',');
-				temp.Account = token;
+				temp.lecturerAccount = token;
 				getline(check, token, ',');
-				temp.startDate = token;
+				temp.lecturerName = token;
 				getline(check, token, ',');
-				temp.endDate = token;
+				temp.lecturerDegree = token;
 				getline(check, token, ',');
-				temp.DoWTheory = token;
+				temp.lecturerGender = token;
+				getline(check, token, '/');
+				temp.startDate.month = stoi(token);
+				getline(check, token, '/');
+				temp.startDate.day = stoi(token);
 				getline(check, token, ',');
-				temp.startHourTheory = token;
+				temp.startDate.year = stoi(token);
+				getline(check, token, '/');
+				temp.endDate.month = stoi(token);
+				getline(check, token, '/');
+				temp.endDate.day = stoi(token);
 				getline(check, token, ',');
-				temp.endHourTheory = token;
+				temp.endDate.year = stoi(token);
 				getline(check, token, ',');
-				temp.DoWExcercise = token;
+				temp.DoW = token;
 				getline(check, token, ',');
-				temp.startHourExcercise = token;
+				temp.startHour.hour = stoi(token);
 				getline(check, token, ',');
-				temp.endHourExcercise = token;
+				temp.startHour.min = stoi(token);
+				getline(check, token, ',');
+				temp.endHour.hour = stoi(token);
+				getline(check, token, ',');
+				temp.endHour.min = stoi(token);
 				getline(check, token);
-				temp.Room = token;
-				List.push_back(temp);
+				temp.room = token;
+				if (temp.No != -1)
+					list.push_back(temp);
 			}
-			getline(myFile, line);
+			getline(csvFile, line);
+		}
+		int n = notFound.size();
+		if (n != 0)
+		{
+			cout << "Class: ";
+			for (int i = 0; i < n; ++i)
+			{
+				if (i == 0)
+				{
+					cout << notFound[i];
+				}
+				else
+				{
+					cout << ", " << notFound[i];
+				}
+			}
+			cout << " not found!" << endl;
+			notFound.clear();
+			notFound.shrink_to_fit();
+			sortList(list);
 		}
 	}
-	myFile.close();
+	else
+	{
+		cout << "File not found" << endl;
+	}
+	csvFile.close();
 }
-void saveCourse( vector<Course>List)
+void loadDatFile(vector<course>& list, string filePath)
 {
-	ofstream myFile("course/courseList.csv");
+	ifstream myFile(filePath + "courses.dat");
+	string line;
+	course temp;
 	if (myFile.is_open())
 	{
-		myFile << "No," << "Id," << "Name," << "Class,"
-			<< "Account," << "startDate," << "endDate,"
-			<< "DoWTheory," << "startHourTheory," << "endHourTheory," << "DoWExcercise," << "startHourExcercise," << "endHourExcercise," << "Room" << endl;
-		for (int i = 0; i < List.size(); ++i)
+		while (getline(myFile, line))
 		{
-			myFile << List[i].No << "," << List[i].Id << "," << List[i].Name << ","
-				<< List[i].Class << "," << List[i].Account << "," << List[i].startDate
-				<< "," << List[i].endDate << "," << List[i].DoWTheory << "," << List[i].startHourTheory
-				<< "," << List[i].endHourTheory << "," << List[i].DoWExcercise << "," << List[i].startHourExcercise
-				<< "," << List[i].endHourExcercise << "," << List[i].Room << endl;
+			course temp;
+			myFile >> temp.No;
+			myFile.ignore(1);
+			getline(myFile, temp.Id);
+			getline(myFile, temp.Name);
+			getline(myFile, temp.Class);
+			loadCourseStudentFile(temp, filePath);
+			getline(myFile, temp.lecturerAccount);
+			myFile >> temp.startDate.year;
+			myFile >> temp.startDate.month;
+			myFile >> temp.startDate.day;
+			myFile >> temp.endDate.year;
+			myFile >> temp.endDate.month;
+			myFile >> temp.endDate.day;
+			myFile.ignore(1);
+			getline(myFile, temp.DoW);
+			myFile >> temp.startHour.hour;
+			myFile >> temp.startHour.min;
+			myFile >> temp.endHour.hour;
+			myFile >> temp.endHour.min;
+			myFile.ignore(1);
+			getline(myFile, temp.room);
+			list.push_back(temp);
+		}
+
+	}
+	else
+	{
+		cout << "courses.dat Not found" << endl;
+		return;
+	}
+	myFile.close();
+	sortList(list);
+}
+void loadCourseStudentFile(course& Course, string filePath)
+{
+	ifstream myFile(filePath + Course.Class + ".dat");
+	if (myFile.is_open())
+	{
+		int id;
+		while (myFile >> id)
+		{
+			myFile >> id;
+			Course.studentId.push_back(id);
 		}
 	}
 	myFile.close();
 }
-void input1Course(vector<Course>& List)
+void saveCourseList(vector<course> list, string filePath)
 {
-	Course temp;
-	cout << " Id                    : "; getline(cin, temp.Id);
-	cout << " Name                   : "; getline(cin, temp.Name);
-	cout << " Class                  : "; getline(cin, temp.Class);
-	cout << " Account                : "; getline(cin, temp.Account);
-	cout << " Start date             : "; getline(cin, temp.startDate);
-	cout << " End date               : "; getline(cin, temp.endDate);
-	cout << " Day of week (Theory)   : "; getline(cin, temp.DoWTheory);
-	cout << " Start hour theory      : "; getline(cin, temp.startHourTheory);
-	cout << " End hour theory        : "; getline(cin, temp.endHourTheory);
-	cout << " Day of week (Excercise): "; getline(cin, temp.DoWExcercise);
-	cout << " Start hour Excercise   : "; getline(cin, temp.startHourExcercise);
-	cout << " End hour Excercise     : "; getline(cin, temp.endHourExcercise);
-	cout << " Room                   : "; getline(cin, temp.Room);
-	List.push_back(temp);
-}
-void inputCourse(vector<Course>& List)
-{
-	int n;
-	cout << "How many course: "; cin >> n;
-	for (int i = 0; i < n; ++i)
+	int n = list.size();
+	ofstream dataFile(filePath);
+	if (dataFile.is_open())
 	{
-		cout << "         No : " << i + 1 << endl;
-		List[i].No = i;
-		input1Course(List);
+		for (int i = 0; i < n; ++i)
+		{
+			dataFile << list[i].No << endl;
+			dataFile << list[i].Id << endl;
+			dataFile << list[i].Name << endl;
+			dataFile << list[i].Class << endl;
+			saveCourseStudentFile(list[i], filePath);
+			dataFile << list[i].lecturerName << endl;
+			dataFile << list[i].startDate.year << " ";
+			dataFile << list[i].startDate.month << " ";
+			dataFile << list[i].startDate.day << endl;
+			dataFile << list[i].endDate.year << " ";
+			dataFile << list[i].endDate.month << " ";
+			dataFile << list[i].endDate.day << endl;
+			dataFile << list[i].DoW << endl;
+			dataFile << list[i].startHour.hour << " ";
+			dataFile << list[i].startHour.min << endl;
+			dataFile << list[i].endHour.hour << " ";
+			dataFile << list[i].endHour.min << endl;
+			dataFile << list[i].room << endl;
+		}
 	}
-	sortList(List);
-}
-void output1Course(Course course)
-{
-	cout << course.No
-		<< setw(8) << course.Id
-		<< setw(25) << course.Name
-		<< setw(9) << course.Class
-		<< setw(9) << course.Account
-		<< setw(11) << course.startDate
-		<< setw(11) << course.endDate
-		<< setw(9) << course.DoWTheory
-		<< setw(13) << course.startHourTheory
-		<< setw(15) << course.endHourTheory
-		<< setw(12) << course.DoWExcercise
-		<< setw(18) << course.startHourExcercise
-		<< setw(18) << course.endHourExcercise
-		<< setw(12) << course.Room
-		<< endl;
-}
-void outputCourse(vector<Course> List)
-{
-	cout << "No" << setw(6) << "Id" << setw(17) << "Name" << setw(18) << "Class"
-		<< setw(10) << "Account" << setw(11) << "Start date" << setw(10)
-		<< "End date" << setw(12) << "Theory day" << setw(15) << "Start: Theory"
-		<< setw(15) << "End: Theory" << setw(15) << "Excercise day" << setw(17) << "Start: Excercise"
-		<< setw(17) << "End: Excercise" << setw(6) << "Room" << endl;
-	for (int i = 0; i < List.size(); ++i)
+	else
 	{
-		output1Course(List[i]);
+		cout << "courses.dat Not found" << endl;
 	}
+	dataFile.close();
 }
-void outputCourseList(vector<Course> List)
+void saveCourseStudentFile(course Course, string filePath)
 {
-	cout << "Course: " << endl;
-	int n = List.size();
-	for (int i = 0; i < n; ++i)
+	ofstream myFile(filePath + Course.Class + ".dat");
+	if (myFile.is_open())
 	{
-		cout << List[i].No << " - " << List[i].Name << "(" << List[i].Id << ")"<<endl;
+		int n = Course.studentId.size();
+		for (int i = 0; i < n; i++)
+		{
+			myFile << Course.studentId[i] << endl;
+		}
 	}
+	myFile.close();
 }
-void remove1Course(vector<Course>& List)
+void importCsvFile(vector<course>& list, string filePath)
 {
-	int choice;
-	cout << "Please choose No of Course to remove: " << endl;
-	for (int i = 0; i < List.size(); ++i)
-	{
-		cout << "Enter " << i + 1 << ": " << List[i].Id << endl;
-	}
+	int option;
+	string newPath;
+	cout << "Please choose an option: \n";
+	cout << "Enter 1: Link your file address to system\n";
+	cout << "Enter 2: Open existing file  \n";
+
 	while (true)
 	{
-		cin >> choice;
-		if (choice > 0 || choice <= List.size())
+		cout << "Input: "; cin >> option;
+		if (option < 0 || option>2)
+		{
+			cout << "Error!! Please input again or (0) to break";
+		}
+		else
+		{
+			break;
+		}
+	}
+	switch (option)
+	{
+	default:
+		cout << "Break!!!\n";
+		return;
+	case 1:
+	{
+		cout << "Input your file address: ";
+
+		cin >> newPath;
+		loadCsvFile(list, newPath);
+		break;
+	}
+	case 2:
+	{
+		loadDatFile(list, filePath);
+		break;
+	}
+	}
+	if (list.size() != 0)
+		outputCourseList(list);
+}
+void output1Course(course Course)
+{
+	cout << endl << setw(3) << Course.No << " - " << setw(35) << Course.Name << "(" << setw(7) << Course.Id << ") - Student: " << setw(4) << Course.studentId.size() << endl;
+}
+void outputCourseList(vector<course> list)
+{
+	cout << "Course: ";
+	int n = list.size();
+	cout << endl << setfill('=') << setw(50) << endl;
+	for (int i = 0; i < n; ++i)
+	{
+		output1Course(list[i]);
+		cout << endl << setfill('=') << setw(50) << endl;
+	}
+}
+void output1CourseData(course Course)
+{
+	cout << " No            : " << Course.No << endl;
+	cout << " Id            : " << Course.Id << endl;
+	cout << " Name          : " << Course.Name << endl;
+	cout << " Class         : " << Course.Class << endl;;
+	cout << " Lecturer Name : " << Course.lecturerName << endl;
+	cout << " Start Date    : " << setfill('0') << setw(2) << Course.startDate.day << "/"
+		<< setfill('0') << setw(2) << Course.startDate.month << "/"
+		<< Course.startDate.year << endl;
+	cout << " End Date      : " << setfill('0') << setw(2) << Course.endDate.day << "/"
+		<< setfill('0') << setw(2) << Course.endDate.month << "/"
+		<< Course.endDate.year << endl;
+	cout << " Study day     : " << Course.DoW << endl;
+	cout << " Start hour    : " << setfill('0') << setw(2) << Course.startHour.hour << ":"
+		<< setfill('0') << setw(2) << Course.startHour.min << endl;
+	cout << " End hour      : " << setfill('0') << setw(2) << Course.endHour.hour << ":"
+		<< setfill('0') << setw(2) << Course.endHour.min << endl;
+	cout << " Room          :" << Course.room;
+
+}
+void outputSchedule(vector<course> list)
+{
+	cout << "Schedule:  " << endl;
+	int n = list.size();
+	cout << endl << setfill('=') << setw(50) << endl;
+	for (int i = 0; i < n; ++i)
+	{
+		output1CourseData(list[i]);
+		cout << endl << setfill('=') << setw(50) << endl;
+	}
+}
+int  inputTime(courseTime& time)
+{
+	courseTime temp;
+	int check = -1;
+	while (true)
+	{
+		cout << "	Input hour: ";
+		cin >> temp.hour;
+		if (temp.hour >= 7 && temp.hour <= 19)
 		{
 			break;
 		}
 		else
 		{
-			cout << "Error!!!" << endl;
-			cout << "Please choose again:" << endl;
+			cout << "Error!! Not available time!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
 		}
 	}
-	List[choice - 1].student.clear();
-	List[choice - 1].student.shrink_to_fit();
-	List.erase(List.begin() + choice - 1);
-	List.shrink_to_fit();
-	cout << "Course has been remove!" << endl;
-}
-bool realDate(date A)
-{
-	time_t rawtime;
-	struct tm* info;
-	time(&rawtime);
-	info = gmtime(&rawtime);
-	if (info->tm_year + 1900 - A.year <= 12 || info->tm_year + 100 - A.year >= 60)
+	if (check == 0)
 	{
-		return false;
+		time.hour = 0;
+		time.min = 0;
+		return 0;
 	}
-	if (A.month <= 0 || A.month > 12)
+	while (true)
 	{
-		return false;
+		cout << "	Input minute: ";
+		cin >> temp.min;
+		if (temp.min >= 0 && temp.min <= 59)
+		{
+			break;
+		}
+		else
+		{
+			cout << "Error!! Please check your input again." << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
+		}
 	}
-	if (A.day <= 0 || A.day > maxdayinmonth(A.month, A.year));
+	if (check == 0)
+	{
+		time.hour = 0;
+		time.min = 0;
+		return 0;
+	}
+	time = temp;
+	return 1;
 }
-date inputDate()
+int  inputDate(date& Date)
 {
+	int check = -1;
 	date temp;
-	do
-	{
-		cout << "Input Year : ";
-		cin >> temp.year;
-		cout << "Input month: ";
-		cin >> temp.month;
-		cout << "Input day :";
-		cin >> temp.day;
-	} while (realDate(temp));
-	return temp;
-}
-void editCourse(vector<Course>& List)
-{
-	int n;
+	time_t now = time(0);
+	tm ltm;
+	localtime_s(&ltm, &now);
 	while (true)
 	{
-		cout << "Choose No of course: ";
-		cin >> n;
-		if (n > 0 || n <= List.size() + 1)
+		cout << "	Input day  :   "; cin >> temp.day;
+		if ((temp.day > maxdayinmonth(temp.month, temp.year)) || (temp.day < 1))
+		{
+			cout << "Error!! Please check your input again." << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
+		}
+		else
 		{
 			break;
 		}
-		cout << "Error!" << endl;
 	}
-	output1Course(List[n]);
-	int choice;
-	cout << " (1) Id" << endl;
-	cout << " (2) Name" << endl;
-	cout << " (3) Class" << endl;
-	cout << " (4) Account" << endl;
-	cout << " (5) Start date" << endl;
-	cout << " (6) End date" << endl;
-	cout << " (7) Day of week (Theory)" << endl;
-	cout << " (8) Start hour Theory" << endl;
-	cout << " (9) End hour Theory" << endl;
-	cout << " (10) Day of week (Excercise)" << endl;
-	cout << " (11) Start hour Excercise" << endl;
-	cout << " (12) End hour Excercise" << endl;
-	cout << " (13) Room" << endl;
+	if (check == 0)
+	{
+		Date = { 0 };
+		return 0;
+	}
+
 	while (true)
 	{
-		cout << " Change : ";
-		cin >> choice;
-		if (choice <= 13 && choice > 0)
+		cout << "	Input month:   "; cin >> temp.month;
+		if (temp.month < 1 && temp.month>12)
+		{
+			cout << "Error!! Please check your input again." << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	if (check == 0)
+	{
+		Date = { 0 };
+		return 0;
+	}
+
+	while (true)
+	{
+		cout << "	Input year :   "; cin >> temp.year;
+
+		if (((ltm.tm_year + 1900) - temp.year > 20) || ((ltm.tm_year + 1900) - temp.year < -5))
+		{
+			cout << "Error!! Please check your input again." << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	if (check == 0)
+	{
+		Date = { 0 };
+		return 0;
+	}
+	Date = temp;
+	return 1;
+}
+void inputLecturer(course& Course)
+{
+	string username, name, degree, gender;
+	cout << " Lecturer username : "; getline(cin, username);
+	cout << " Lecturer name     : "; getline(cin, name);
+	cout << " Lecturer degree   : "; getline(cin, degree);
+	cout << " Lecturer gender  : "; getline(cin, gender);
+	Course.lecturerAccount = username;
+	Course.lecturerName = name;
+	Course.lecturerDegree = degree;
+}
+void input1Course(course& newCourse)
+{
+	int check;
+	cout << " Id                : "; getline(cin, newCourse.Id);
+	cout << " Name              : "; getline(cin, newCourse.Name);
+	cout << " Class             : "; getline(cin, newCourse.Class);
+	inputLecturer(newCourse);
+	cout << " Start date        : \n"; check = inputDate(newCourse.startDate);
+	if (check == 0)
+	{
+		newCourse.No = -1;
+		return;
+	}
+	cout << " End date          : \n"; check = inputDate(newCourse.endDate);
+	if (check == 0)
+	{
+		newCourse.No = -1;
+		return;
+	}
+	while (true)
+	{
+		cout << " Dow(DDD)          : "; getline(cin, newCourse.DoW);
+		putchar(toupper(newCourse.DoW[0]));
+		int n = newCourse.DoW.size();
+		for (int i = 1; i < n; ++i)
+			putchar(tolower(newCourse.DoW[i]));
+		if (newCourse.DoW == "Sun" || newCourse.DoW == "Mon" || newCourse.DoW == "Tue" || newCourse.DoW == "Wed" || newCourse.DoW == "Thu" || newCourse.DoW == "Fri" || newCourse.DoW == "Sat")
 		{
 			break;
 		}
 		else
 		{
-			cout << "Error" << endl;
+			cout << "Error!!! Please check your in put. " << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				break;
+			}
 		}
 	}
-	cin.ignore(1);
+	if (check == 0)
+	{
+		newCourse.No = -1;
+		return;
+	}
+	cout << " Start hour        : \n"; check = inputTime(newCourse.startHour);
+	if (check == 0)
+	{
+		newCourse.No = -1;
+		return;
+	}
+	cout << " End hour         : \n"; check = inputTime(newCourse.endHour);
+	if (check == 0)
+	{
+		newCourse.No = -1;
+		return;
+	}
+	cout << " Room            : \n"; getline(cin, newCourse.room);
+	addStudent(newCourse);
+}
+void inputCourse(vector<course>& list, string filePath)
+{
+	int n;
+	cout << "Numbers of new course: ";
+	cin >> n;
+
+	course temp;
+	for (int i = 0; i < n; ++i)
+	{
+		input1Course(temp);
+		if (temp.No != -1)
+			list.push_back(temp);
+	}
+	saveCourseList(list, filePath);
+	outputCourseList(list);
+}
+void editCourse(vector<course>& list, string filePath)
+{
+	int n, check;
+	while (true)
+	{
+		cout << "Input the course No: "; cin >> n;
+		int listSize = list.size();
+		if (n <= 0 || n > listSize)
+		{
+			cout << "Error!!!No available course!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				return;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	int choice;
+	cout << "Please enter your decision: " << endl;
+	cout << "Enter (1) : Name" << endl;
+	cout << "Enter (2) : Id " << endl;
+	cout << "Enter (3) : Class" << endl;
+	cout << "Enter (4) : Lecturer" << endl;
+	cout << "Enter (5) : Day of Week" << endl;
+	cout << "Enter (6) : Room" << endl;
+	cout << "Enter (7) : Start date" << endl;
+	cout << "Enter (8) : End date" << endl;
+	cout << "Enter (9) : Start Hour" << endl;
+	cout << "Enter (10): End Hour" << endl;
+	cout << "Enter (11):  Whole course" << endl;
+	while (true)
+	{
+		cout << "Input: "; cin >> choice;
+		if (choice <= 0 || choice > 11)
+		{
+			cout << "Error!!!No choice available!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				return;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
 	switch (choice)
 	{
 	case 1:
-		cout << " Id : "; getline(cin, List[n].Id);
+	{
+		cout << " Id: "; getline(cin, list[n - 1].Id);
 		break;
+	}
 	case 2:
-		cout << " Name :"; getline(cin, List[n].Name);
+	{
+		cout << " Name: "; getline(cin, list[n - 1].Name);
 		break;
+	}
 	case 3:
 	{
-		string filePath1 = "....", filePath2 = "...";
-		filePath1.append(List[n].Class);
-		filePath1.append(".csv");
-		string temp;
-		cout << " Class : "; getline(cin, temp);
-		filePath2.append(temp);
-		filePath2.append(".csv");
-		rename(filePath1.c_str(), filePath2.c_str());
-		List[n].Class = temp;
+		string oldFileName(filePath + list[n - 1].Name + ".dat");
+		cout << " Class: "; getline(cin, list[n - 1].Class);
+		string newFileName(filePath + list[n - 1].Name + ".dat");
+		rename(oldFileName.c_str(), newFileName.c_str());
 		break;
 	}
 	case 4:
-		cout << " Account : "; getline(cin, List[n].Account);
-		break;
-	case 5:
-		cout << " Start date : "; getline(cin, List[n].startDate);
-		break;
-	case 6:
-		cout << " End date : "; getline(cin, List[n].endDate);
-		break;
-	case 7:
-		cout << " Day of week (Theory): "; getline(cin, List[n].DoWTheory);
-		break;
-	case 8:
-		cout << " Start hour Theory: "; getline(cin, List[n].startHourTheory);
-		break;
-	case 9:
-		cout << " End hour  Theory : "; getline(cin, List[n].endHourTheory);
-		break;
-	case 10:
-		cout << " Day of week (Excercise): "; getline(cin, List[n].DoWTheory);
-		break;
-	case 11:
-		cout << " Start hour Excercise : "; getline(cin, List[n].startHourTheory);
-		break;
-	case 12:
-		cout << " End hour Excercise : "; getline(cin, List[n].endHourTheory);
-		break;
-	case 13:
-		cout << " Room        : "; getline(cin, List[n].Room);
+	{
+		inputLecturer(list[n - 1]);
 		break;
 	}
-	saveCourse(List);
-	cout << "After edit: " << endl;
-	output1Course(List[n]);
-	sortList(List);
+	case 5:
+	{
+		string temp;
+		while (true)
+		{
+			cout << " Dow(DDD)          : "; getline(cin, temp);
+			int sizeDoW = temp.size();
+			if (sizeDoW == 3)
+			{
+				putchar(toupper(temp[0]));
+				int sizeDoW = temp.size();
+				for (int i = 1; i < sizeDoW; ++i)
+					putchar(tolower(temp[i]));
+				if (temp == "Sun" || temp == "Mon" || temp == "Tue" || temp == "Wed" || temp == "Thu" || temp == "Fri" || temp == "Sat")
+				{
+					list[n - 1].DoW = temp;
+					break;
+				}
+				else
+				{
+					cout << "Error!!! Please check your in put. " << endl;
+					cout << "Input (0) to break or (1) to continue: ";
+					cin >> check;
+					if (check == 0)
+					{
+						break;
+					}
+				}
+			}
+			else
+			{
+				cout << "Error!!! Please check your in put. " << endl;
+				cout << "Input (0) to break or (1) to continue: ";
+				cin >> check;
+				if (check == 0)
+				{
+					break;
+				}
+			}
+
+		}
+		break;
+	}
+	case 6:
+	{
+		cout << " Room            : \n"; getline(cin, list[n - 1].room);
+		break;
+	}
+	case 7:
+	{
+		cout << " Start date: \n"; inputDate(list[n - 1].startDate);
+		break;
+	}
+	case 8:
+	{
+		cout << " End date: \n"; inputDate(list[n - 1].endDate);
+		break;
+	}
+	case 9:
+	{
+		cout << " Start hour        : \n"; inputTime(list[n - 1].startHour);
+		break;
+	}
+	case 10:
+	{
+		cout << " End hour         : \n"; inputTime(list[n - 1].endHour);
+		break;
+	}
+	case 11:
+	{
+		course newCourse;
+		input1Course(newCourse);
+		if (newCourse.No != -1)
+			list[n - 1] = newCourse;
+		break;
+	}
+	}
+	output1CourseData(list[n - 1]);
+	sortList(list);
 }
-void sortList(vector<Course>& List)
+void deleteCourse(vector<course>& list, string filePath)
 {
-	sort(List.begin(), List.end(), [](const Course& lhs, const Course& rhs)
+	int n, check;
+	outputCourseList(list);
+	while (true)
+	{
+		cout << "Input the course No: "; cin >> n;
+		int listSize = list.size();
+		if (n <= 0 || n > listSize)
+		{
+			cout << "Error!!!No available course!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				return;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	list[n - 1].studentId.clear();
+	list[n - 1].studentId.shrink_to_fit();
+	list.erase(list.begin() + n - 1);
+	list.shrink_to_fit();
+	saveCourseList(list, filePath);
+}
+void remove1Student(course& Course)
+{
+	viewStudentList(Course);
+	int n, check;
+	while (true)
+	{
+		cout << "Input the studnet No: "; cin >> n;
+		int studentSize = Course.studentId.size();
+		if (n <= 0 || n > studentSize)
+		{
+			cout << "Error!!!No student at that position!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				return;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	Course.studentId.erase(Course.studentId.begin() + n - 1);
+	Course.studentId.shrink_to_fit();
+}
+void add1Student(course& Course)
+{
+	int Id, check;
+	int n;
+	while (true)
+	{
+		check = -1;
+		cout << "Student id: "; cin >> Id;
+		if (log10(Id) + 1 == 7 || log10(Id) + 1 == 8)
+		{
+			n = Course.studentId.size();
+			for (int i = 0; i < n; ++i)
+			{
+				if (Course.studentId[i] == Id)
+				{
+					cout << "Student have already been here!!" << endl;
+				}
+				cout << "Input (0) to break or (1) to continue: ";
+				cin >> check;
+				if (check == 0)
+				{
+					return;
+				}
+			}
+			if (check == -1)
+			{
+				Course.studentId.push_back(Id);
+				break;
+			}
+		}
+		else
+		{
+			cout << "Wrong Id!!! Please input again!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> check;
+			if (check == 0)
+			{
+				return;
+			}
+		}
+	}
+}
+void addStudent(course& Course)
+{
+	int num;
+	cout << "Number of new student: "; cin >> num;
+	for (int i = 0; i < num; ++i)
+	{
+		add1Student(Course);
+	}
+}
+void viewStudentList(course courseName)// Đợi file class của Nhật
+{
+	cout << "Hello";
+}
+void sortList(vector<course>& List)
+{
+	sort(List.begin(), List.end(), [](const course& lhs, const course& rhs)
 		{
 			return lhs.Id < rhs.Id;
 		});
-	sort(List.begin(), List.end(), [](const Course& lhs, const Course& rhs)
+	sort(List.begin(), List.end(), [](const course& lhs, const course& rhs)
 		{
 			return lhs.Name < rhs.Name;
 		});
-	for (int i = 0; i < List.size(); ++i)
+	int n = List.size();
+	for (int i = 0; i < n; ++i)
 	{
 		List[i].No = i + 1;
 	}
 }
-void viewStudentList(Course courseName)
+course searchCourse(string filePath, string Id)
 {
-	cout << "No" << "Id" << "Last name" << "First name" << "Day of birth";
-	for (int i = 0; i < courseName.student.size(); ++i)
+	vector<course>List;
+	loadDatFile(List, filePath);
+	int listSize = List.size();
+	for (int i = 0; i < listSize; ++i)
 	{
-		cout << courseName.student[i].id;
+		if (List[i].Id == Id)
+			return List[i];
 	}
-}
-void input1Student(student& newStudent)
-{
-	cout << "Id :"; cin >> newStudent.id;
-	cin.ignore(1);
-	cout << "Last name: "; getline(cin, newStudent.Lastname);
-	cout << "First name: "; getline(cin, newStudent.Firstname);
-	while (true)
-	{
-		cout << "Enter 0: Male " << endl;
-		cout << "Enter 1: Female " << endl;
-		cout << "Gender : "; cin >> newStudent.gender;
-		if (newStudent.gender == '0' || newStudent.gender == '1')
-		{
-			break;
-		}
-		else
-		{
-			cout << "False";
-		}
-	}
-	cout << "Day of birth : ";
-	newStudent.DoB = inputDate();
-}
-void inputNewStudent(vector<Course>& List)
-{
-	scanCourse(List);
-	if (List.size() == 0)
-	{
-		cout << "There is no course this semester!" << endl;
-		return;
-	}
-	int course;
-	cout << "Please choose No of Course to add student: " << endl;
-	for (int i = 0; i < List.size(); ++i)
-	{
-		cout << "(" << i + 1 << "): " << List[i].Id << endl;
-	}
-	while (true)
-	{
-		cin >> course;
-		if (course > 0 || course <= List.size())
-		{
-			break;
-		}
-		else
-		{
-			cout << "Error!!!" << endl;
-			cout << "Please choose again:" << endl;
-		}
-	}
-	student newStudent;
-	input1Student(newStudent);
-	for (int i = 0; i < List.size(); ++i)
-	{
-		if (newStudent.id == List[course - 1].student[i].id)
-		{
-			cout << "Student has already been attended!" << endl;
-			return;
-		}
-	}
-	List[course - 1].student.push_back(newStudent);
+	course Error;
+	Error.No = -1;
+	return Error;
 }
