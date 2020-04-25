@@ -13,11 +13,17 @@ struct date {
 	int month = 0, day = 0, year = 0;
 };
 
+struct account {
+	int ID = 0, status = 0;
+	string password;
+};
+
 struct student {
 	int No = 0, id = 0;;
 	string Lastname, Firstname;
 	char gender = '0';
 	date DoB;
+	account acc;
 };
 struct clss {
 	vector<student> stL;
@@ -30,7 +36,7 @@ void addonestudent(vector<student>& stL);
 
  //find and show information of a student that has the given id in the course.
 //(if thar student study in more than 1 class->show information more than one time)
-void findstudentinexistingclasses(vector<student>& stL, int id, int& check, student& st, string& classname);
+void findstudentinexistingclasses(vector<student>& stL, int id, int& check, student& st, string& classname, int& count);
 
 //Input new data of new class or reinput all data of the existing class.
 void createnewclass(vector<student>& stL, int& n);
@@ -62,8 +68,11 @@ void displayallclassincourseline (vector<student>stL);
 //change the information of a student that has the given id.
 void editinganexistingstudent(student &st);
 
+// update the change of the information of a student that has the given id in his/her class.
+void updateeditstudentin1class(vector<student>& stL, int id, student st, string flclassname);
+
 //update the change of the information of a student that has the given id in all his/her classes.
-void updateeditedstudentinallhisorherclasses(vector<student>& stL, int& id, student& st);
+void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, student st);
 
 //remove a student that has the given id in the class has the given class's name.
 void removestudentfromclass(vector<student> &stL, int id, string classname);
@@ -77,7 +86,7 @@ void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stL
 void exporttofile(ofstream& fsave, vector<student> stL);
 
 //do the save to csv file.
-void exporrfromprogram(vector<student>stL, string fsname);
+void exportfromprogram(vector<student>stL, string fsname);
 
 //find a student that has the given id in just only the class that has class's name given.
 void findstudentin1class(vector<student> stL, int id, string classname, int& check, student& st);
@@ -94,10 +103,28 @@ void savetodatfile(ofstream& fsave, vector<student> stL);
 //do the save to dat file.
 void exportfromprogram2(vector<student> stL, string fsname);
 
-//Old menu.
-void manageclassfunctionold();
+//sort the class in ascending order.
+void sortclassinascendingorderbyid(vector<student>& stL);
 
-//Menu update.
-void manageclassfunctionnew();
+//Check if the account has existed or not.
+int checkaccounteon(student st);
+
+//Write a new account to data.
+void pushbacktoaccfile(student& st);
+//load the file which is holding all accounts's data.
+void loadaccsavefile(ifstream& fload, vector<account>& accL);
+
+//save all accounts's data to file.
+void saveaccount(ofstream& fsave, vector<account> accL);
+
+//Reactivate the disabled account.
+void activeacccount(student st);
+
+//disable the account has the ID of student who has already been remove.
+void disableaccount(student st);
+
+
+//CLASS MANAGE MENU.
+void manageclassfunction();
 
 #endif
