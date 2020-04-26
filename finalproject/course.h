@@ -17,6 +17,7 @@ struct courseTime
 {
 	int hour = 0;
 	int min = 0;
+	void clear();
 };
 
 struct course
@@ -26,6 +27,7 @@ struct course
 	date startDate, endDate;
 	courseTime startHour, endHour;
 	vector<int> studentId;
+	void clear();
 };
 void courseMenu(int year, string semester);
 void loadCsvFile(vector<course>& list, string filePath);

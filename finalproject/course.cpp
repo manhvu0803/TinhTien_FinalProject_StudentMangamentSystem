@@ -38,11 +38,34 @@ void courseMenu(int year, string semester)
 	{
 	case 1:
 	{
-		importCsvFile(List, filePath);
-		outputCourseList(List);
-		saveCourseList(List, filePath + "courses.dat");
-		First = false;
-		break;
+		if (First == true)
+		{
+			importCsvFile(List, filePath);
+			outputCourseList(List);
+			saveCourseList(List, filePath + "courses.dat");
+			First = false;
+			break;
+		}
+		else
+		{
+			vector<course> moreList;
+			importCsvFile(moreList, filePath);
+			if (moreList != List)
+			{
+				if (moreList.size() != 0)
+				{
+					int newSize = moreList.size() + List.size();
+					for (int i = List.size(); i < newSize; ++i)
+					{
+						List.push_back(moreList[newSize - i - 1]);
+					}
+					sortList(List);
+					saveCourseList(List, filePath + "courses.dat");
+					moreList.clear();
+					moreList.shrink_to_fit();
+				}
+			}
+		}
 	}
 	case 2:
 	{
@@ -1042,4 +1065,32 @@ course searchCourse(string filePath, string Id)
 	course Error;
 	Error.No = -1;
 	return Error;
+}
+void course::clear()
+{
+	No = NULL;
+	Name.clear();
+	Id.clear();
+	Class.clear();
+	lecturerAccount.clear();
+	lecturerName.clear();
+	lecturerDegree.clear();
+	lecturerGender.clear();
+	DoW.clear();
+	room.clear();
+	startDate.day = NULL;
+	startDate.month = NULL;
+	startDate.year = NULL;
+	endDate.day = NULL;
+	endDate.month = NULL;
+	endDate.year = NULL;
+	studentId.clear();
+	studentId.shrink_to_fit();
+	startHour.clear();
+	endHour.clear();
+}
+void courseTime::clear()
+{
+	hour = NULL;
+	min = NULL;
 }
