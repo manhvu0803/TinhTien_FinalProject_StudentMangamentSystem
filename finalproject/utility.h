@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <algorithm>
 
 namespace tt
 {
@@ -14,10 +15,12 @@ namespace tt
 
             // Constructor and destructor
             vector();
+            vector(size_t amount, T val);
+            vector(T* aBegin, T* aEnd);
             ~vector();
 
             // Assignment
-            vector<T>* operator=(vector<T>& vecToCopy);
+            vector<T>* operator=(const vector<T>& vecToCopy);
             void assign(T* aBegin, T* aEnd);
 
             // Pointers
@@ -28,6 +31,14 @@ namespace tt
             size_t size() const;
             size_t capacity() const;
             void shrink_to_fit();
+
+            // Comparison
+            bool operator==(const vector<T>& vecParam) const;
+            bool operator!=(const vector<T>& vecParam) const;
+            bool operator<=(const vector<T>& vecParam) const;
+            bool operator>=(const vector<T>& vecParam) const;
+            bool operator<(const vector<T>& vecParam) const;
+            bool operator>(const vector<T>& vecParam) const;
 
             // Access
             T& operator[](size_t pos);
@@ -45,9 +56,10 @@ namespace tt
             void clear();
             void resize(size_t newSize);
             void resize(size_t newSize, T value);
+            void swap(vector<T>& vecToSwap);
 
         private:
-            T* ptr;
+            T* ptr = nullptr;
             size_t _capacity;
             size_t _size;
 
@@ -69,6 +81,18 @@ template <typename T> vector<T>::vector()
     _size = 0;
 }
 
+template <typename T> vector<T>::vector(size_t amount, T val)
+{
+    _size = amount;
+    _capacity = initCapacity + _size;
+    std::fill(ptr, ptr + _size, val);
+}
+
+template <typename T> vector<T>::vector(T* aBegin, T* aEnd)
+{
+    assign(aBegin, aEnd);
+}
+
 // Destructor
 template <typename T> vector<T>::~vector()
 {
@@ -76,7 +100,7 @@ template <typename T> vector<T>::~vector()
 }
 
 // Assignment
-template <typename T> vector<T>* vector<T>::operator=(vector<T>& vecToCopy)
+template <typename T> vector<T>* vector<T>::operator=(const vector<T>& vecToCopy)
 {
     delete [] ptr;
 
@@ -91,6 +115,7 @@ template <typename T> vector<T>* vector<T>::operator=(vector<T>& vecToCopy)
 template <typename T> void vector<T>::assign(T* aBegin, T* aEnd)
 {
     _size = aEnd - aBegin;
+    if (_size <= 0) throw std::invalid_argument("Assigned range is invalid");
     _capacity = _size + capToIncrease;
     delete [] ptr;
     ptr = new T[_capacity];
@@ -116,9 +141,57 @@ template <typename T> inline size_t vector<T>::size() const
     return _size;
 }
 
-template <typename T> size_t vector<T>::capacity() const
+template <typename T> inline size_t vector<T>::capacity() const
 {
     return _capacity;
+}
+
+// Comparison
+template <typename T> bool vector<T>::operator==(const vector<T>& vecParam) const
+{
+    if (_size != vecParam._size) return false;
+
+    for (size_t i = 0; i < _size; ++i)
+        if (ptr[i] != vecParam.ptr[i]) return false;
+
+    return true;
+}
+
+template <typename T> inline bool vector<T>::operator!=(const vector<T>& vecParam) const
+{
+    return !(this == vecParam);
+}
+
+template <typename T> bool vector<T>::operator<=(const vector<T>& vecParam) const
+{
+    size_t lim = std::min(_size, vecParam._size);
+    for (size_t i = 0; i < lim; ++i)
+        if (ptr[i] > vecParam.ptr[i]) return false;
+    return _size <= vecParam._size;
+}
+
+template <typename T> bool vector<T>::operator>=(const vector<T>& vecParam) const
+{
+    size_t lim = std::min(_size, vecParam._size);
+    for (size_t i = 0; i < lim; ++i)
+        if (ptr[i] < vecParam.ptr[i]) return false;
+    return _size >= vecParam._size;
+}
+
+template <typename T> bool vector<T>::operator<(const vector<T>& vecParam) const
+{
+    size_t lim = std::min(_size, vecParam._size);
+    for (size_t i = 0; i < lim; ++i)
+        if (ptr[i] > vecParam.ptr[i]) return false;
+    return _size < vecParam._size;
+}
+
+template <typename T> bool vector<T>::operator>(const vector<T>& vecParam) const
+{
+    size_t lim = std::min(_size, vecParam._size);
+    for (size_t i = 0; i < lim; ++i)
+        if (ptr[i] < vecParam.ptr[i]) return false;
+    return _size > vecParam._size;
 }
 
 template <typename T> void vector<T>::shrink_to_fit()
@@ -215,6 +288,13 @@ template <typename T> void vector<T>::resize(size_t newSize, T value)
     for (size_t i = _size; i < newSize; ++i)
         ptr[i] = value;
     _size = newSize;
+}
+
+template <typename T> void vector<T>::swap(vector<T>& vecToSwap)
+{
+    std::swap(_size, vecToSwap._size);
+    std::swap(_capacity, vecToSwap._capacity);
+    std::swap(ptr, vecToSwap.ptr);
 }
 
 template <typename T> void vector<T>::reallocate(size_t newCap)
