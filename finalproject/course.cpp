@@ -11,10 +11,14 @@ void courseMenu(int year, string semester)
 	filePath.append("/");
 	bool First = true;
 	int cont = 0;
-	int choice = 0;
+	int choice = -1;
 	vector<course> List;
-	while (true)
+	cout << setfill('=') << setw(50) << "=" << endl;
+	cout << "*" << setfill('-') << setw(25) << "MAIN MENU" << setfill('-') << setw(24) << "*" << endl;
+	cout << setfill('=') << setw(50) << "=" << endl;
+	while (choice != 0)
 	{
+		cout << " Enter 0: To exit" << endl;
 		cout << " Enter 1: Import course" << endl;
 		cout << " Enter 2: Add new course" << endl;
 		cout << " Enter 3: Edit course" << endl;
@@ -23,192 +27,195 @@ void courseMenu(int year, string semester)
 		cout << " Enter 6: Add a student to a course" << endl;
 		cout << " Enter 7: Remove a student" << endl;
 		cout << " Enter 8: View student list" << endl;
+		cout << " Enter your choice: ";
 		cin >> choice;
-		if (choice >= 1 && choice <= 8)
+		if (choice >= 0 && choice <= 8)
 		{
 			break;
 		}
 		else
 		{
-			cout << "Error! Choose agian:" << endl << endl;
+			cout << "Error! Choose agian:" << endl;
 		}
-	}
-
-	switch (choice)
-	{
-	case 1:
-	{
-		if (First == true)
-		{
-			importCsvFile(List, filePath);
-			outputCourseList(List);
-			saveCourseList(List, filePath + "courses.dat");
-			First = false;
-			break;
-		}
-		else
-		{
-			vector<course> moreList;
-			importCsvFile(moreList, filePath);
-			if (moreList != List)
+		if (choice != 0 && (choice >= 1 && choice <= 8))
+			switch (choice)
 			{
-				if (moreList.size() != 0)
+			case 1:
+			{
+				if (First)
 				{
-					int newSize = moreList.size() + List.size();
-					for (int i = List.size(); i < newSize; ++i)
-					{
-						List.push_back(moreList[newSize - i - 1]);
-					}
+					importCsvFile(List, filePath);
 					sortList(List);
+					outputCourseList(List);
 					saveCourseList(List, filePath + "courses.dat");
-					moreList.clear();
-					moreList.shrink_to_fit();
+					First = false;
 				}
-			}
-		}
-	}
-	case 2:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		course temp;
-		input1Course(temp);
-		if (temp.No != -1)
-		{
-			List.push_back(temp);
-		}
-		saveCourseList(List, filePath + "courses.dat");
-		break;
-	}
-	case 3:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		outputCourseList(List);
-		editCourse(List, filePath);
-		saveCourseList(List, filePath + "courses.dat");
-		break;
-	}
-	case 4:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		deleteCourse(List, filePath + "courses.dat");
-		break;
-	}
-	case 5:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		outputSchedule(List);
-		break;
-	}
-	case 6:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		int n, check;
-		outputCourseList(List);
-		while (true)
-		{
-			cout << "Input the course No: "; cin >> n;
-			int listSize = List.size();
-			if (n <= 0 || n > listSize)
-			{
-				cout << "Error!!!No available course!!!" << endl;
-				cout << "Input (0) to break or (1) to continue: ";
-				cin >> check;
-				if (check == 0)
+				else
 				{
-					return;
+					vector<course> moreList;
+					importCsvFile(moreList, filePath);
+					if (moreList != List)
+					{
+						int newSize = moreList.size() + List.size();
+						for (int i = List.size(); i < newSize; ++i)
+						{
+							List.push_back(moreList[newSize - i - 1]);
+						}
+						sortList(List);
+						saveCourseList(List, filePath + "courses.dat");
+						moreList.clear();
+						moreList.shrink_to_fit();
+						/*
+						List.insert(List.end(), moreList.begin(), moreList.end());
+						sortList(List);
+						*/
+					}
 				}
-			}
-			else
-			{
 				break;
 			}
-		}
-		add1Student(List[n - 1]);
-		saveCourseList(List, filePath + "courses.dat");
-		break;
-	}
-	case 7:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		int n, check;
-		outputCourseList(List);
-		while (true)
-		{
-			check = -1;
-			cout << "Input the course No: "; cin >> n;
-			int listSize = List.size();
-			if (n <= 0 || n > listSize)
+			case 2:
 			{
-				cout << "Error!!!No available course!!!" << endl;
-				cout << "Input (0) to break or (1) to continue: ";
-				cin >> check;
-				if (check == 0)
+				if (!First)
 				{
-					break;
+					loadDatFile(List, filePath);
 				}
-			}
-			else
-			{
+				course temp;
+				input1Course(temp);
+				if (temp.No != -1)
+				{
+					List.push_back(temp);
+					saveCourseList(List, filePath + "courses.dat");
+				}
 				break;
 			}
-		}
-		if (check == -1)
-		{
-			remove1Student(List[n - 1]);
-			saveCourseList(List, filePath + "courses.dat");
-		}
-		break;
-	}
-	case 8:
-	{
-		if (!First)
-		{
-			loadDatFile(List, filePath);
-		}
-		int n, check;
-		outputCourseList(List);
-		while (true)
-		{
-			check = -1;
-			cout << "Input the course No: "; cin >> n;
-			int listSize = List.size();
-			if (n <= 0 || n > listSize)
+			case 3:
 			{
-				cout << "Error!!!No available course!!!" << endl;
-				cout << "Input (0) to break or (1) to continue: ";
-				cin >> check;
-				if (check == 0)
+				if (!First)
 				{
-					break;
+					loadDatFile(List, filePath);
 				}
-			}
-			else
-			{
+				outputCourseList(List);
+				editCourse(List, filePath);
+				saveCourseList(List, filePath + "courses.dat");
 				break;
 			}
-		}
-		if (check == -1)
-			viewStudentList(List[n - 1]);
-		break;
-	}
+			case 4:
+			{
+				if (!First)
+				{
+					loadDatFile(List, filePath);
+				}
+				deleteCourse(List, filePath + "courses.dat");
+				break;
+			}
+			case 5:
+			{
+				if (!First)
+				{
+					loadDatFile(List, filePath);
+				}
+				outputSchedule(List);
+				break;
+			}
+			case 6:
+			{
+				if (!First)
+				{
+					loadDatFile(List, filePath);
+				}
+				int n, check;
+				outputCourseList(List);
+				while (true)
+				{
+					cout << "Input the course No: "; cin >> n;
+					int listSize = List.size();
+					if (n <= 0 || n > listSize)
+					{
+						cout << "Error!!!No available course!!!" << endl;
+						cout << "Input (0) to break or (1) to continue: ";
+						cin >> check;
+						if (check == 0)
+						{
+							return;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				add1Student(List[n - 1]);
+				saveCourseList(List, filePath + "courses.dat");
+				break;
+			}
+			case 7:
+			{
+				if (!First)
+				{
+					loadDatFile(List, filePath);
+				}
+				int n, check;
+				outputCourseList(List);
+				while (true)
+				{
+					check = -1;
+					cout << "Input the course No: "; cin >> n;
+					int listSize = List.size();
+					if (n <= 0 || n > listSize)
+					{
+						cout << "Error!!!No available course!!!" << endl;
+						cout << "Input (0) to break or (1) to continue: ";
+						cin >> check;
+						if (check == 0)
+						{
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				if (check == -1)
+				{
+					remove1Student(List[n - 1]);
+					saveCourseList(List, filePath + "courses.dat");
+				}
+				break;
+			}
+			case 8:
+			{
+				if (!First)
+				{
+					loadDatFile(List, filePath);
+				}
+				int n, check;
+				outputCourseList(List);
+				while (true)
+				{
+					check = -1;
+					cout << "Input the course No: "; cin >> n;
+					int listSize = List.size();
+					if (n <= 0 || n > listSize)
+					{
+						cout << "Error!!!No available course!!!" << endl;
+						cout << "Input (0) to break or (1) to continue: ";
+						cin >> check;
+						if (check == 0)
+						{
+							break;
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
+				if (check == -1)
+					viewStudentList(List[n - 1]);
+				break;
+			}
+			}
 	}
 
 }
@@ -353,12 +360,13 @@ void loadDatFile(vector<course>& list, string filePath)
 	ifstream myFile(filePath + "courses.dat");
 	string line;
 	course temp;
+	int No;
 	if (myFile.is_open())
 	{
-		while (getline(myFile, line))
+		while (myFile >> No)
 		{
-			course temp;
-			myFile >> temp.No;
+			temp.clear();
+			temp.No = No;
 			myFile.ignore(1);
 			getline(myFile, temp.Id);
 			getline(myFile, temp.Name);
@@ -399,7 +407,6 @@ void loadCourseStudentFile(course& Course, string filePath)
 		int id;
 		while (myFile >> id)
 		{
-			myFile >> id;
 			Course.studentId.push_back(id);
 		}
 	}
@@ -459,7 +466,6 @@ void importCsvFile(vector<course>& list, string filePath)
 	cout << "Please choose an option: \n";
 	cout << "Enter 1: Link your file address to system\n";
 	cout << "Enter 2: Open existing file  \n";
-
 	while (true)
 	{
 		cout << "Input: "; cin >> option;
@@ -502,11 +508,11 @@ void outputCourseList(vector<course> list)
 {
 	cout << "Course: ";
 	int n = list.size();
-	cout << endl << setfill('=') << setw(50) << endl;
+	cout << endl << setfill('=') << setw(49) << "=" << endl;
 	for (int i = 0; i < n; ++i)
 	{
 		output1Course(list[i]);
-		cout << endl << setfill('=') << setw(50) << endl;
+		cout << endl << setfill('=') << setw(49) << "=" << endl;
 	}
 }
 void output1CourseData(course Course)
@@ -534,11 +540,11 @@ void outputSchedule(vector<course> list)
 {
 	cout << "Schedule:  " << endl;
 	int n = list.size();
-	cout << endl << setfill('=') << setw(50) << endl;
+	cout << endl << setfill('=') << setw(49) << "=" << endl;
 	for (int i = 0; i < n; ++i)
 	{
 		output1CourseData(list[i]);
-		cout << endl << setfill('=') << setw(50) << endl;
+		cout << endl << setfill('=') << setw(49) << "=" << endl;
 	}
 }
 int  inputTime(courseTime& time)
@@ -1034,7 +1040,21 @@ void addStudent(course& Course)
 }
 void viewStudentList(course courseName)// Đợi file class của Nhật
 {
-	cout << "Hello";
+	int n = courseName.studentId.size();
+	if (n == 0)
+	{
+		cout << "There is no student in this course yet!" << endl;
+	}
+	else
+	{
+		int check;
+		vector<student> stL;
+		for (int i = 0; i < n; ++i)
+		{
+			check = 0;
+			//findstudentinexistingclasses(stL,courseName.studentId[i],check,)
+		}
+	}
 }
 void sortList(vector<course>& List)
 {
