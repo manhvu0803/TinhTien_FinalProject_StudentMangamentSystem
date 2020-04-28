@@ -65,5 +65,5 @@ void viewStudentList(course courseName);
 void sortList(vector<course>& List);
 void upperCase(string& name);
 course searchCourse(string filePath, string Id);
-
+student searchStudent(int id);
 #endif

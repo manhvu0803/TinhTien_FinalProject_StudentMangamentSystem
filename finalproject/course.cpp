@@ -1038,21 +1038,104 @@ void addStudent(course& Course)
 		add1Student(Course);
 	}
 }
-void viewStudentList(course courseName)// Đợi file class của Nhật
+student searchStudent(int id)
 {
-	int n = courseName.studentId.size();
-	if (n == 0)
+	ifstream fload;
+	string flname;
+	student Student;
+	string classname;
+	vector<student>stL;
+	fload.open("data/classes/allclassname.txt");
+	int check = 0;
+	if (!fload.is_open())
 	{
-		cout << "There is no student in this course yet!" << endl;
+		cout << "Can not open file." << endl;
+		Student.No = -2;
+		return Student;
 	}
 	else
 	{
-		int check;
-		vector<student> stL;
-		for (int i = 0; i < n; ++i)
+		while (fload >> classname)
 		{
-			check = 0;
-			//findstudentinexistingclasses(stL,courseName.studentId[i],check,)
+			stL.clear();
+			flname = "data/classes/" + classname + "/" + classname + ".dat";
+			importtoprogram2(stL, flname);
+			int n = stL.size();
+			for (int i = 0; i < n; i++)
+			{
+				if (id == stL[i].id)
+				{
+					check = 1;
+					Student = stL[i];
+					cout << endl;
+					break;
+				}
+			}
+		}
+		fload.close();
+	}
+	if (check == 1)
+	{
+		return Student;
+	}
+	else
+	{
+		Student.No = -1;
+		return Student;
+	}
+}
+void viewStudentList(course courseName)// Đợi file class của Nhật
+{
+	void viewStudentList(course courseName)// Đợi file class của Nhật
+	{
+		int n = courseName.studentId.size();
+		if (n == 0)
+		{
+			cout << "There is no student in this course yet!" << endl;
+		}
+		else
+		{
+			student Student;
+			vector<int> Drop;
+			for (int i = 0; i < n; ++i)
+			{
+				Student = searchStudent(courseName.studentId[i]);
+				if (Student.id == -2)//allclassname.txt is missing
+				{
+					cout << "Error!!! No student id found!\n";
+					courseName.studentId.clear();
+					courseName.studentId.shrink_to_fit();
+					break;
+				}
+				if (Student.id == -1)
+				{
+					Drop.push_back(courseName.studentId[i]);
+					courseName.studentId.erase(courseName.studentId.begin() + i);
+					courseName.studentId.shrink_to_fit();
+					n--;
+					i--;
+				}
+				else
+				{
+					display1studentline(Student);
+				}
+			}
+			if (Drop.size() != 0)
+			{
+				int dropStudent = Drop.size();
+				for (int i = 0; i < dropStudent; ++i)
+				{
+					if (i == 0)
+					{
+						cout << Drop[i];
+					}
+					else
+					{
+						cout << ", " << Drop[i];
+					}
+				}
+				cout << " dropped.";
+			}
 		}
 	}
 }
