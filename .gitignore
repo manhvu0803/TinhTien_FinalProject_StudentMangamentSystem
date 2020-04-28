@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 *.depend
 *.layout
 *.cbp
@@ -8,3 +9,12 @@ Debug
 .vs
 .sln
 *.TMP
+=======
+*.TMP
+*.vs
+*.Debug
+*.obj
+*.bin
+*.exe
+*.cbp
+>>>>>>> Stashed changes
