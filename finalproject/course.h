@@ -17,6 +17,11 @@ struct courseTime
 {
 	int hour = 0;
 	int min = 0;
+	void clear();
+	bool operator==(const courseTime& a)
+	{
+		return(hour == a.hour && min == a.min);
+	}
 };
 
 struct course
@@ -26,6 +31,14 @@ struct course
 	date startDate, endDate;
 	courseTime startHour, endHour;
 	vector<int> studentId;
+	void clear();
+	bool operator==(const course& a)
+	{
+		return(No == a.No && Name == a.Name && Id == a.Id && Class == a.Class
+			&& lecturerAccount == a.lecturerAccount && lecturerDegree == a.lecturerDegree && lecturerName == a.lecturerName
+			&& lecturerGender == a.lecturerGender && DoW == a.DoW && room == a.room && studentId == a.studentId
+			&& startHour == a.startHour && endHour == a.endHour && startDate == a.startDate && endDate == a.endDate);
+	}
 };
 void courseMenu(int year, string semester);
 void loadCsvFile(vector<course>& list, string filePath);
@@ -52,5 +65,5 @@ void viewStudentList(course courseName);
 void sortList(vector<course>& List);
 void upperCase(string& name);
 course searchCourse(string filePath, string Id);
-
+student searchStudent(int id);
 #endif
