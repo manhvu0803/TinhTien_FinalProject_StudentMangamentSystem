@@ -217,7 +217,6 @@ void courseMenu(int year, string semester)
 			}
 			}
 	}
-
 }
 void upperCase(string& name)
 {
@@ -258,8 +257,7 @@ void loadCsvFile(vector<course>& list, string filePath)
 		{
 			course temp;
 			if (line[0] == 'N')
-			{
-			}
+			{		}
 			else
 			{
 				stringstream check(line);
@@ -312,7 +310,50 @@ void loadCsvFile(vector<course>& list, string filePath)
 				getline(check, token, ',');
 				temp.endDate.year = stoi(token);
 				getline(check, token, ',');
-				temp.DoW = token;
+				upperCase(token);
+				if (token == "MON" || token == "MONDAY")
+				{
+					temp.DoW = 0;
+				}
+				else
+				{
+					if (token == "TUE" || token == "TUESDAY")
+					{
+						temp.DoW = 1;
+					}
+					else
+					{
+						if (token == "WED" || token == "WEDNESDAY")
+						{
+							temp.DoW = 2;
+						}
+						else
+						{
+							if (token == "THU" || token == "THURSDAY")
+							{
+								temp.DoW = 3;
+							}
+							else
+							{
+								if (token == "FRI" || token == "FRIDAY")
+								{
+									temp.DoW = 4;
+								}
+								else
+								{
+									if (token == "SAT" || token == "SATURDAY")
+									{
+										temp.DoW = 5;
+									}
+									else
+									{
+										temp.DoW = 6;
+									}
+								}
+							}
+						}
+					}
+				}
 				getline(check, token, ',');
 				temp.startHour.hour = stoi(token);
 				getline(check, token, ',');
@@ -379,8 +420,7 @@ void loadDatFile(vector<course>& list, string filePath)
 			myFile >> temp.endDate.year;
 			myFile >> temp.endDate.month;
 			myFile >> temp.endDate.day;
-			myFile.ignore(1);
-			getline(myFile, temp.DoW);
+			myFile >> temp.DoW;
 			myFile >> temp.startHour.hour;
 			myFile >> temp.startHour.min;
 			myFile >> temp.endHour.hour;
@@ -389,7 +429,6 @@ void loadDatFile(vector<course>& list, string filePath)
 			getline(myFile, temp.room);
 			list.push_back(temp);
 		}
-
 	}
 	else
 	{
@@ -486,7 +525,6 @@ void importCsvFile(vector<course>& list, string filePath)
 	case 1:
 	{
 		cout << "Input your file address: ";
-
 		cin >> newPath;
 		loadCsvFile(list, newPath);
 		break;
@@ -528,7 +566,44 @@ void output1CourseData(course Course)
 	cout << " End Date      : " << setfill('0') << setw(2) << Course.endDate.day << "/"
 		<< setfill('0') << setw(2) << Course.endDate.month << "/"
 		<< Course.endDate.year << endl;
-	cout << " Study day     : " << Course.DoW << endl;
+	switch (Course.DoW)
+	{
+	case 0:
+	{
+		cout << " Study day     : Monday";
+		break;
+	}
+	case 1:
+	{
+		cout << " Study day     : Tuesday";
+		break;
+	}
+	case 2:
+	{
+		cout << " Study day     : Wednesday";
+		break;
+	}
+	case 3:
+	{
+		cout << " Study day     : Thursday";
+		break;
+	}
+	case 4:
+	{
+		cout << " Study day     : Friday";
+		break;
+	}
+	case 5:
+	{
+		cout << " Study day     : Satday";
+		break;
+	}
+	case 6:
+	{
+		cout << " Study day     : Sunday";
+		break;
+	}
+	}
 	cout << " Start hour    : " << setfill('0') << setw(2) << Course.startHour.hour << ":"
 		<< setfill('0') << setw(2) << Course.startHour.min << endl;
 	cout << " End hour      : " << setfill('0') << setw(2) << Course.endHour.hour << ":"
@@ -718,19 +793,22 @@ void input1Course(course& newCourse)
 	}
 	while (true)
 	{
-		cout << " Dow(DDD)          : "; getline(cin, newCourse.DoW);
-		putchar(toupper(newCourse.DoW[0]));
-		int n = newCourse.DoW.size();
-		for (int i = 1; i < n; ++i)
-			putchar(tolower(newCourse.DoW[i]));
-		if (newCourse.DoW == "Sun" || newCourse.DoW == "Mon" || newCourse.DoW == "Tue" || newCourse.DoW == "Wed" || newCourse.DoW == "Thu" || newCourse.DoW == "Fri" || newCourse.DoW == "Sat")
+		cout << " (0): Monday" << endl;
+		cout << " (1): Tuesday" << endl;
+		cout << " (2): Wednesday" << endl;
+		cout << " (3): Thursday" << endl;
+		cout << " (4): Friday" << endl;
+		cout << " (5): Satday" << endl;
+		cout << " (6): Sunday" << endl;
+		cout << " Dow          : "; cin >> newCourse.DoW;
+		if (newCourse.DoW >= 0 && newCourse.DoW <= 6)
 		{
 			break;
 		}
 		else
 		{
-			cout << "Error!!! Please check your in put. " << endl;
-			cout << "Input (0) to break or (1) to continue: ";
+			cout << "Error!!!Please check your input" << endl;
+			cout << "Enter (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
 			{
@@ -769,7 +847,9 @@ void inputCourse(vector<course>& list, string filePath)
 	{
 		input1Course(temp);
 		if (temp.No != -1)
+		{
 			list.push_back(temp);
+		}
 	}
 	saveCourseList(list, filePath);
 	outputCourseList(list);
@@ -854,44 +934,31 @@ void editCourse(vector<course>& list, string filePath)
 	}
 	case 5:
 	{
-		string temp;
+		int DoW;
 		while (true)
 		{
-			cout << " Dow(DDD)          : "; getline(cin, temp);
-			int sizeDoW = temp.size();
-			if (sizeDoW == 3)
+			cout << " (0): Monday" << endl;
+			cout << " (1): Tuesday" << endl;
+			cout << " (2): Wednesday" << endl;
+			cout << " (3): Thursday" << endl;
+			cout << " (4): Friday" << endl;
+			cout << " (5): Satday" << endl;
+			cout << " (6): Sunday" << endl;
+			cout << " Dow          : "; cin >> DoW;
+			if (DoW >= 0 && DoW <= 6)
 			{
-				putchar(toupper(temp[0]));
-				int sizeDoW = temp.size();
-				for (int i = 1; i < sizeDoW; ++i)
-					putchar(tolower(temp[i]));
-				if (temp == "Sun" || temp == "Mon" || temp == "Tue" || temp == "Wed" || temp == "Thu" || temp == "Fri" || temp == "Sat")
-				{
-					list[n - 1].DoW = temp;
-					break;
-				}
-				else
-				{
-					cout << "Error!!! Please check your in put. " << endl;
-					cout << "Input (0) to break or (1) to continue: ";
-					cin >> check;
-					if (check == 0)
-					{
-						break;
-					}
-				}
+				break;
 			}
 			else
 			{
-				cout << "Error!!! Please check your in put. " << endl;
-				cout << "Input (0) to break or (1) to continue: ";
+				cout << "Error!!!Please check your input" << endl;
+				cout << "Enter (0) to break or (1) to continue: ";
 				cin >> check;
 				if (check == 0)
 				{
 					break;
 				}
 			}
-
 		}
 		break;
 	}
@@ -1086,8 +1153,6 @@ student searchStudent(int id)
 }
 void viewStudentList(course courseName)// Đợi file class của Nhật
 {
-	void viewStudentList(course courseName)// Đợi file class của Nhật
-	{
 		int n = courseName.studentId.size();
 		if (n == 0)
 		{
@@ -1137,7 +1202,6 @@ void viewStudentList(course courseName)// Đợi file class của Nhật
 				cout << " dropped.";
 			}
 		}
-	}
 }
 void sortList(vector<course>& List)
 {
@@ -1179,7 +1243,7 @@ void course::clear()
 	lecturerName.clear();
 	lecturerDegree.clear();
 	lecturerGender.clear();
-	DoW.clear();
+	DoW = NULL;
 	room.clear();
 	startDate.day = NULL;
 	startDate.month = NULL;

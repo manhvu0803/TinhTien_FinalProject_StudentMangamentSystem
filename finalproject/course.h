@@ -26,8 +26,8 @@ struct courseTime
 
 struct course
 {
-	int No = NULL;
-	string Name, Id, Class, lecturerAccount, lecturerName, lecturerDegree, lecturerGender, DoW, room;
+	int No = NULL,DoW;
+	string Name, Id, Class, lecturerAccount, lecturerName, lecturerDegree, lecturerGender, room;
 	date startDate, endDate;
 	courseTime startHour, endHour;
 	vector<int> studentId;
