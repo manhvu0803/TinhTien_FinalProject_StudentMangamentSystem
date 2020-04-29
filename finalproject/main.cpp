@@ -9,11 +9,11 @@ int main()
     cout << "Welcome to Tinh Tien's Student Management System\n";
     cout << "Please log out before closing the program\n\n";
 
-    account user = login();
+    account* user = login();
 
     int choice;
 
-    while (user.type != 0) {
+    while (user) {
         cout << "Please choose an option:\n";
         cout << "Enter 1: View profile\n";
         cout << "Enter 2: Change password\n";
@@ -22,15 +22,15 @@ int main()
         cin >> choice;
         switch (choice) {
             case 1:
-                showProfile(user);
+                showProfile(*user);
                 break;
             case 2:
                 cin.ignore(256, '\n');
                 changePassword(user);
                 break;
             case 3:
-                saveAccount();
-                cout << "Logged out\n";
+                saveToFile();
+                cout << "Logged out\n\n";
                 cin.ignore(256, '\n');
                 user = login();
                 break;

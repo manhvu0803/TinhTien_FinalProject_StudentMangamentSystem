@@ -1,14 +1,14 @@
 #include "accountControl.h"
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 //#include <conio.h>
 
-typedef unordered_map<string, account> loginMap;
+const char* cancelCmd = "exit";
+const char* loginFileDir = "data/login.dat";
 
-const char *cancelCmd = "exit";
-const char *loginFileDir = "data/login.dat";
-
-loginMap loginInfo;
+tt::vector<account> loginInfo;
+//account nullAcc = {"", "", -1, -1};
 
 /* For Windows only
 string passwordBuffer()
@@ -47,7 +47,7 @@ string passwordBuffer()
 
 void showProfile(account user)
 {
-    cout << "Username: " << user.username << "\nAccount type: ";
+    cout << "\nProfile\n" "Username: " << user.username << "\nAccount type: ";
     switch (user.type) {
         case 1:
             cout << "student\n";
@@ -66,36 +66,26 @@ void showProfile(account user)
     }
 }
 
-void saveAccount()
+void saveToFile()
 {
     ofstream loginFile(loginFileDir);
-
-    for (auto &x: loginInfo) {
-        account user = x.second;
-        loginFile << user.username << " " << user.type << " " << user.password << "\n";
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
+        loginFile << loginInfo[i].username << ' ' << loginInfo[i].type << ' ' << loginInfo[i].id << ' ';
+        loginFile << loginInfo[i].password << '\n';
     }
-
     loginFile.close();
 }
 
-void mapThing()
-{
-    for (auto &x: loginInfo) {
-        cout << x.first << " " << loginInfo.bucket(x.first) << "\n";
-    }
-}
-
-void changePassword(account &user)
+void changePassword(account* user)
 {
     string password;
 
+    cout << "\nChange password\n";
     do {
-        cout << "Please enter your old password (enter \"" << cancelCmd << "\" to exit):\n";
+        cout << "Please enter your old password (enter \"" << cancelCmd << "\" to return):\n";
         password = passwordBuffer();
-        if (password.compare(cancelCmd) == 0)
-            return;
-        if (password.compare(user.password) == 0)
-            break;
+        if (password.compare(cancelCmd) == 0) return;
+        if (password.compare(user->password) == 0) break;
         cout << "Wrong password\n";
     }
     while (true);
@@ -103,47 +93,73 @@ void changePassword(account &user)
     do {
         cout << "Please enter your new password (at least 8 character):\n";
         password = passwordBuffer();
-
-        if (password.length() < 8)
-            cout << "Your password is too short\n";
+        if (password.length() >= 8) break;
+        cout << "Your password is too short\n";
     }
-    while (password.length() < 8);
+    while (true);
 
-    user.password = password;
-
-    loginInfo.at(user.username) = user;
-
+    user->password = password;
+    saveToFile();
     cout << "Password changed successfully\n";
 }
 
-bool loadLoginFile(loginMap &loginInfo)
+bool loadLoginFile()
 {
     account user;
     ifstream loginFile;
 
     loginFile.open(loginFileDir);
-
     if (!loginFile.is_open()) {
         cout << loginFileDir << " not found";
         return false;
     }
-
-    while (loginFile >> user.username >> user.type >> user.password)
-        loginInfo.emplace(user.username, user);
-
+    while (loginFile >> user.username >> user.type >> user.id >> user.password)
+        loginInfo.push_back(user);
     loginFile.close();
 
     return true;
 }
 
-bool newAccount(loginMap &loginInfo)
+bool createAccount(student user)
+{
+    account newAcc;
+    newAcc.id = user.id;
+    newAcc.type = 1;
+
+    // Generate username
+    newAcc.username = user.lastName[0];
+    size_t pos = user.lastName.find(' ');
+    if (pos != string::npos) newAcc.username += user.lastName[pos + 1];
+    newAcc.username += user.firstName[0];
+
+    // Generate password
+    stringstream ss;
+    ss.fill('0');
+    ss << setw(2) << user.DoB.m << setw(2) << user.DoB.d << setw(4) << user.DoB.y;
+    ss >> newAcc.password;
+
+    // Check existing accounts
+    pos = -1;
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
+        if (to_string(user.id).compare(loginInfo[i].id) == 0) {
+            pos = i;
+            break;
+        }
+
+    if (pos < 0) loginInfo.push_back(newAcc);
+    else loginInfo[pos] = newAcc;
+    saveToFile();
+    return true;
+}
+
+bool newAccount(account& user)
 {
     account newAcc;
 
     cout << "Please enter new username (enter \"" << cancelCmd << "\" to exit):\n";
     getline(cin, newAcc.username);
 
-    if (loginInfo.find(newAcc.username) != loginInfo.end()) {
+    if (user.username.compare(newAcc.username) == 0) {
         cout << "Account already existed\n";
         return false;
     }
@@ -151,38 +167,41 @@ bool newAccount(loginMap &loginInfo)
     cout << "Please enter new password (enter \"" << cancelCmd << "\" to exit):\n";
     getline(cin, newAcc.password);
 
-    loginInfo.emplace(newAcc.username, newAcc);
-
     return true;
 }
 
-account login()
+account* getAccount(string username)
+{
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
+        if (username.compare(loginInfo[i].username) == 0) return &loginInfo[i];
+
+    return nullptr;
+}
+
+account* login()
 {
     string username, password;
 
-    if (!loadLoginFile(loginInfo))
-        return {"", "", 0};
+    if (!loadLoginFile())
+        return nullptr;
 
+    account* currentAcc = nullptr;
+
+    cout << "Please enter your username (enter \"" << cancelCmd << "\" to exit):\n";
     do {
-        cout << "Please enter your username (enter \"" << cancelCmd << "\" to exit):\n";
         getline(cin, username);
-        if (username.compare(cancelCmd) == 0)
-            return {"", "", 0};
-        if (loginInfo.find(username) != loginInfo.end())
-            break;
+        if (username.compare(cancelCmd) == 0) return nullptr;
+        currentAcc = getAccount(username);
+        if (currentAcc) break;
         cout << "Account does not existed\n";
     }
-    while (true);
-
-    account currentAcc = loginInfo.at(username);
+    while (!currentAcc);
 
     cout << "Please enter your password (enter \"" << cancelCmd << "\" to exit):\n";
     do {
         password = passwordBuffer();
-        if (password.compare(cancelCmd) == 0)
-            return {"", "", 0};
-        if (currentAcc.password.compare(password) == 0)
-            break;
+        if (password.compare(cancelCmd) == 0) return nullptr;
+        if (password.compare(currentAcc->password) == 0) break;
         cout << "Wrong password\n";
     }
     while (true);
