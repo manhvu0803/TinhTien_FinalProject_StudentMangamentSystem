@@ -305,7 +305,8 @@ namespace tt
     template <typename T> void vector<T>::reallocate(size_t newCap)
     {
         T* tmp = new T[newCap];
-        memcpy(tmp, ptr, sizeof(T) * _size);
+        for (size_t i = 0; i < _size; ++i)
+            tmp[i] = ptr[i];
         delete [] ptr;
         ptr = tmp;
         _capacity = newCap;
