@@ -34,26 +34,6 @@ void addonestudent(vector<student>& stL)
 	cout << "Please input the information of the new student" << endl;
 	cout << "ID           : ";
 	cin >> nst.id;
-	/*if (stL.size() > 0)
-	{
-		int size = stL.size();
-		for (int i = 0; i < size; i++)
-		{
-			if (nst.id == stL[i].id)
-			{
-				cout << "Error: This student is already in this class." << endl;
-				cout << "This is his/her information: " << endl;
-				display1studentline(stL[i]);
-				check = 1;
-			}
-		}
-		if (check == 1)
-		{
-			cin.ignore(1);
-			return;
-		}
-		cout << "Please input others information of the new student:" << endl;
-	}*/
 	findstudentinexistingclasses(stLtemp, nst.id, check, nst, classname, count);
 	while (check == 1)
 	{
@@ -111,24 +91,6 @@ void addonestudent(vector<student>& stL)
 		cin >> nst.DoB.day;
 	}
 	nst.No = stL.size() + 1;
-	if (checkaccounteon(nst) == 0)
-	{
-		pushbacktoaccfile(nst);
-		cout << "Account of this new student:" << endl;
-		cout << "ID: " << nst.acc.ID << endl;
-		cout << "Password: " << nst.acc.password;
-	}
-	else
-	{
-		if (checkaccounteon(nst) == -1)
-		{
-			activeacccount(nst);
-		}
-		else
-		{
-			cout << "The account " << nst.id << " has already been activating." << endl;
-		}
-	}
 	stL.push_back(nst);
 	cin.ignore(1);
 }
@@ -166,6 +128,7 @@ void loadfromcsvfile(ifstream& fload, vector<student>& stL)
 		st.DoB.month = stoi(temp);
 		getline(fload, temp);
 		st.DoB.year = stoi(temp);
+		st.No = stL.size() + 1;
 		stL.push_back(st);
 	}
 }
@@ -277,7 +240,7 @@ void displayallclassincourse(vector<student>stL)
 		cout << "Load successed." << endl;
 		while (fload >> classname)
 		{
-			fclassname = classname + classname + ".dat";
+			fclassname = classname + "/" + classname + ".dat";
 			cout << "Class " << classname << ":" << endl;
 			importtoprogram2(stL, fclassname);
 			displayclass(stL);
@@ -314,193 +277,157 @@ void displayallclassincourseline(vector<student>stL)
 void editinganexistingstudent(student &st)
 {
 	cout << endl;
-	string choicestr;
+	string choicestr = "-1";
 	int choice;
 	cout << "What do you want to edit from this student?" << endl;
-	cout << "(0).Exit" << endl;
-	cout << "(1).ID." << endl;
-	cout << "(2).Lastname and Firstname" << endl;
-	cout << "(3).Gender." << endl;
-	cout << "(4).Date of birth." << endl;
-	cout << "Enter your choice: ";
-	getline(cin, choicestr);
-	choice = stoi(choicestr);
-	while (choice < 0 || choice > 4)
+	while (choicestr != "0")
 	{
-		cout << "Invalid choice." << endl;
-		cout << "Enter your choice again: ";
+		cout << "(0).Exit" << endl;
+		cout << "(1).ID." << endl;
+		cout << "(2).Lastname and Firstname" << endl;
+		cout << "(3).Gender." << endl;
+		cout << "(4).Date of birth." << endl;
+		cout << "Enter your choice: ";
 		getline(cin, choicestr);
 		choice = stoi(choicestr);
-	}
-	switch (choice)
-	{
-	case 0:
-	{
-		break;
-	}
-	case 1:
-	{
-		int idtemp, check=0, count=0;
-		string classname;
-		idtemp = st.id;
-		vector<student>stLtemp;
-		cout << "Input new ID: ";
-		cin >> st.id;
-		findstudentinexistingclasses(stLtemp, st.id, check, st, classname, count);
-		while (check == 1)
+		while (choice < 0 || choice > 4)
 		{
-			string choice1;
-			cout << "Error: The ID " << st.id << " has already been given to another student in class " << classname << "." << endl;
-			cout << "Please enter 1 to input the ID of new student again or enter 0 to exit." << endl;
-			cout << "Your choice: ";
-			cin.ignore(1);
-			getline(cin, choice1);
-			while (choice1 != "1" && choice1 != "0")
+			cout << "Invalid choice." << endl;
+			cout << "Enter your choice again: ";
+			getline(cin, choicestr);
+			choice = stoi(choicestr);
+		}
+		switch (choice)
+		{
+		case 0:
+		{
+			break;
+		}
+		case 1:
+		{
+			int idtemp, check = 0, count = 0;
+			string classname;
+			idtemp = st.id;
+			vector<student>stLtemp;
+			cout << "Input new ID: ";
+			cin >> st.id;
+			findstudentinexistingclasses(stLtemp, st.id, check, st, classname, count);
+			while (check == 1)
 			{
-				cout << "Invalid choice." << endl;
+				string choice1;
+				cout << "Error: The ID " << st.id << " has already been given to another student in class " << classname << "." << endl;
 				cout << "Please enter 1 to input the ID of new student again or enter 0 to exit." << endl;
 				cout << "Your choice: ";
+				cin.ignore(1);
 				getline(cin, choice1);
-			}
-			if (choice1 == "1")
-			{
-				cout << "Please input the information of the new student" << endl;
-				cout << "ID           : ";
-				cin >> st.id;
-				findstudentinexistingclasses(stLtemp, st.id, check, st, classname, count);
-			}
-			else
-			{
-				return;
-			}
-		}
-		if (check == 0)
-		{
-			int idtemp1 = idtemp;
-			idtemp = st.id;
-			st.id = idtemp1;
-			disableaccount(st);
-			st.id = idtemp;
-			if (checkaccounteon(st) == 0)
-			{
-				pushbacktoaccfile(st);
-			}
-			else
-			{
-				if (checkaccounteon(st) == -1)
+				while (choice1 != "1" && choice1 != "0")
 				{
-					activeacccount(st);
+					cout << "Invalid choice." << endl;
+					cout << "Please enter 1 to input the ID of new student again or enter 0 to exit." << endl;
+					cout << "Your choice: ";
+					getline(cin, choice1);
+				}
+				if (choice1 == "1")
+				{
+					cout << "Please input the information of the new student" << endl;
+					cout << "ID           : ";
+					cin >> st.id;
+					findstudentinexistingclasses(stLtemp, st.id, check, st, classname, count);
+				}
+				else
+				{
+					break;
 				}
 			}
+			cin.ignore(1);
+			break;
 		}
-		cin.ignore(1);
-		break;
-	}
-	case 2:
-	{
-		cout << "Input new name (Lastname and Firstname): " << endl;
-		cout << "Lastname: ";
-		getline(cin, st.Lastname);
-		cout << "Firstname: ";
-		getline(cin, st.Firstname);
-		break;
-	}
-	case 3:
-	{
-		cout << "Input new gender: ";
-		st.gender = getchar();
-		cin.ignore(1);
-		break;
-	}
-	case 4:
-	{
-		cout << "Input new Date of birth: " << endl;
-		cout << "Input year: ";
-		cin >> st.DoB.year;
-		while (st.DoB.year < 1900)
+		case 2:
 		{
-			cout << "Invalid year." << endl;
-			cout << "Enter the year again (Note: The year shouble be from 1900): ";
+			cout << "Input new name (Lastname and Firstname): " << endl;
+			cout << "Lastname: ";
+			getline(cin, st.Lastname);
+			cout << "Firstname: ";
+			getline(cin, st.Firstname);
+			break;
+		}
+		case 3:
+		{
+			cout << "Input new gender: ";
+			st.gender = getchar();
+			cin.ignore(1);
+			break;
+		}
+		case 4:
+		{
+			cout << "Input new Date of birth: " << endl;
+			cout << "Input year: ";
 			cin >> st.DoB.year;
-		}
-		cout << "Input month: ";
-		cin >> st.DoB.month;
-		while (st.DoB.month <= 0 || st.DoB.month > 12)
-		{
-			cout << "Invalid month." << endl;
-			cout << "Enter the month again (Note: The month shoul be from 1 to 12): ";
-			cin >> st.DoB.month;
-		}
-		cout << "Input day: ";
-		cin >> st.DoB.day;
-		while (st.DoB.day <= 0 || st.DoB.day > maxdayinmonth(st.DoB.month, st.DoB.year))
-		{
-			cout << "Invalid day." << endl;
-			cout << "Enter the day again (Note: The day shoul be from 1 to " << maxdayinmonth(st.DoB.month, st.DoB.year) << "): ";
-			cin >> st.DoB.day;
-		}
-		ifstream fload;
-		ofstream fsave;
-		vector<account>accL;
-		loadaccsavefile(fload, accL);
-		int n = accL.size();
-		for (int i = 0; i < n; i++)
-		{
-			if (accL[i].ID == st.id)
+			while (st.DoB.year < 1900)
 			{
-				if (st.DoB.day < 10)
-				{
-					st.acc.password = "0" + to_string(st.DoB.day);
-				}
-				else
-				{
-					st.acc.password = to_string(st.DoB.day);
-				}
-				if (st.DoB.month < 10)
-				{
-					st.acc.password = st.acc.password + "0" + to_string(st.DoB.month);
-				}
-				else
-				{
-					st.acc.password = st.acc.password + to_string(st.DoB.month);
-				}
-				st.acc.password =st.acc.password + to_string(st.DoB.year);
-				st.acc.status = 1;
-				cout << "Account of this new student:" << endl;
-				cout << "ID: " << st.acc.ID << endl;
-				cout << "Password: " << st.acc.password;
-				break;
+				cout << "Invalid year." << endl;
+				cout << "Enter the year again (Note: The year shouble be from 1900): ";
+				cin >> st.DoB.year;
 			}
+			cout << "Input month: ";
+			cin >> st.DoB.month;
+			while (st.DoB.month <= 0 || st.DoB.month > 12)
+			{
+				cout << "Invalid month." << endl;
+				cout << "Enter the month again (Note: The month shoul be from 1 to 12): ";
+				cin >> st.DoB.month;
+			}
+			cout << "Input day: ";
+			cin >> st.DoB.day;
+			while (st.DoB.day <= 0 || st.DoB.day > maxdayinmonth(st.DoB.month, st.DoB.year))
+			{
+				cout << "Invalid day." << endl;
+				cout << "Enter the day again (Note: The day shoul be from 1 to " << maxdayinmonth(st.DoB.month, st.DoB.year) << "): ";
+				cin >> st.DoB.day;
+			}
+			cin.ignore(1);
+			break;
 		}
-		saveaccount(fsave, accL);
-		cin.ignore(1);
-		break;
-	}
+		}
+		cout << endl << "Is there anythings else about this student that to want to edit?" << endl;
 	}
 	cout << endl << "The student information after edited:" << endl;
 	display1studentline(st);
 }
 
-void updateeditstudentin1class(vector<student>& stL, int id, student st, string flclassname)
+void updateeditstudentin1class(vector<student>& stL, int No, student st)
 {
 	int n = stL.size();
+	string choice;
 	for (int i = 0; i < n; i++)
 	{
-		if (stL[i].id == id)
+		if (stL[i].No == No)
 		{
-			stL[i] = st;
-			cout << "The student after edited" << endl;
+			cout << "Are you sure you want to place an update on the student:" << endl;
 			display1studentline(stL[i]);
+			cout << "Enter 1 to continue or 0 to exit: ";
+			getline(cin, choice);
+			while (choice != "1" && choice != "0")
+			{
+				cout << "Invalid choice." << endl;
+				cout << "Please enter 1 to continue or 0 to exit.";
+				getline(cin, choice);
+			}
+			if (choice != "0")
+			{
+				stL[i] = st;
+			}
 		}
 	}
-	cout << "The class after edited the student has the ID " << id << ":" << endl;
+	sortclassinascendingorderbyid(stL);
+	cout << "The class after updated data:" << endl;
 	displayclass(stL);
 }
 
 void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, student st)
 {
 	ifstream fload;
-	string choices;
+	string choices, choice;
 	string classname;
 	fload.open("allclassname.txt");
 	if (!fload.is_open())
@@ -515,9 +442,10 @@ void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, stude
 		while (choices != "1" && choices != "0")
 		{
 			cout << "Invalid choice." << endl;
-			cout << "Please enter 1 to save or 0 to exit: ";
+			cout << "Please enter 1 to save or 0 to not save anything: ";
 			getline(cin, choices);
 		}
+		cout << endl;
 		while (fload >> classname)
 		{
 			stL.clear();
@@ -526,19 +454,33 @@ void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, stude
 			int n = stL.size();
 			for (int i = 0; i < n; i++)
 			{
-				if (id == stL[i].id)
+				if (stL[i].id == id)
 				{
-					cout << "Class " << classname << ":" << endl;
-					stL[i] = st;
-					cout << "The class " << classname << " after edited the student has the ID " << id << ":" << endl;
-					displayclass(stL);
-					if (choices == "1")
+					display1studentline(stL[i]);
+					cout << endl;
+					cout << "Are you sure you want to place the update on this student?" << endl;
+					cout << "Enter 1 to replace or 0 to exit: ";
+					getline(cin, choice);
+					while (choice != "0" && choice != "1")
 					{
-						string fsname = flname;
-						exportfromprogram2(stL, fsname);
+						cout << "Invalid choice." << endl;
+						cout << "Enter 1 to replace or 0 to exit: ";
+						getline(cin, choice);
 					}
-					break;
+					if (choice != "0")
+					{
+						cout << endl << "Class " << classname << ":" << endl;
+						stL[i] = st;
+						sortclassinascendingorderbyid(stL);
+					}
 				}
+			}
+			cout << "The class " << classname << " after updated data:" << endl;
+			displayclass(stL);
+			if (choices == "1")
+			{
+				string fsname = flname;
+				exportfromprogram2(stL, fsname);
 			}
 		}
 		fload.close();
@@ -548,18 +490,32 @@ void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, stude
 void removestudentfromclass(vector<student>& stL, int id, string classname)
 {
 	int n = stL.size();
+	string choice;
 	for (int i = 0; i < n; i++)
 	{
 		if (id == stL[i].id)
 		{
-			for (int j = i + 1; j < n; j++)
+			cout << "Are you sure you want to delete this student?" << endl;
+			display1studentline(stL[i]);
+			cout << "Enter 1 to continue or 0 to exit: ";
+			getline(cin, choice);
+			while (choice != "0" && choice != "1")
 			{
-				stL[j].No = stL[j].No - 1;
+				cout << "Invalid choice." << endl;
+				cout << "Please enter 1 to continue or 0 to exit: ";
+				getline(cin, choice);
 			}
-			stL.erase(stL.begin() + i);
-			stL.shrink_to_fit();
-			n = stL.size();
-			break;
+			if (choice != "0")
+			{
+				for (int j = i + 1; j < n; j++)
+				{
+					stL[j].No = stL[j].No - 1;
+				}
+				stL.erase(stL.begin() + i);
+				stL.shrink_to_fit();
+				n = stL.size();
+				i--;
+			}
 		}
 	}
 }
@@ -568,7 +524,7 @@ void removestudentfromallclass(vector<student>stL, int id)
 {
 	ifstream fload;
 	string classname;
-	string choices;
+	string choices, choice;
 	fload.open("allclassname.txt");
 	if (!fload.is_open())
 	{
@@ -595,30 +551,34 @@ void removestudentfromallclass(vector<student>stL, int id)
 			{
 				if (stL[i].id == id)
 				{
-					cout << "Class " << classname << ":" << endl;
-					removestudentfromclass(stL, id, classname);
-					cout << "The class " << classname << " after deleted the student has ID " << id << ":" << endl;
-					displayclass(stL);
-					if (choices == "1")
+					if (choice != "0")
 					{
-						string fsname = flname;
-						exportfromprogram2(stL, fsname);
+						cout << "Class " << classname << ":" << endl;
+						removestudentfromclass(stL, id, classname);
+						n = stL.size();
+						cout << "The class " << classname << " after deleted the student has ID " << id << ":" << endl;
+						displayclass(stL);
 					}
 				}
+			}
+			if (choices == "1")
+			{
+				string fsname = flname;
+				exportfromprogram2(stL, fsname);
 			}
 		}
 		fload.close();
 	}
 }
 
-void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stLB, int id, int& check)
+void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stLB, int No, int& check, int id)
 {
 	int nA = stLA.size();
 	int nB = stLB.size();
 	check = 0;
 	for (int i = 0; i < nA; i++)
 	{
-		if (stLA[i].id == id)
+		if (stLA[i].No == No)
 		{
 			for (int j = 0; j < nB; j++)
 			{
@@ -639,6 +599,8 @@ void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stL
 				stLA.erase(stLA.begin() + i);
 				stLA.shrink_to_fit();
 				nA = stLA.size();
+				sortclassinascendingorderbyid(stLA);
+				sortclassinascendingorderbyid(stLB);
 			}
 			break;
 		}
@@ -652,6 +614,7 @@ void findstudentinexistingclasses(vector<student>& stL, int id, int& check, stud
 	vector<string> clsL;
 	check = 0;
 	count = 0;
+	int check2 = 0;
 	fload.open("allclassname.txt");
 	if (!fload.is_open())
 	{
@@ -670,13 +633,28 @@ void findstudentinexistingclasses(vector<student>& stL, int id, int& check, stud
 				if (id == stL[i].id)
 				{
 					check = 1;
-					count++;
 					st = stL[i];
 					cout << "Here is his/her information:" << endl;
 					display1studentline(st);
-					clsL.push_back(classname);
+					if (clsL.size() > 0)
+					{
+						int n1 = clsL.size();
+						for (int j = 0; j < n1; j++)
+						{
+							check2 = 0;
+							if (classname == clsL[j])
+							{
+								check2 = 1;
+								break;
+							}
+						}
+					}
+					if (check2 == 0)
+					{
+						count++;
+						clsL.push_back(classname);
+					}
 					cout << endl;
-					break;
 				}
 			}
 		}
@@ -687,7 +665,7 @@ void findstudentinexistingclasses(vector<student>& stL, int id, int& check, stud
 		}
 		else
 		{
-			string classnametemp;
+			string classnametemp = "0";
 			cout << "And his/her class ("<<count<<" class(es)):" << endl;
 			for (int i = 0; i < count; i++)
 			{
@@ -698,7 +676,7 @@ void findstudentinexistingclasses(vector<student>& stL, int id, int& check, stud
 					classname = classnametemp;
 				}
 				cout << classnametemp << ":" << endl;
-				flname = classname + "/" + classname + ".dat";
+				flname = classnametemp + "/" + classnametemp + ".dat";
 				importtoprogram2(stL, flname);
 				displayclass(stL);
 			}
@@ -734,9 +712,10 @@ void exportfromprogram(vector<student>stL, string fsname)
 	}
 }
 
-void findstudentin1class(vector<student> stL, int id, string classname, int& check, student& st)
+void findstudentin1class(vector<student> stL, int id, string classname, int& check, student& st, int& count)
 {
 	check = 0;
+	count = 0;
 	int n = stL.size();
 	for (int i = 0; i < n; i++)
 	{
@@ -746,7 +725,8 @@ void findstudentin1class(vector<student> stL, int id, string classname, int& che
 			st = stL[i];
 			cout << "The student has the ID " << id << " is:" << endl;
 			display1studentline(st);
-			break;
+			cout << endl;
+			count++;
 		}
 	}
 	if (check == 0)
@@ -1149,21 +1129,6 @@ void manageclassfunction()
 			{
 				displayclass(stL);
 				sortclassinascendingorderbyid(stL);
-				int n2 = stL.size();
-				for (int i = 0; i < n2; i++)
-				{
-					if (checkaccounteon(stL[i]) == 0)
-					{
-						pushbacktoaccfile(stL[i]);
-					}
-					else
-					{
-						if (checkaccounteon(stL[i]) == -1)
-						{
-							activeacccount(stL[i]);
-						}
-					}
-				}
 				string fsclassname2 = classname2 + "/" + classname2 + ".dat";
 				exportfromprogram2(stL, fsclassname2);
 			}
@@ -1208,6 +1173,7 @@ void manageclassfunction()
 			{
 				displayclass(stL);
 				addonestudent(stL);
+				sortclassinascendingorderbyid(stL);
 				cout << endl << "Addition is updated:" << endl;
 				displayclass(stL);
 				cout << "Do you want to save what you have done to this class's file?" << endl;
@@ -1230,7 +1196,7 @@ void manageclassfunction()
 		case 4:
 		{
 			stL.clear();
-			int check4 = 0, id4, count4 = 0;
+			int check4 = 0, id4, count4 = 1, count42 = 0, n4, No4, n42;
 			string choice42, choice4 = "-1", choice4s;
 			string classname4;
 			string flclassname4;
@@ -1260,6 +1226,7 @@ void manageclassfunction()
 				importtoprogram2(stL, flclassname4);
 				while (stL.size() == 0)
 				{
+					cout << "There is nothing to edit here." << endl;
 					cout << "Enter 1 to input the name of the class again or enter 0 to exit: ";
 					getline(cin, choice4);
 					while (choice4 != "0" && choice4 != "1")
@@ -1286,7 +1253,7 @@ void manageclassfunction()
 					displayclass(stL);
 					cout << "Input the id of the student you want to edit in this the class " << classname4 << ": ";
 					cin >> id4;
-					findstudentin1class(stL, id4, classname4, check4, st4);
+					findstudentin1class(stL, id4, classname4, check4, st4, count42);
 					while (check4 == 0)
 					{
 						cout << "Do you want to input the ID of the student you want to edit in this class again?" << endl;
@@ -1303,7 +1270,7 @@ void manageclassfunction()
 						{
 							cout << "Input the id of the student you want to edit in this the class " << classname4 << ": ";
 							cin >> id4;
-							findstudentin1class(stL, id4, classname4, check4, st4);
+							findstudentin1class(stL, id4, classname4, check4, st4, count42);
 						}
 						else
 						{
@@ -1340,108 +1307,275 @@ void manageclassfunction()
 							break;
 						}
 					}
+					if (count4 == 1)
+					{
+						findstudentin1class(stL, id4, classname4, check4, st4, count42);
+					}
 				}
 				else
 				{
 					cout << "You can use the function 7 to see all students in all classes and then choose function 4 again to edit the student you want to." << endl;
 				}
 			}
-			if (check4 != 0 && count4 <= 1)
+			if (check4 != 0)
 			{
 				cin.ignore(1);
-				editinganexistingstudent(st4);
-				updateeditstudentin1class(stL, id4, st4, flclassname4);
-				cout << "Do you want to save what you have done to this class's file?" << endl;
-				cout << "Enter 1 to save or 0 to exit: ";
-				getline(cin, choice4s);
-				while (choice4s != "1" && choice4s != "0")
+				if (count4 > 1)
 				{
-					cout << "Invalid choice." << endl;
-					cout << "Please enter 1 to save or 0 to exit: ";
-					getline(cin, choice4s);;
-				}
-				if (choice4s == "1")
-				{
-					fsclassname4 = classname4 + "/" + classname4 + ".dat";
-					exportfromprogram2(stL, fsclassname4);
-				}
-			}
-			if (check4 != 0 && count4 > 1)
-			{
-				cin.ignore(1);
-				editinganexistingstudent(st4);
-				cout << "How many classes do you want to update this student information?" << endl;
-				cout << "Enter 1 to update to all class." << endl;
-				cout << "Enter 2 to input the number of the class and the name of class(es) that you want update." << endl;
-				cout << "Enter 0 to cancle the updation and exit." << endl;
-				cout << "Your choice: ";
-				getline(cin, choice4);
-				while (choice4 != "0" && choice4 != "1" && choice4 != "2")
-				{
-					cout << "Invalid choice." << endl;
-					cout << "Enter 1 to update to all class." << endl;
-					cout << "Enter 2 to input the number of the class and the name of class(es) that you want update." << endl;
-					cout << "Enter 0 to cancle the updation and exit." << endl;
-					cout << "Your choice: ";
-					getline(cin, choice4);
-				}
-				if (choice4 == "1")
-				{
-					updateeditedstudentinallhisorherclasses(stL, id4, st4);
-				}
-				else
-				{
-					if (choice4 == "2")
+					cout << "Because there are more than one class that constant to student has ID" << id4 << "." << endl;
+					cout << "So we need you to chose the class of the student who you want to edit." << endl;
+					cout << "Please input the name of the class: ";
+					getline(cin, classname4);
+					stL.clear();
+					flclassname4 = classname4 + "/" + classname4 + ".dat";
+					importtoprogram2(stL, flclassname4);
+					findstudentin1class(stL, id4, classname4, check4, st4, count42);
+					while (check4 == 0)
 					{
-						int n;
-						cout << "Input the number of class that you want to update its (their) data: "; cin >> n;
-						cin.ignore(1);
-						for (int i = 0; i < n; i++)
+						cout << "There is no student has the ID " << id4 << " in this class." << endl;
+						cout << "Please enter 1 to input the name of the class again or enter 0 to exit: ";
+						getline(cin, choice4);
+						while (choice4 != "1" && choice4 != "0")
 						{
+							cout << "Invalid choice." << endl;
+							cout << "Enter 1 to input the name of the class again or enter 0 to exit: ";
+							getline(cin, choice4);
+						}
+						if (choice4 != "0")
+						{
+							cout << "Please input the name of the class: ";
 							stL.clear();
-							if (n > 1)
-							{
-								cout << "Input the name of class number " << i + 1 << ": ";
-							}
-							else
-							{
-								cout << "Input the name of the class you want to update the data: ";
-							}
 							getline(cin, classname4);
 							flclassname4 = classname4 + "/" + classname4 + ".dat";
 							importtoprogram2(stL, flclassname4);
-							cout << "Are you sure that you want to update the information of the student has the ID " << id4 << " to class " << classname4 << "?" << endl;
-							cout << "Enter 1 to continue or 0 to exit: ";
+							findstudentin1class(stL, id4, classname4, check4, st4, count42);
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+				if (choice4 != "0")
+				{
+					if (count42 > 1)
+					{
+						int check43 = 0;
+						cout << "Because there is more than 1 student has the ID " << id4 << " in class " << classname4 << "." << endl;
+						cout << "So we need you to input the No of the student you want to edit: ";
+						cin >> No4;
+						cin.ignore(1);
+						n42 = stL.size();
+						while (No4 < 1 || No4 > n42)
+						{
+							cout << "Error:The No of student must bigger than 0 and smaller than " << n42 << "." << endl;
+							cout << "Please enter 1 to input the No of the student you want to edit again or enter 0 to exit: ";
 							getline(cin, choice4);
-							while (choice4 != "0" && choice4 != "1")
+							while (choice4 != "1" && choice4 != "0")
 							{
 								cout << "Invalid choice." << endl;
-								cout << "Please enter 1 to continue to update the data of class " << classname4 << " or 0 to exit: " << endl;
+								cout << "Please enter 1 to input the No of the student you want to edit again or enter 0 to exit: ";
 								getline(cin, choice4);
 							}
-							if (choice4 != "0")
+							if (choice4 == "1")
 							{
-								updateeditstudentin1class(stL, id4, st4, flclassname4);
-								choice4s;
-								cout << "Do you want to save what you have done to this class's file?" << endl;
-								cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice4s);
-								while (choice4s != "1" && choice4s != "0")
+								cout << "Please input the No of the student you want to edit: ";
+								cin >> No4;
+								cin.ignore(1);
+							}
+							else
+							{
+								break;
+							}
+						}
+						for (int i = 0; i < n42; i++)
+						{
+							if (stL[i].id == id4 && stL[i].No == No4)
+							{
+								check43 = 1;
+								st4 = stL[i];
+								break;
+							}
+						}
+						while (check43 == 0)
+						{
+							cout << "There is no student has the No " << No4 << "and ID " << id4 << " in this class." << endl;
+							cout << "Please input 1 to input No again or 0 to exit: ";
+							getline(cin, choice4);
+							while (choice4 != "1" && choice4 != "0")
+							{
+								cout << "Invalid choice." << endl;
+								cout << "Please input 1 to input No again or 0 to exit: ";
+								getline(cin, choice4);
+							}
+							if (choice4 == "1")
+							{
+								cout << "Input No of the student you want to edit: ";
+								cin >> No4;
+								cin.ignore(1);
+								while (No4 < 1 || No4 > n42)
 								{
-									cout << "Invalid choice." << endl;
-									cout << "Please enter 1 to save or 0 to exit: ";
-									getline(cin, choice4s);
+									cout << "Error:The No of student must bigger than 0 and smaller than " << n42 << "." << endl;
+									cout << "Please enter 1 to input the No of the student you want to edit again or enter 0 to exit: ";
+									getline(cin, choice4);
+									while (choice4 != "1" && choice4 != "0")
+									{
+										cout << "Invalid choice." << endl;
+										cout << "Please enter 1 to input the No of the student you want to edit again or enter 0 to exit: ";
+										getline(cin, choice4);
+									}
+									if (choice4 == "1")
+									{
+										cout << "Please input the No of the student you want to edit: ";
+										cin >> No4;
+										cin.ignore(1);
+									}
+									else
+									{
+										break;
+									}
 								}
-								if (choice4s == "1")
+								for (int i = 0; i < n42; i++)
 								{
-									fsclassname4 = classname4 + "/" + classname4 + ".dat";
-									exportfromprogram2(stL, fsclassname4);
+									if (stL[i].id == id4 && stL[i].No == No4)
+									{
+										check43 = 1;
+										st4 = stL[i];
+										break;
+									}
 								}
 							}
 						}
 					}
 					else
 					{
-						break;
+						No4 = st4.No;
+					}
+					if (choice4 != "0")
+					{
+						cout << "Are you sure you want to edit this student?" << endl;
+						cout << "Enter 1 to continue to edit or enter 0 to exit: ";
+						getline(cin, choice4);
+						while (choice4 != "1" && choice4 != "0")
+						{
+							cout << "Invalid choice." << endl;
+							cout << "Enter 1 to continue to edit or enter 0 to exit: ";
+							getline(cin, choice4);
+						}
+						if (choice4 != "0")
+						{
+							editinganexistingstudent(st4);
+							updateeditstudentin1class(stL, No4, st4);
+							cout << "Do you want to save what you have done to this class's file?" << endl;
+							cout << "Enter 1 to save or 0 to exit: ";
+							getline(cin, choice4s);
+							while (choice4s != "1" && choice4s != "0")
+							{
+								cout << "Invalid choice." << endl;
+								cout << "Please enter 1 to save or 0 to exit: ";
+								getline(cin, choice4s);;
+							}
+							if (choice4s == "1")
+							{
+								fsclassname4 = classname4 + "/" + classname4 + ".dat";
+								exportfromprogram2(stL, fsclassname4);
+							}
+							if (count4 > 1)
+							{
+								cout << endl << "Do you want to update what you edited to orthers student has ID " << id4 << "?" << endl;
+								cout << "Enter 1 to update to all class." << endl;
+								cout << "Enter 2 to input the number of the class and the name of class(es) that you want update." << endl;
+								cout << "Enter 0 to cancle the updation and exit." << endl;
+								cout << "Your choice: ";
+								getline(cin, choice4);
+								while (choice4 != "0" && choice4 != "1" && choice4 != "2")
+								{
+									cout << endl << "Invalid choice." << endl;
+									cout << "Enter 1 to update to all class (all student has the ID " << id4 << ")." << endl;
+									cout << "Enter 2 to input the number of the class and the name of class(es) that you want update." << endl;
+									cout << "Enter 0 to cancle the updation and exit." << endl;
+									cout << "Your choice: ";
+									getline(cin, choice4);
+								}
+								if (choice4 == "1")
+								{
+									updateeditedstudentinallhisorherclasses(stL, id4, st4);
+								}
+								else
+								{
+									if (choice4 == "2")
+									{
+										cout << "Input the number of class that you want to update its (their) data: ";
+										cin >> n4;
+										cin.ignore(1);
+										for (int i = 0; i < n4; i++)
+										{
+											stL.clear();
+											if (n4 > 1)
+											{
+												cout << "Input the name of class number " << i + 1 << ": ";
+											}
+											else
+											{
+												cout << "Input the name of the class you want to update the data: ";
+											}
+											getline(cin, classname4);
+											flclassname4 = classname4 + "/" + classname4 + ".dat";
+											importtoprogram2(stL, flclassname4);
+											displayclass(stL);
+											cout << "Are you sure that you want to update what you did to class " << classname4 << "?" << endl;
+											cout << "Enter 1 to continue or 0 to exit: ";
+											getline(cin, choice4);
+											while (choice4 != "0" && choice4 != "1")
+											{
+												cout << "Invalid choice." << endl;
+												cout << "Please enter 1 to continue to update the data of class " << classname4 << " or 0 to exit: " << endl;
+												getline(cin, choice4);
+											}
+											if (choice4 != "0")
+											{
+												cout << "Please input No of student you want to place an update to: ";
+												cin >> No4;
+												cin.ignore(1);
+												n42 = stL.size();
+												while (No4 < 1 || No4 > n42)
+												{
+													cout << "The No of student must be bigger than 0 and smaller than " << n42 << "." << endl;
+													cout << "Please enter 1 to input the No of student again or enter 0 to exit: ";
+													getline(cin, choice4);
+													while (choice4 != "0" && choice4 != "1")
+													{
+														cout << "Invalid choice." << endl;
+														cout << "Please enter 1 to input the No of student again or enter 0 to exit: ";
+														getline(cin, choice4);
+													}
+													if (choice4 == "1")
+													{
+														cout << "Please input No of student you want to place an update to: ";
+														cin >> No4;
+														cin.ignore(1);
+													}
+												}
+												updateeditstudentin1class(stL, No4, st4);
+												cout << "Do you want to save what you have done to this class's file?" << endl;
+												cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice4s);
+												while (choice4s != "1" && choice4s != "0")
+												{
+													cout << "Invalid choice." << endl;
+													cout << "Please enter 1 to save or 0 to exit: ";
+													getline(cin, choice4s);
+												}
+												if (choice4s == "1")
+												{
+													fsclassname4 = classname4 + "/" + classname4 + ".dat";
+													exportfromprogram2(stL, fsclassname4);
+												}
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1450,7 +1584,7 @@ void manageclassfunction()
 		case 5:
 		{
 			stL.clear();
-			int check5 = 0, id5, count5 = 0;
+			int check5 = 0, id5, count5 = 1, count52 = 0;
 			student st5;
 			string classname5, choice5 = "-1", choice52, choice5s;
 			string flclassname5, fsclassname5;
@@ -1503,7 +1637,7 @@ void manageclassfunction()
 					displayclass(stL);
 					cout << "Input the id of the student you want to delete from the class " << classname5 << ": ";
 					cin >> id5;
-					findstudentin1class(stL, id5, classname5, check5, st5);
+					findstudentin1class(stL, id5, classname5, check5, st5, count52);
 					while (check5 == 0)
 					{
 						cout << "Do you want to input the ID of the student you want to edit in this class again?" << endl;
@@ -1520,7 +1654,7 @@ void manageclassfunction()
 						{
 							cout << "Input the id of the student you want to edit in this the class " << classname5 << ": ";
 							cin >> id5;
-							findstudentin1class(stL, id5, classname5, check5, st5);
+							findstudentin1class(stL, id5, classname5, check5, st5, count52);
 						}
 						else
 						{
@@ -1565,37 +1699,24 @@ void manageclassfunction()
 					break;
 				}
 			}
-			if (check5 != 0 && count5 <= 1)
+			if (check5 != 0 && count5 == 1)
 			{
 				cin.ignore(1);
-				cout << "Are you sure that you want to delete the student has the ID " << id5 << " from class " << classname5 << "?" << endl;
-				cout << "Enter 1 to continue or 0 to exit: ";
-				getline(cin, choice5);
-				while (choice5 != "0" && choice5 != "1")
+				removestudentfromclass(stL, id5, classname5);
+				cout << "The class at the moment: " << endl;
+				displayclass(stL);
+				cout << "Do you want to save what you have done to this class's file?" << endl;
+				cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice5s);
+				while (choice5s != "1" && choice5s != "0")
 				{
 					cout << "Invalid choice." << endl;
-					cout << "Please enter 1 to continue to delete the student has the ID " << id5 << " from class " << classname5 << " or 0 to exit: " << endl;
-					getline(cin, choice5);
+					cout << "Please enter 1 to save or 0 to exit: ";
+					getline(cin, choice5s);
 				}
-				if (choice5 == "1")
+				if (choice5s == "1")
 				{
-					disableaccount(st5);
-					removestudentfromclass(stL, id5, classname5);
-					cout << "The class at the moment: " << endl;
-					displayclass(stL);
-					cout << "Do you want to save what you have done to this class's file?" << endl;
-					cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice5s);
-					while (choice5s != "1" && choice5s != "0")
-					{
-						cout << "Invalid choice." << endl;
-						cout << "Please enter 1 to save or 0 to exit: ";
-						getline(cin, choice5s);
-					}
-					if (choice5s == "1")
-					{
-						fsclassname5 = classname5 + "/" + classname5 + ".dat";
-						exportfromprogram2(stL, fsclassname5);
-					}
+					fsclassname5 = classname5 + "/" + classname5 + ".dat";
+					exportfromprogram2(stL, fsclassname5);
 				}
 			}
 			if (check5 != 0 && count5 > 1)
@@ -1618,7 +1739,6 @@ void manageclassfunction()
 				}
 				if (choice5 == "1")
 				{
-					disableaccount(st5);
 					removestudentfromallclass(stL, id5);
 				}
 				else
@@ -1637,40 +1757,26 @@ void manageclassfunction()
 							}
 							else
 							{
-								cout << "Input the name of class number: ";
+								cout << "Input the name of class: ";
 							}
 							getline(cin, classname5);
 							flclassname5 = classname5 + "/" + classname5 + ".dat";
 							importtoprogram2(stL, flclassname5);
-							disableaccount(st5);
 							removestudentfromclass(stL, id5, classname5);
-							cout << "Are you sure that you want to delete the student has the ID " << id5 << " from class " << classname5 << "?" << endl;
-							cout << "Enter 1 to continue or 0 to exit: ";
-							getline(cin, choice5);
-							while (choice5 != "0" && choice5 != "1")
+							cout << "The class at the moment: " << endl;
+							displayclass(stL);
+							cout << "Do you want to save what you have done to this class's file?" << endl;
+							cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice5s);
+							while (choice5s != "1" && choice5s != "0")
 							{
 								cout << "Invalid choice." << endl;
-								cout << "Please enter 1 to continue to delete the student has the ID " << id5 << " from class " << classname5 << " or 0 to exit: " << endl;
-								getline(cin, choice5);
+								cout << "Please enter 1 to save or 0 to exit: ";
+								getline(cin, choice5s);
 							}
-							if (choice5 == "1")
+							if (choice5s == "1")
 							{
-								removestudentfromclass(stL, id5, classname5);
-								cout << "The class at the moment: " << endl;
-								displayclass(stL);
-								cout << "Do you want to save what you have done to this class's file?" << endl;
-								cout << "Enter 1 to save or 0 to exit: "; getline(cin, choice5s);
-								while (choice5s != "1" && choice5s != "0")
-								{
-									cout << "Invalid choice." << endl;
-									cout << "Please enter 1 to save or 0 to exit: ";
-									getline(cin, choice5s);
-								}
-								if (choice5s == "1")
-								{
-									fsclassname5 = classname5 + "/" + classname5 + ".dat";
-									exportfromprogram2(stL, fsclassname5);
-								}
+								fsclassname5 = classname5 + "/" + classname5 + ".dat";
+								exportfromprogram2(stL, fsclassname5);
 							}
 						}
 					}
@@ -1680,40 +1786,6 @@ void manageclassfunction()
 					}
 				}
 			}
-			/*cout << "Input the id of the student you want to remove: ";
-			cin >> id5;
-			findstudentinexistingclasses(stL, id5, check5, st5);
-			if (check5 != 0)
-			{
-				int choice5 = -1;
-				cout << "Enter 1 to delete the student from all of his/her class." << endl;
-				cout << "Enter 2 to choose the class you want to delete this student." << endl;
-				cout << "Enter 0 to exit." << endl;
-				cout << "Enter your choice: "; cin >> choice5;
-				while (choice5 != 1 && choice5 != 2 && choice5 != 0)
-				{
-					cout << "Invalid choice." << endl;
-					cout << "Please enter your choice again: "; cin >> choice5;
-				}
-				if (choice5 != 0)
-				{
-					if (choice5 == 1)
-					{
-						removestudentfromallclass(stL, id5);
-					}
-					else
-					{
-						string classname5;
-						cin.ignore(1);
-						getline(cin, classname5);
-						classname5 += ".csv";
-						importtoprogram(stL, classname5);
-						cout << "The class " << classname5 << " after delete the student has ID " << id5 << ":" << endl;
-						removestudentfromclass(stL, id5, classname5);
-						displayclass(stL);
-					}
-				}
-			}*/
 			break;
 		}
 		case 6:
@@ -1726,7 +1798,7 @@ void manageclassfunction()
 			string clsAname, clsBname;
 			string clsAnametempl, clsBnametempl;
 			string choice6 = "-1", choice62;
-			int id6, check6 = 0, count6 = 0;
+			int id6, check6 = 0, count6 = 1, count62 = 0, No6 = 0;
 			cout << "Do you know the class of the student that you want to change his/her class?" << endl;
 			cout << "Do you know the class or the ID of the student you want to remove?" << endl;
 			cout << "Enter 1 to say input his/her class." << endl;
@@ -1777,7 +1849,7 @@ void manageclassfunction()
 				{
 					cout << "Class " << clsAname << ":" << endl;
 					displayclass(stLA);
-					cout << "Are you sure you want to change any students in this class?" << endl;
+					cout << "Are you sure you want to change a student in this class?" << endl;
 					cout << "Enter 1 to continue pr 0 to exit: ";
 					getline(cin, choice6);
 					while (choice6 != "1" && choice6 != "0")
@@ -1791,9 +1863,10 @@ void manageclassfunction()
 				{
 					cout << "Input the id of the student you want to change his/her class: ";
 					cin >> id6;
-					findstudentin1class(stLA, id6, clsAname, check6, st6);
+					findstudentin1class(stLA, id6, clsAname, check6, st6, count62);
 					while (check6 == 0)
 					{
+						cout << "There is no student has the ID " << id6 << " in this class." << endl;
 						cout << "Do you want to input the ID of the student you want to edit in this class again?" << endl;
 						cout << "Enter 1 to input again or 0 to exit: ";
 						cin.ignore(1);
@@ -1808,7 +1881,7 @@ void manageclassfunction()
 						{
 							cout << "Input the id of the student you want to edit in this the class " << clsAname << ": ";
 							cin >> id6;
-							findstudentin1class(stL, id6, clsAname, check6, st6);
+							findstudentin1class(stL, id6, clsAname, check6, st6, count62);
 						}
 						else
 						{
@@ -1826,6 +1899,7 @@ void manageclassfunction()
 					findstudentinexistingclasses(stLA, id6, check6, st6, clsAname, count6);
 					while (check6 == 0)
 					{
+						cout << "The student with the ID " << id6 << " does not exists." << endl;
 						cout << "You can enter 1 to input the student ID again or enter 0 to exit: ";
 						cin.ignore(1);
 						getline(cin, choice6);
@@ -1853,7 +1927,8 @@ void manageclassfunction()
 					if (check6 != 0 && count6 > 1)
 					{
 						stLA.clear();
-						cout << "Which class do you want this student to move out: ";
+						cout << "Because there are more than one class that have the student with the ID " << id6 << "." << endl;
+						cout << "So, please input the name of the class which you want this student to move out: ";
 						cin.ignore(1);
 						getline(cin, clsAname);
 						clsAnametempl = clsAname + "/" + clsAname + ".dat";
@@ -1883,9 +1958,10 @@ void manageclassfunction()
 								importtoprogram2(stLA, clsAnametempl);
 							}
 						}
-						findstudentin1class(stLA, id6, clsAname, check6, st6);
+						findstudentin1class(stLA, id6, clsAname, check6, st6, count62);
 						while (check6 == 0)
 						{
+							cout << "There is no student has ID " << id6 << " in this class." << endl;
 							cout << "Do you want to input the class you want this student to move out (first class) again?" << endl;
 							cout << "Enter 1 to input again or 0 to exit: ";
 							getline(cin, choice6);
@@ -1901,13 +1977,17 @@ void manageclassfunction()
 								getline(cin, clsAname);
 								clsAnametempl = clsAname + "/" + clsAname + ".dat";
 								importtoprogram2(stLA, clsAnametempl);
-								findstudentin1class(stL, id6, clsAname, check6, st6);
+								findstudentin1class(stL, id6, clsAname, check6, st6, count62);
 							}
 							else
 							{
 								break;
 							}
 						}
+					}
+					if (check6 != 0 && count6 == 1)
+					{
+						findstudentin1class(stLA, id6, clsAname, check6, st6, count62);
 					}
 				}
 				else
@@ -1918,62 +1998,134 @@ void manageclassfunction()
 			}
 			if (check6 != 0)
 			{
-				if (count6 <= 1)
+				int check63 = 0;
+				if (count6 == 1 && count62 == 1)
 				{
 					cin.ignore(1);
+					No6 = st6.No;
 				}
-				cout << "Input second class (class to want to put the student into): ";
-				getline(cin, clsBname);
-				clsBnametempl = clsBname + "/" + clsBname + ".dat";
-				importtoprogram2(stLB, clsBnametempl);
-				if (stLB.size() == 0)
+				if (count6 > 1 && count62 == 1)
 				{
-					cout << "The class may not exist." << endl;
-					cout << "So, if you move a student into this class, you may create a new class with one student." << endl;
+					No6 = st6.No;
 				}
-				else
+				if (count62 > 1)
 				{
-					displayclass(stLB);
-				}
-				cout << "Are you sure you want to change student into this class?" << endl;
-				cout << "Enter 1 to continue or 0 to exit: ";
-				getline(cin, choice6);
-				while (choice6 != "1" && choice6 != "0")
-				{
-					cout << "Invalid choice." << endl;
-					cout << "Please enter 1 to continue or 0 to exit: ";
-					getline(cin, choice6);
+					cout << "Because there are more than one student that have the ID " << id6 << "." << endl;
+					cout << "Please input the No of the student you want to change: ";
+					cin >> No6;
+					int n6 = stLA.size();
+					while (No6 < 1 || No6 > n6)
+					{
+						cout << "The No of the student must be bigger than 0 and smaller than " << n6 << "." << endl;
+						cout << "Please input the No of the student you want to change: ";
+						cin >> No6;
+					}
+					for (int i = 0; i < n6; i++)
+					{
+						if (stLA[i].id == id6 && stLA[i].No == No6)
+						{
+							if (stLA[i].No == No6)
+							{
+								check63 = 1;
+								break;
+							}
+						}
+					}
+					cin.ignore(1);
+					while (check63 == 0)
+					{
+						cout << "There is no student has No " << No6 << " and ID " << id6 << "." << endl;
+						cout << "Please enter 1 to input the No again or 0 to exit: ";
+						getline(cin, choice6);
+						while (choice6 != "1" && choice6 != "0")
+						{
+							cout << "Invalid choice." << endl;
+							cout << "Please enter 1 to input the No again or 0 to exit: ";
+							getline(cin, choice6);
+						}
+						if (choice6 == "1")
+						{
+							cout << "Inout No: "; cin >> No6;
+							while (No6 < 1 || No6 > n6)
+							{
+								cout << "The No of the student must be bigger than 0 and smaller than " << n6 << "." << endl;
+								cout << "Please input the No of the student you want to change: ";
+								cin >> No6;
+							}
+							cin.ignore(1);
+							for (int i = 0; i < n6; i++)
+							{
+								if (stLA[i].id == id6 && stLA[i].No == No6)
+								{
+									if (stLA[i].No == No6)
+									{
+										check63 = 1;
+										break;
+									}
+								}
+							}
+						}
+						else
+						{
+							break;
+						}
+					}
 				}
 				if (choice6 != "0")
 				{
-					int check62 = 0;
-					changestudentfromclassAtoclassB(stLA, stLB, id6, check62);
-					if (check62 == 1)
+					cout << "Input second class (class to want to put the student into): ";
+					getline(cin, clsBname);
+					clsBnametempl = clsBname + "/" + clsBname + ".dat";
+					importtoprogram2(stLB, clsBnametempl);
+					if (stLB.size() == 0)
 					{
-						cout << endl << "Error: This student is already in class " << clsBname << "." << endl;
+						cout << "The class may not exist." << endl;
+						cout << "So, if you move a student into this class, you may create a new class with one student." << endl;
 					}
 					else
 					{
-						cout << "Class " << clsAname << " at the moment:" << endl;
-						displayclass(stLA);
-						cout << "Class " << clsBname << " at the moment:" << endl;
 						displayclass(stLB);
-						string choice6s;
-						cout << "Do you want to save what you have done to class" << clsAname << "'s file and class" << clsBname << "'s file?" << endl;
-						cout << "Enter 1 to save or 0 to exit: ";
-						getline(cin, choice6s);
-						while (choice6s != "1" && choice6s != "0")
+					}
+					cout << "Are you sure you want to change student into this class?" << endl;
+					cout << "Enter 1 to continue or 0 to exit: ";
+					getline(cin, choice6);
+					while (choice6 != "1" && choice6 != "0")
+					{
+						cout << "Invalid choice." << endl;
+						cout << "Please enter 1 to continue or 0 to exit: ";
+						getline(cin, choice6);
+					}
+					if (choice6 != "0")
+					{
+						int check62 = 0;
+						changestudentfromclassAtoclassB(stLA, stLB, No6, check62, id6);
+						if (check62 == 1)
 						{
-							cout << "Invalid choice." << endl;
-							cout << "Please enter 1 to save or 0 to exit: ";
-							getline(cin, choice6s);
+							cout << endl << "Error: This student is already in class " << clsBname << "." << endl;
 						}
-						if (choice6s == "1")
+						else
 						{
-							string clsAnametemps = clsAname + "/" + clsAname + ".dat";
-							exportfromprogram2(stLA, clsAnametemps);
-							string clsBnametemps = clsBname + "/" + clsBname + ".dat";
-							exportfromprogram2(stLB, clsBnametemps);
+							cout << "Class " << clsAname << " at the moment:" << endl;
+							displayclass(stLA);
+							cout << "Class " << clsBname << " at the moment:" << endl;
+							displayclass(stLB);
+							string choice6s;
+							cout << "Do you want to save what you have done to class" << clsAname << "'s file and class" << clsBname << "'s file?" << endl;
+							cout << "Enter 1 to save or 0 to exit: ";
+							getline(cin, choice6s);
+							while (choice6s != "1" && choice6s != "0")
+							{
+								cout << "Invalid choice." << endl;
+								cout << "Please enter 1 to save or 0 to exit: ";
+								getline(cin, choice6s);
+							}
+							if (choice6s == "1")
+							{
+								string clsAnametemps = clsAname + "/" + clsAname + ".dat";
+								exportfromprogram2(stLA, clsAnametemps);
+								string clsBnametemps = clsBname + "/" + clsBname + ".dat";
+								exportfromprogram2(stLB, clsBnametemps);
+							}
 						}
 					}
 				}
@@ -2065,8 +2217,9 @@ void manageclassfunction()
 			}
 			if (choice9 != "0")
 			{
+				sortclassinascendingorderbyid(stL);
 				displayclass(stL);
-				string fsclassname92 = classname9 + "/" + classname9 + ".dat";
+				string fsclassname92 = classname9 + "/" + classname9 + ".csv";
 				exportfromprogram(stL, fsclassname92);
 			}
 			break;

@@ -69,7 +69,7 @@ void displayallclassincourseline (vector<student>stL);
 void editinganexistingstudent(student &st);
 
 // update the change of the information of a student that has the given id in his/her class.
-void updateeditstudentin1class(vector<student>& stL, int id, student st, string flclassname);
+void updateeditstudentin1class(vector<student>& stL, int No, student st);
 
 //update the change of the information of a student that has the given id in all his/her classes.
 void updateeditedstudentinallhisorherclasses(vector<student>& stL, int id, student st);
@@ -80,7 +80,7 @@ void removestudentfromclass(vector<student> &stL, int id, string classname);
 void removestudentfromallclass(vector<student>stL, int id);
 
 //erase a student that has the given id from class A and put into class B.
-void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stLB, int id, int& check);
+void changestudentfromclassAtoclassB(vector<student>& stLA, vector<student>& stLB, int No, int& check, int id);
 
 //save to csv file.
 void exporttofile(ofstream& fsave, vector<student> stL);
@@ -89,7 +89,7 @@ void exporttofile(ofstream& fsave, vector<student> stL);
 void exportfromprogram(vector<student>stL, string fsname);
 
 //find a student that has the given id in just only the class that has class's name given.
-void findstudentin1class(vector<student> stL, int id, string classname, int& check, student& st);
+void findstudentin1class(vector<student> stL, int id, string classname, int& check, student& st, int& count);
 
 //load from dat file.
 void loadfromdatfile(ifstream& fload, vector<student>& stL);
