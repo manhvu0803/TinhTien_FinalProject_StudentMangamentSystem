@@ -15,12 +15,15 @@ struct account
     int type; // 1 is student, 2 is lecturer, 3 is academic staff
 };
 
-account* login();
+void saveToFile();
 
-void showProfile(account user);
+bool createAccount(lecturer& user);
+bool createAccount(student user);
+
+account* login();
 
 void changePassword(account* user);
 
-void saveToFile();
+void showProfile(account user);
 
 #endif // ACCOUNTCONTROL_H_INCLUDED

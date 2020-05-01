@@ -1,5 +1,8 @@
+#ifndef DATASTRUCTURE_H_INCLUDED
+#define DATASTRUCTURE_H_INCLUDED
+
 #include <string>
-#include <vector>
+#include "utility.h"
 
 struct date
 {
@@ -46,6 +49,8 @@ struct course
     int DoW; // date of week, Monday is 0, Tuesday is 1,...
     date startDate, endDate;
     time startTime, endTime;
-    //std::vector<student *> students;
+    //tt::vector<student *> students;
     std::string room;
 };
+
+#endif // DATASTRUCTURE_H_INCLUDED

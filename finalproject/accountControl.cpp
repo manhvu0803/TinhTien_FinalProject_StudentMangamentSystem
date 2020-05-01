@@ -1,4 +1,5 @@
 #include "accountControl.h"
+#include "dataStructure.h"
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -9,6 +10,99 @@ const char* loginFileDir = "data/login.dat";
 
 tt::vector<account> loginInfo;
 //account nullAcc = {"", "", -1, -1};
+
+void saveToFile()
+{
+    ofstream loginFile(loginFileDir);
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
+        loginFile << loginInfo[i].username << ' ' << loginInfo[i].type << ' ' << loginInfo[i].id << ' ';
+        loginFile << loginInfo[i].password << '\n';
+    }
+    loginFile.close();
+}
+
+string createUsername(string name)
+{
+    size_t pos1 = name.find(' ');
+    size_t pos2 = name.find(' ', pos1 + 1);
+    string username = "";
+
+    username += (char)tolower(name[0]);
+    if (pos1 == string::npos) return username + name.substr(1);
+
+    username += (char)tolower(name[pos1 + 1]);
+    if (pos2 == string::npos) return  username + name.substr(pos1 + 1);
+
+    return username + (char)tolower(name[pos2 + 1]) + name.substr(pos2 + 2);
+}
+
+bool addAccount(account user)
+{
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
+        if (user.id.compare(loginInfo[i].id) == 0) {
+            loginInfo[i] = user;
+            saveToFile();
+            return false;
+        }
+    loginInfo.push_back(user);
+    saveToFile();
+    return true;
+}
+
+bool createAccount(lecturer& user)
+{
+    account newAcc;
+    // Lecturer's username is also their ID
+    newAcc.id = createUsername(user.fullName);
+    newAcc.type = 2;
+    newAcc.username = newAcc.id;
+    user.username = newAcc.id;
+
+    // Lecturer default password is their degree + full name with no caps or space
+    newAcc.password = "";
+    string pass = user.degree + user.fullName;
+    for (int i = 0, lim = pass.length(); i < lim; ++i)
+        if (pass[i] != ' ') newAcc.password += tolower(pass[i]);
+
+    return addAccount(newAcc);
+}
+
+bool createAccount(student user)
+{
+    account newAcc;
+    newAcc.id = to_string(user.id);
+    newAcc.type = 1;
+    newAcc.username = createUsername(user.lastName + ' ' + user.firstName);
+
+    // Student default password is their month->date->year of birth with leading 0 and no space
+    stringstream ss;
+    ss.fill('0');
+    ss << setw(2) << user.DoB.m << setw(2) << user.DoB.d << setw(4) << user.DoB.y;
+    ss >> newAcc.password;
+
+    return addAccount(newAcc);
+}
+
+bool newAccount()
+{
+    account newAcc;
+
+    cout << "Please enter new username (enter \"" << cancelCmd << "\" to exit):\n";
+    getline(cin, newAcc.username);
+
+    cout << "Please enter new password (enter \"" << cancelCmd << "\" to exit):\n";
+    getline(cin, newAcc.password);
+
+    return true;
+}
+
+account* getAccount(string username)
+{
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
+        if (username.compare(loginInfo[i].username) == 0) return &loginInfo[i];
+
+    return nullptr;
+}
 
 /* For Windows only
 string passwordBuffer()
@@ -45,64 +139,6 @@ string passwordBuffer()
     return s;
 }
 
-void showProfile(account user)
-{
-    cout << "\nProfile\n" "Username: " << user.username << "\nAccount type: ";
-    switch (user.type) {
-        case 1:
-            cout << "student\n";
-            break;
-        case 2:
-            cout << "lecturer\n";
-            break;
-        case 3:
-            cout << "academic staff\n";
-            break;
-        case 4:
-            cout << "admin\n";
-            break;
-        default:
-            cout << "false account\n";
-    }
-}
-
-void saveToFile()
-{
-    ofstream loginFile(loginFileDir);
-    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
-        loginFile << loginInfo[i].username << ' ' << loginInfo[i].type << ' ' << loginInfo[i].id << ' ';
-        loginFile << loginInfo[i].password << '\n';
-    }
-    loginFile.close();
-}
-
-void changePassword(account* user)
-{
-    string password;
-
-    cout << "\nChange password\n";
-    do {
-        cout << "Please enter your old password (enter \"" << cancelCmd << "\" to return):\n";
-        password = passwordBuffer();
-        if (password.compare(cancelCmd) == 0) return;
-        if (password.compare(user->password) == 0) break;
-        cout << "Wrong password\n";
-    }
-    while (true);
-
-    do {
-        cout << "Please enter your new password (at least 8 character):\n";
-        password = passwordBuffer();
-        if (password.length() >= 8) break;
-        cout << "Your password is too short\n";
-    }
-    while (true);
-
-    user->password = password;
-    saveToFile();
-    cout << "Password changed successfully\n";
-}
-
 bool loadLoginFile()
 {
     account user;
@@ -118,64 +154,6 @@ bool loadLoginFile()
     loginFile.close();
 
     return true;
-}
-
-bool createAccount(student user)
-{
-    account newAcc;
-    newAcc.id = user.id;
-    newAcc.type = 1;
-
-    // Generate username
-    newAcc.username = user.lastName[0];
-    size_t pos = user.lastName.find(' ');
-    if (pos != string::npos) newAcc.username += user.lastName[pos + 1];
-    newAcc.username += user.firstName[0];
-
-    // Generate password
-    stringstream ss;
-    ss.fill('0');
-    ss << setw(2) << user.DoB.m << setw(2) << user.DoB.d << setw(4) << user.DoB.y;
-    ss >> newAcc.password;
-
-    // Check existing accounts
-    pos = -1;
-    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
-        if (to_string(user.id).compare(loginInfo[i].id) == 0) {
-            pos = i;
-            break;
-        }
-
-    if (pos < 0) loginInfo.push_back(newAcc);
-    else loginInfo[pos] = newAcc;
-    saveToFile();
-    return true;
-}
-
-bool newAccount(account& user)
-{
-    account newAcc;
-
-    cout << "Please enter new username (enter \"" << cancelCmd << "\" to exit):\n";
-    getline(cin, newAcc.username);
-
-    if (user.username.compare(newAcc.username) == 0) {
-        cout << "Account already existed\n";
-        return false;
-    }
-
-    cout << "Please enter new password (enter \"" << cancelCmd << "\" to exit):\n";
-    getline(cin, newAcc.password);
-
-    return true;
-}
-
-account* getAccount(string username)
-{
-    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
-        if (username.compare(loginInfo[i].username) == 0) return &loginInfo[i];
-
-    return nullptr;
 }
 
 account* login()
@@ -207,4 +185,52 @@ account* login()
     while (true);
 
     return currentAcc;
+}
+
+void changePassword(account* user)
+{
+    string password;
+
+    cout << "\nChange password\n";
+    do {
+        cout << "Please enter your old password (enter \"" << cancelCmd << "\" to return):\n";
+        password = passwordBuffer();
+        if (password.compare(cancelCmd) == 0) return;
+        if (password.compare(user->password) == 0) break;
+        cout << "Wrong password\n";
+    }
+    while (true);
+
+    do {
+        cout << "Please enter your new password (at least 8 character):\n";
+        password = passwordBuffer();
+        if (password.length() >= 8) break;
+        cout << "Your password is too short\n";
+    }
+    while (true);
+
+    user->password = password;
+    saveToFile();
+    cout << "Password changed successfully\n";
+}
+
+void showProfile(account user)
+{
+    cout << "\nProfile\n" "Username: " << user.username << "\nAccount type: ";
+    switch (user.type) {
+        case 1:
+            cout << "student\n";
+            break;
+        case 2:
+            cout << "lecturer\n";
+            break;
+        case 3:
+            cout << "academic staff\n";
+            break;
+        case 4:
+            cout << "admin\n";
+            break;
+        default:
+            cout << "false account\n";
+    }
 }
