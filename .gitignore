@@ -1,4 +1,5 @@
 CTT008-CS162-FinalProject-18APCS-CLC*
+*.o
 *.stackdump
 *.depend
 *.layout
