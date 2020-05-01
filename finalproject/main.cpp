@@ -41,6 +41,8 @@ int main()
         cout << "\n";
     }
 
+    delete user;
+
     return 0;
 }
 

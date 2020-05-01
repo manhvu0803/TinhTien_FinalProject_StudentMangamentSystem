@@ -18,7 +18,7 @@ struct lecturer
 	std::string fullName;
 	std::string degree;
 	char gender; // 'M' for male, 'F' for female
-}
+};
 
 struct student
 {
@@ -31,10 +31,10 @@ struct student
 
 struct score
 {
-	int number
+	int number;
 	int id; // ID of the student this score belongs to
 	int mid, final, bonus, total;
-}
+};
 
 struct course
 {

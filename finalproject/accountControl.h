@@ -2,6 +2,7 @@
 #define ACCOUNTCONTROL_H_INCLUDED
 
 #include <string>
+#include "dataStructure.h"
 #include "utility.h"
 
 using namespace std;
