@@ -1,5 +1,5 @@
 #include <iostream>
-#include <conio.h>
+#include <limits>
 #include "accountControl.h"
 
 using namespace std;
@@ -12,7 +12,6 @@ int main()
     account* user = login();
 
     int choice;
-
     while (user) {
         cout << "Please choose an option:\n";
         cout << "Enter 1: View profile\n";
@@ -20,6 +19,11 @@ int main()
         cout << "Enter 3: Log out\n";
 
         cin >> choice;
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<int>::max(), '\n');
+            choice = -1;
+        }
         switch (choice) {
             case 1:
                 showProfile(*user);
@@ -35,7 +39,7 @@ int main()
                 user = login();
                 break;
             default:
-                cout << "Invalid choice\n";
+                cout << "\nInvalid choice\n";
         }
 
         cout << "\n";

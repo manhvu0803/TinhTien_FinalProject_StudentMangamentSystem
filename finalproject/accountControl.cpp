@@ -39,7 +39,7 @@ string createUsername(string name)
 bool addAccount(account user)
 {
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
-        if (user.id.compare(loginInfo[i].id) == 0) {
+        if (user.id == loginInfo[i].id) {
             loginInfo[i] = user;
             saveToFile();
             return false;
@@ -83,6 +83,17 @@ bool createAccount(student user)
     return addAccount(newAcc);
 }
 
+bool removeAccount(string id)
+{
+    for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
+        if (id == loginInfo[i].id) {
+            loginInfo.erase(i);
+            saveToFile();
+            return true;
+        }
+    return false;
+}
+
 bool newAccount()
 {
     account newAcc;
@@ -99,8 +110,7 @@ bool newAccount()
 account* getAccount(string username)
 {
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
-        if (username.compare(loginInfo[i].username) == 0) return &loginInfo[i];
-
+        if (username == loginInfo[i].username) return &loginInfo[i];
     return nullptr;
 }
 
@@ -168,7 +178,7 @@ account* login()
     cout << "Please enter your username (enter \"" << cancelCmd << "\" to exit):\n";
     do {
         getline(cin, username);
-        if (username.compare(cancelCmd) == 0) return nullptr;
+        if (username == cancelCmd) return nullptr;
         currentAcc = getAccount(username);
         if (currentAcc) break;
         cout << "Account does not existed\n";
@@ -178,8 +188,8 @@ account* login()
     cout << "Please enter your password (enter \"" << cancelCmd << "\" to exit):\n";
     do {
         password = passwordBuffer();
-        if (password.compare(cancelCmd) == 0) return nullptr;
-        if (password.compare(currentAcc->password) == 0) break;
+        if (password == cancelCmd) return nullptr;
+        if (password == currentAcc->password) break;
         cout << "Wrong password\n";
     }
     while (true);
@@ -195,8 +205,8 @@ void changePassword(account* user)
     do {
         cout << "Please enter your old password (enter \"" << cancelCmd << "\" to return):\n";
         password = passwordBuffer();
-        if (password.compare(cancelCmd) == 0) return;
-        if (password.compare(user->password) == 0) break;
+        if (password == cancelCmd) return;
+        if (password == user->password) break;
         cout << "Wrong password\n";
     }
     while (true);

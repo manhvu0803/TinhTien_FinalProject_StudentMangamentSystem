@@ -20,6 +20,8 @@ void saveToFile();
 bool createAccount(lecturer& user);
 bool createAccount(student user);
 
+bool removeAccount(string id);
+
 account* login();
 
 void changePassword(account* user);
