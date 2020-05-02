@@ -5,27 +5,30 @@
 #include "dataStructure.h"
 #include "utility.h"
 
-using namespace std;
-
-struct account
+namespace acc
 {
-    string username;
-    string password;
-    string id;
-    int type; // 1 is student, 2 is lecturer, 3 is academic staff
-};
+    using namespace std;
 
-void saveToFile();
+    struct account
+    {
+        string username;
+        string password;
+        string id;
+        int type; // 1 is student, 2 is lecturer, 3 is academic staff
+    };
 
-bool createAccount(lecturer& user);
-bool createAccount(student user);
+    void saveToFile();
 
-bool removeAccount(string id);
+    bool createAccount(tt::lecturer& user);
+    bool createAccount(const tt::student& user);
 
-account* login();
+    bool removeAccount(string id);
 
-void changePassword(account* user);
+    account* login();
 
-void showProfile(account user);
+    void changePassword(account* user);
+
+    void showProfile(account user);
+}
 
 #endif // ACCOUNTCONTROL_H_INCLUDED

@@ -5,13 +5,16 @@
 #include <iomanip>
 //#include <conio.h>
 
+using namespace std;
+using namespace acc;
+
 const char* cancelCmd = "exit";
 const char* loginFileDir = "data/login.dat";
 
 tt::vector<account> loginInfo;
 //account nullAcc = {"", "", -1, -1};
 
-void saveToFile()
+void acc::saveToFile()
 {
     ofstream loginFile(loginFileDir);
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
@@ -49,7 +52,7 @@ bool addAccount(account user)
     return true;
 }
 
-bool createAccount(lecturer& user)
+bool acc::createAccount(tt::lecturer& user)
 {
     account newAcc;
     // Lecturer's username is also their ID
@@ -67,7 +70,7 @@ bool createAccount(lecturer& user)
     return addAccount(newAcc);
 }
 
-bool createAccount(student user)
+bool acc::createAccount(const tt::student& user)
 {
     account newAcc;
     newAcc.id = to_string(user.id);
@@ -83,18 +86,19 @@ bool createAccount(student user)
     return addAccount(newAcc);
 }
 
-bool removeAccount(string id)
+bool acc::removeAccount(string id)
 {
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i)
         if (id == loginInfo[i].id) {
             loginInfo.erase(i);
-            saveToFile();
+            acc::saveToFile();
             return true;
         }
     return false;
 }
 
-bool newAccount()
+/*
+bool acc::newAccount()
 {
     account newAcc;
 
@@ -106,6 +110,7 @@ bool newAccount()
 
     return true;
 }
+*/
 
 account* getAccount(string username)
 {
@@ -149,6 +154,19 @@ string passwordBuffer()
     return s;
 }
 
+bool passwordCheck(string password, const char* type = "")
+{
+    string input;
+    do {
+        cout << "Please enter your " << type << " password (enter \"" << cancelCmd << "\" to return):\n";
+        input = passwordBuffer();
+        if (input == cancelCmd) return false;
+        if (input == password) return true;
+        cout << "Wrong password\n\n";
+    }
+    while (true);
+}
+
 bool loadLoginFile()
 {
     account user;
@@ -166,7 +184,7 @@ bool loadLoginFile()
     return true;
 }
 
-account* login()
+account* acc::login()
 {
     string username, password;
 
@@ -175,58 +193,46 @@ account* login()
 
     account* currentAcc = nullptr;
 
-    cout << "Please enter your username (enter \"" << cancelCmd << "\" to exit):\n";
     do {
+        cout << "Please enter your username (enter \"" << cancelCmd << "\" to exit):\n";
         getline(cin, username);
         if (username == cancelCmd) return nullptr;
         currentAcc = getAccount(username);
-        if (currentAcc) break;
-        cout << "Account does not existed\n";
+        if (currentAcc) {
+            if (passwordCheck(currentAcc->password)) break;
+            else continue;
+        }
+        cout << "Account does not existed\n\n";
     }
     while (!currentAcc);
-
-    cout << "Please enter your password (enter \"" << cancelCmd << "\" to exit):\n";
-    do {
-        password = passwordBuffer();
-        if (password == cancelCmd) return nullptr;
-        if (password == currentAcc->password) break;
-        cout << "Wrong password\n";
-    }
-    while (true);
 
     return currentAcc;
 }
 
-void changePassword(account* user)
+void acc::changePassword(account* user)
 {
-    string password;
-
     cout << "\nChange password\n";
-    do {
-        cout << "Please enter your old password (enter \"" << cancelCmd << "\" to return):\n";
-        password = passwordBuffer();
-        if (password == cancelCmd) return;
-        if (password == user->password) break;
-        cout << "Wrong password\n";
-    }
-    while (true);
 
+    if (!passwordCheck(user->password, "old")) return;
+
+    string input;
     do {
         cout << "Please enter your new password (at least 8 character):\n";
-        password = passwordBuffer();
-        if (password.length() >= 8) break;
+        input = passwordBuffer();
+        if (input.length() >= 8) break;
         cout << "Your password is too short\n";
     }
     while (true);
 
-    user->password = password;
+    user->password = input;
     saveToFile();
+
     cout << "Password changed successfully\n";
 }
 
-void showProfile(account user)
+void acc::showProfile(account user)
 {
-    cout << "\nProfile\n" "Username: " << user.username << "\nAccount type: ";
+    cout << "\nYour profile\n" "Username: " << user.username << "\nAccount type: ";
     switch (user.type) {
         case 1:
             cout << "student\n";
