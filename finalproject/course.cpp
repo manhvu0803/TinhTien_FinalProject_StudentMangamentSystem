@@ -1015,7 +1015,7 @@ void deleteCourse(tt::vector<tt::course>& list, string filePath)
 	}
 	list[n - 1].students.clear();
 	list[n - 1].students.shrink_to_fit();
-	list.erase(list.begin() + n - 1);
+	list.erase( n - 1);
 	list.shrink_to_fit();
 	saveCourseList(list, filePath);
 }
@@ -1042,7 +1042,7 @@ void remove1Student(tt::course& Course)
 			break;
 		}
 	}
-	Course.students.erase(Course.students.begin() + n - 1);
+	Course.students.erase( n - 1);
 	Course.students.shrink_to_fit();
 }
 void add1Student(tt::course& Course)
@@ -1166,7 +1166,7 @@ void viewStudentList(tt::course courseName)// Đợi file class của Nhật
 			if (Student.id == -1)
 			{
 				Drop.push_back(courseName.students[i]);
-				courseName.students.erase(courseName.students.begin() + i);
+				courseName.students.erase(i);
 				courseName.students.shrink_to_fit();
 				n--;
 				i--;
