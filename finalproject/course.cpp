@@ -353,10 +353,12 @@ void loadCsvFile(vector<course>& list, string filePath)
 				temp.startTime.h = stoi(token);
 				getline(check, token, ',');
 				temp.startTime.m = stoi(token);
+				temp.startTime.s = 0;
 				getline(check, token, ',');
 				temp.endTime.h = stoi(token);
 				getline(check, token, ',');
 				temp.endTime.m = stoi(token);
+				temp.endTime.s = 0;
 				getline(check, token);
 				temp.room = token;
 				if (temp.number != -1)
@@ -417,8 +419,10 @@ void loadDatFile(vector<course>& list, string filePath)
 			myFile >> temp.DoW;
 			myFile >> temp.startTime.h;
 			myFile >> temp.startTime.m;
+			temp.startTime.s = 0;
 			myFile >> temp.endTime.h;
 			myFile >> temp.endTime.m;
+			temp.endTime.s=0;
 			myFile.ignore(1);
 			getline(myFile, temp.room);
 			list.push_back(temp);
