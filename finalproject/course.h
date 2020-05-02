@@ -6,7 +6,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <windows.h>
 #include <ctime>
 #include <algorithm>
 #include <cmath>
@@ -14,29 +13,29 @@
 #include "dataStructure.h"
 using namespace std;
 void courseMenu(int year, string semester);
-void loadCsvFile(vector<course>& list, string filePath);
-void loadDatFile(vector<course>& list, string filePath);
-void loadCourseStudentFile(course& Course, string filePath);
-void saveCourseList(vector<course> list, string filePath);
-void saveCourseStudentFile(course Course, string filePath);
-void importCsvFile(vector<course>& list, string filePath);
-void output1Course(course Course);
-void outputCourseList(vector<course> list);
-void output1CourseData(course Course);
-void outputSchedule(vector<course> list);
-int  inputTime(Time& courseTime);
-int  inputDate(date& Date);
-void input1Course(course& newCourse);
-void inputCourse(vector<course>& list, string filePath);
-void editCourse(vector<course>& list, string filePath);
-void deleteCourse(vector<course>& list, string filePath);
-void remove1Student(course& Course);
-void add1Student(course& Course);
-void addStudent(course& Course);
-void viewStudentList(course courseName);
-void sortList(vector<course>& List);
+void loadCsvFile(tt::vector<tt::course>& list, string filePath);
+void loadDatFile(tt::vector<tt::course>& list, string filePath);
+void loadCourseStudentFile(tt::course& Course, string filePath);
+void saveCourseList(tt::vector<tt::course> list, string filePath);
+void saveCourseStudentFile(tt::course Course, string filePath);
+void importCsvFile(tt::vector<tt::course>& list, string filePath);
+void output1Course(tt::course Course);
+void outputCourseList(tt::vector<tt::course> list);
+void output1CourseData(tt::course Course);
+void outputSchedule(tt::vector<tt::course> list);
+int  inputTime(tt::time& courseTime);
+int  inputDate(tt::date& Date);
+void input1Course(tt::course& newCourse);
+void inputCourse(tt::vector<tt::course>& list, string filePath);
+void editCourse(tt::vector<tt::course>& list, string filePath);
+void deleteCourse(tt::vector<tt::course>& list, string filePath);
+void remove1Student(tt::course& Course);
+void add1Student(tt::course& Course);
+void addStudent(tt::course& Course);
+void viewStudentList(tt::course courseName);
+void sortList(tt::vector<tt::course>& List);
 void upperCase(string& name);
-student searchStudent(int id);
-course searchCourse(string filePath, string Id);
+tt::student searchStudent(int id);
+tt::course searchCourse(string filePath, string Id);
 
 #endif
