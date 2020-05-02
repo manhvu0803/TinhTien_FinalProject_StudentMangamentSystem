@@ -1,5 +1,8 @@
+#ifndef DATASTRUCTURE_H_INCLUDED
+#define DATASTRUCTURE_H_INCLUDED
+
 #include <string>
-#include <vector>
+#include "utility.h"
 
 struct date
 {
@@ -18,7 +21,7 @@ struct lecturer
 	std::string fullName;
 	std::string degree;
 	char gender; // 'M' for male, 'F' for female
-}
+};
 
 struct student
 {
@@ -31,10 +34,10 @@ struct student
 
 struct score
 {
-	int number
+	int number;
 	int id; // ID of the student this score belongs to
 	int mid, final, bonus, total;
-}
+};
 
 struct course
 {
@@ -46,6 +49,8 @@ struct course
     int DoW; // date of week, Monday is 0, Tuesday is 1,...
     date startDate, endDate;
     time startTime, endTime;
-    //std::vector<student *> students;
+    //tt::vector<student *> students;
     std::string room;
 };
+
+#endif // DATASTRUCTURE_H_INCLUDED
