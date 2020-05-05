@@ -36,9 +36,12 @@ namespace tt
 
     struct score
     {
-        int number;
+        std::string cls; // class of the student
+        std::string studentName;
         int id; // ID of the student this score belongs to
         int mid, final, bonus, total;
+        tt::vector<date> checkedDate;
+        tt::vector<time> checkedTime;
     };
 
     struct course
