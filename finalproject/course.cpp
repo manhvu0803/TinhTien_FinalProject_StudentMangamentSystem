@@ -127,7 +127,7 @@ void courseMenu(int year, string semester)
 					int listSize = List.size();
 					if (n <= 0 || n > listSize)
 					{
-						cout << "Error!!!number available course!!!" << endl;
+						cout << "Error!!!No available course!!!" << endl;
 						cout << "Input (0) to break or (1) to continue: ";
 						cin >> check;
 						if (check == 0)
@@ -159,7 +159,7 @@ void courseMenu(int year, string semester)
 					int listSize = List.size();
 					if (n <= 0 || n > listSize)
 					{
-						cout << "Error!!!number available course!!!" << endl;
+						cout << "Error!!!No available course!!!" << endl;
 						cout << "Input (0) to break or (1) to continue: ";
 						cin >> check;
 						if (check == 0)
@@ -194,7 +194,7 @@ void courseMenu(int year, string semester)
 					int listSize = List.size();
 					if (n <= 0 || n > listSize)
 					{
-						cout << "Error!!!number available course!!!" << endl;
+						cout << "Error!!!No available course!!!" << endl;
 						cout << "Input (0) to break or (1) to continue: ";
 						cin >> check;
 						if (check == 0)
@@ -366,7 +366,7 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 			}
 			getline(csvFile, line);
 		}
-		int n = numbertFound.size();
+		int n = notFound.size();
 		if (n != 0)
 		{
 			cout << "Class: ";
@@ -374,22 +374,22 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 			{
 				if (i == 0)
 				{
-					cout << numbertFound[i];
+					cout << notFound[i];
 				}
 				else
 				{
-					cout << ", " << numbertFound[i];
+					cout << ", " << notFound[i];
 				}
 			}
-			cout << " numbert found!" << endl;
-			numbertFound.clear();
-			numbertFound.shrink_to_fit();
+			cout << " Not found!" << endl;
+			notFound.clear();
+			notFound.shrink_to_fit();
 			sortList(list);
 		}
 	}
 	else
 	{
-		cout << "File numbert found" << endl;
+		cout << "File not found" << endl;
 	}
 	csvFile.close();
 }
@@ -431,7 +431,7 @@ void loadDatFile(tt::vector<tt::course>& list, string filePath)
 	}
 	else
 	{
-		cout << "courses.dat numbert found" << endl;
+		cout << "courses.dat not found" << endl;
 		return;
 	}
 	myFile.close();
@@ -480,7 +480,7 @@ void saveCourseList(tt::vector<tt::course> list, string filePath)
 	}
 	else
 	{
-		cout << "courses.dat numbert found" << endl;
+		cout << "courses.dat not found" << endl;
 	}
 	dataFile.close();
 }
@@ -555,7 +555,7 @@ void outputCourseList(tt::vector<tt::course> list)
 }
 void output1CourseData(tt::course Course)
 {
-	cout << " number            : " << Course.number << endl;
+	cout << " No            : " << Course.number << endl;
 	cout << " Id            : " << Course.id << endl;
 	cout << " Name          : " << Course.name << endl;
 	cout << " Class         : " << Course.className << endl;;
@@ -636,7 +636,7 @@ int  inputTime(tt::time& courseTime)
 		}
 		else
 		{
-			cout << "Error!! numbert available time!!!" << endl;
+			cout << "Error!! Not available time!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
@@ -685,9 +685,9 @@ int  inputDate(tt::date& Date)
 {
 	int check = -1;
 	tt::date temp;
-	time_t numberw = std::time(0);
+	time_t now = std::time(0);
 	tm ltm;
-	localtime_s(&ltm, &numberw);
+	localtime_s(&ltm, &now);
 	while (true)
 	{
 		cout << "	Input day  :   "; cin >> temp.d;
@@ -854,7 +854,7 @@ void editCourse(tt::vector<tt::course>& list, string filePath)
 		int listSize = list.size();
 		if (n <= 0 || n > listSize)
 		{
-			cout << "Error!!!number available course!!!" << endl;
+			cout << "Error!!!No available course!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
@@ -885,7 +885,7 @@ void editCourse(tt::vector<tt::course>& list, string filePath)
 		cout << "Input: "; cin >> choice;
 		if (choice <= 0 || choice > 11)
 		{
-			cout << "Error!!!number choice available!!!" << endl;
+			cout << "Error!!!No choice available!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
@@ -1000,7 +1000,7 @@ void deleteCourse(tt::vector<tt::course>& list, string filePath)
 		int listSize = list.size();
 		if (n <= 0 || n > listSize)
 		{
-			cout << "Error!!!number available course!!!" << endl;
+			cout << "Error!!!No available course!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
@@ -1029,7 +1029,7 @@ void remove1Student(tt::course& Course)
 		int studentSize = Course.students.size();
 		if (n <= 0 || n > studentSize)
 		{
-			cout << "Error!!!number student at that position!!!" << endl;
+			cout << "Error!!!No student at that position!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
 			if (check == 0)
