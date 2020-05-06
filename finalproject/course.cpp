@@ -16,28 +16,31 @@ void courseMenu(int year, string semester)
 	cout << setfill('=') << setw(50) << "=" << endl;
 	cout << "*" << setfill('-') << setw(24) << "COURSE MENU" << setfill('-') << setw(23) << "*" << endl;
 	cout << setfill('=') << setw(50) << "=" << endl;
-	while (choice != 0)
+	while (cont != 0)
 	{
-		cout << " Enter 0: To exit" << endl;
-		cout << " Enter 1: Import course" << endl;
-		cout << " Enter 2: Add new course" << endl;
-		cout << " Enter 3: Edit course" << endl;
-		cout << " Enter 4: Remove a course" << endl;
-		cout << " Enter 5: View course list" << endl;
-		cout << " Enter 6: Add a student to a course" << endl;
-		cout << " Enter 7: Remove a student" << endl;
-		cout << " Enter 8: View student list" << endl;
-		cout << " Enter your choice: ";
-		cin >> choice;
-		if (choice >= 0 && choice <= 8)
+		while (choice != 0)
 		{
-			break;
+			cout << " Enter 0: To exit" << endl;
+			cout << " Enter 1: Import course" << endl;
+			cout << " Enter 2: Add new course" << endl;
+			cout << " Enter 3: Edit course" << endl;
+			cout << " Enter 4: Remove a course" << endl;
+			cout << " Enter 5: View course list" << endl;
+			cout << " Enter 6: Add a student to a course" << endl;
+			cout << " Enter 7: Remove a student" << endl;
+			cout << " Enter 8: View student list" << endl;
+			cout << " Enter your choice: ";
+			cin >> choice;
+			if (choice >= 0 && choice <= 8)
+			{
+				break;
+			}
+			else
+			{
+				cout << "Error! Choose agian:" << endl;
+			}
+			
 		}
-		else
-		{
-			cout << "Error! Choose agian:" << endl;
-		}
-		if (choice != 0 && (choice >= 1 && choice <= 8))
 			switch (choice)
 			{
 			case 1:
@@ -213,7 +216,6 @@ void courseMenu(int year, string semester)
 			}
 			}
 	}
-
 }
 void upperCase(string& name)
 {
