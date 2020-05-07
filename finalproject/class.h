@@ -4,29 +4,24 @@
 #include<iostream>
 #include<fstream>
 #include<iomanip>
-#include<vector>
 #include<string>
 #include<sstream>
+#include<vector>
+//#include"dataStructure.h"
+//#include"utility.h"
 using namespace std;
+//using namespace tt;
 
 struct date {
-	int m = 0, d = 0, y = 0;
-};
-
-struct account {
-	int ID = 0, status = 0;
-	string password;
+    int m = 0, d = 0, y = 0;
 };
 
 struct student {
-	int No = 0, id = 0;;
-	string Lastname, Firstname;
-	char gender = '0';
-	date DoB;
-	account acc;
-};
-struct clss {
-	vector<student> stL;
+    int number = 0;
+    int id = 0;
+    string lastName, firstName;
+    char gender = '0';
+    date DoB;
 };
 
 int MaxDayInMonth(int month, int year);
@@ -69,7 +64,7 @@ void DisPlayAllClassLine(vector<student>stL);
 void Edit1Student(student &st);
 
 // update the change of the information of a student that has the given id in his/her class.
-void UpateIn1Class(vector<student>& stL, int No, student st);
+void UpateIn1Class(vector<student>& stL, int number, student st);
 
 //update the change of the information of a student that has the given id in all his/her classes.
 void UpateInAllClass(vector<student>& stL, int id, student st);
@@ -80,7 +75,7 @@ void RemoveStudentFrom1Class(vector<student> &stL, int id, string classname);
 void RemoveStudentFromAllClass(vector<student>stL, int id);
 
 //erase a student that has the given id from class A and put into class B.
-void ChangeStudentFromClassAToClassB(vector<student>& stLA, vector<student>& stLB, int No, int& check, int id);
+void ChangeStudentFromClassAToClassB(vector<student>& stLA, vector<student>& stLB, int number, int& check, int id);
 
 //save to csv file.
 void ExportToCSVFile(ofstream& fsave, vector<student> stL);
@@ -106,22 +101,11 @@ void ExportFromProgram2(vector<student> stL, string fsname);
 //sort the class in ascending order.
 void SortClassInAscendingOrderByID(vector<student>& stL);
 
-//Check if the account has existed or not.
-int checkaccounteon(student st);
+//check if the name of the class is saved or not.
+int CheckClassnameSavedorNot(string classname);
 
-//Write a new account to data.
-void pushbacktoaccfile(student& st);
-//load the file which is holding all accounts's data.
-void loadaccsavefile(ifstream& fload, vector<account>& accL);
-
-//save all accounts's data to file.
-void saveaccount(ofstream& fsave, vector<account> accL);
-
-//Reactivate the disabled account.
-void activeacccount(student st);
-
-//disable the account has the ID of student who has already been remove.
-void disableaccount(student st);
+//add new class name.
+void AddClassname(string classname);
 
 
 //CLASS MANAGE MENU.
