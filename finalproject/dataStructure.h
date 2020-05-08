@@ -9,7 +9,6 @@ namespace tt
     struct date
     {
         int d = 0, m = 0, y = 0;
-        int d, m, y;
     };
 
     struct time
@@ -58,6 +57,8 @@ namespace tt
         //tt::vector<student *> students;
         std::string room;
     };
+
+    date parseToDate(std::string s);
 }
 
 #endif // DATASTRUCTURE_H_INCLUDED

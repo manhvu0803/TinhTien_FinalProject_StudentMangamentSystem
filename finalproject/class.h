@@ -8,11 +8,19 @@
 
 using namespace std;
 
-class stdnt
+class clss
 {
     public:
-
+        clss();
+        ~clss();
+        void menu();
+        int classPos(string className);
     private:
+        static const char* classDir;
+        static const char* classDat;
+        tt::vector<string> classes;
+
+        void import(ifstream& inFile, string className);
 };
 
 #endif
