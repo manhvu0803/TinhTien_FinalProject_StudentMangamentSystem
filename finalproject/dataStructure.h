@@ -2,13 +2,14 @@
 #define DATASTRUCTURE_H_INCLUDED
 
 #include <string>
-//#include "utility.h"
+#include "utility.h"
 
 namespace tt
 {
     struct date
     {
         int d = 0, m = 0, y = 0;
+        int d, m, y;
     };
 
     struct time
@@ -27,18 +28,21 @@ namespace tt
 
     struct student
     {
-        int number = 0;
-        int id = 0;
+        int number;
+        int id;
         std::string lastName, firstName;
-        char gender = '0'; // 'M' for male, 'F' for female
+        char gender; // 'M' for male, 'F' for female
         date DoB; // date of birth
     };
 
     struct score
     {
-        int number;
+        std::string cls; // class of the student
+        std::string studentName;
         int id; // ID of the student this score belongs to
         int mid, final, bonus, total;
+        tt::vector<date> checkedDate;
+        tt::vector<time> checkedTime;
     };
 
     struct course
