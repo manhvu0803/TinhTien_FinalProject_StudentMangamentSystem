@@ -2,13 +2,13 @@
 #define DATASTRUCTURE_H_INCLUDED
 
 #include <string>
-#include "utility.h"
+//#include "utility.h"
 
 namespace tt
 {
     struct date
     {
-        int d, m, y;
+        int d = 0, m = 0, y = 0;
     };
 
     struct time
@@ -27,10 +27,10 @@ namespace tt
 
     struct student
     {
-        int number;
-        int id;
+        int number = 0;
+        int id = 0;
         std::string lastName, firstName;
-        char gender; // 'M' for male, 'F' for female
+        char gender = '0'; // 'M' for male, 'F' for female
         date DoB; // date of birth
     };
 

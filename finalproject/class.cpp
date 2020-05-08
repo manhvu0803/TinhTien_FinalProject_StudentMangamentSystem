@@ -24,12 +24,12 @@ int MaxDayInMonth(int month, int year)
 	return maxday;
 }
 
-void AddOneStudent(vector<student>& stL)
+void AddOneStudent(vector<tt::student>& stL)
 {
 	string classname;
-	student nst;
+	tt::student nst;
 	int check = 0, count = 0, choice = -1;
-	vector<student>stLtemp;
+	vector<tt::student>stLtemp;
 	int temp = 10 * 10 * 10 * 10 * 10 * 10 * 10;
 	cout << "Please input the information of the new student" << endl;
 	cout << "ID           : ";
@@ -153,7 +153,7 @@ void AddOneStudent(vector<student>& stL)
 	stL.push_back(nst);
 }
 
-void CreateNewClass(vector<student>& stL, int& n)
+void CreateNewClass(vector<tt::student>& stL, int& n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -161,12 +161,12 @@ void CreateNewClass(vector<student>& stL, int& n)
 	}
 }
 
-void LoadFromCSVFile(ifstream& fload, vector<student>& stL)
+void LoadFromCSVFile(ifstream& fload, vector<tt::student>& stL)
 {
 	string temp;
 	string line;
 	string temp2;
-	student st;
+	tt::student st;
 	int count = 0;
 	getline(fload, line);
 	while (getline(fload, temp, ','))
@@ -191,7 +191,7 @@ void LoadFromCSVFile(ifstream& fload, vector<student>& stL)
 	}
 }
 
-void ImportToProgram(vector<student>&stL, string flname)
+void ImportToProgram(vector<tt::student>&stL, string flname)
 {
 	ifstream fload;
 	fload.open(flname);
@@ -206,7 +206,7 @@ void ImportToProgram(vector<student>&stL, string flname)
 	}
 }
 
-void DisPlay1Student(student st)
+void DisPlay1Student(tt::student st)
 {
 	int distance = st.lastName.size() + 4;
 	int distance2 = (15 - (st.lastName.size() - 8)) + st.firstName.size();
@@ -233,7 +233,7 @@ void DisPlay1Student(student st)
 	cout << "/" << st.DoB.y << endl;
 }
 
-void DisPlay1StudentLine(student st)
+void DisPlay1StudentLine(tt::student st)
 {
 	cout << endl;
 	cout << "No: " << st.number << endl;
@@ -262,7 +262,7 @@ void DisPlay1StudentLine(student st)
 	cout << "/" << st.DoB.y << endl;
 }
 
-void DisPlayClass(vector<student> stL)
+void DisPlayClass(vector<tt::student> stL)
 {
 	int n = stL.size();
 	cout << setw(5) << "No" << setw(6) << "ID" << setw(18) << "Lastname" << setw(24) << "Firstname" << setw(15) << "Gender"
@@ -274,7 +274,7 @@ void DisPlayClass(vector<student> stL)
 	cout << endl;
 }
 
-void DisPlayClassLine(vector<student> stL)
+void DisPlayClassLine(vector<tt::student> stL)
 {
 	int n = stL.size();
 	for (int i = 0; i < n; i++)
@@ -285,7 +285,7 @@ void DisPlayClassLine(vector<student> stL)
 	cout << endl;
 }
 
-void DisPlayAllClass(vector<student>stL)
+void DisPlayAllClass(vector<tt::student>stL)
 {
 	ifstream fload;
 	string classname, fclassname;
@@ -312,7 +312,7 @@ void DisPlayAllClass(vector<student>stL)
 	}
 }
 
-void DisPlayAllClassLine(vector<student>stL)
+void DisPlayAllClassLine(vector<tt::student>stL)
 {
 	ifstream fload;
 	string classname, fclassname;
@@ -339,7 +339,7 @@ void DisPlayAllClassLine(vector<student>stL)
 	}
 }
 
-void Edit1Student(student &st)
+void Edit1Student(tt::student &st)
 {
 	int choice = -1;
 	int temp = 10 * 10 * 10 * 10 * 10 * 10 * 10;
@@ -372,7 +372,7 @@ void Edit1Student(student &st)
 			int idtemp, check = 0, count = 0;
 			string classname;
 			idtemp = st.id;
-			vector<student>stLtemp;
+			vector<tt::student>stLtemp;
 			cout << "Input new ID: ";
 			cin >> st.id;
 			while (cin.fail() || st.id < temp)
@@ -515,7 +515,7 @@ void Edit1Student(student &st)
 	DisPlay1StudentLine(st);
 }
 
-void UpateIn1Class(vector<student>& stL, int number, student st)
+void UpateIn1Class(vector<tt::student>& stL, int number, tt::student st)
 {
 	int n = stL.size();
 	int choice;
@@ -545,7 +545,7 @@ void UpateIn1Class(vector<student>& stL, int number, student st)
 	DisPlayClass(stL);
 }
 
-void UpateInAllClass(vector<student>& stL, int id, student st)
+void UpateInAllClass(vector<tt::student>& stL, int id, tt::student st)
 {
 	ifstream fload;
 	int choices, choice;
@@ -612,7 +612,7 @@ void UpateInAllClass(vector<student>& stL, int id, student st)
 	}
 }
 
-void RemoveStudentFrom1Class(vector<student>& stL, int id, string classname)
+void RemoveStudentFrom1Class(vector<tt::student>& stL, int id, string classname)
 {
 	int n = stL.size();
 	int choice;
@@ -647,7 +647,7 @@ void RemoveStudentFrom1Class(vector<student>& stL, int id, string classname)
 	}
 }
 
-void RemoveStudentFromAllClass(vector<student>stL, int id)
+void RemoveStudentFromAllClass(vector<tt::student>stL, int id)
 {
 	ifstream fload;
 	string classname;
@@ -700,7 +700,7 @@ void RemoveStudentFromAllClass(vector<student>stL, int id)
 	}
 }
 
-void ChangeStudentFromClassAToClassB(vector<student>& stLA, vector<student>& stLB, int number, int& check, int id)
+void ChangeStudentFromClassAToClassB(vector<tt::student>& stLA, vector<tt::student>& stLB, int number, int& check, int id)
 {
 	int nA = stLA.size();
 	int nB = stLB.size();
@@ -736,7 +736,7 @@ void ChangeStudentFromClassAToClassB(vector<student>& stLA, vector<student>& stL
 	}
 }
 
-void FindStudentInAllClass(vector<student>& stL, int id, int& check, student& st, string& classname, int& count)
+void FindStudentInAllClass(vector<tt::student>& stL, int id, int& check, tt::student& st, string& classname, int& count)
 {
 	ifstream fload;
 	string flname;
@@ -816,7 +816,7 @@ void FindStudentInAllClass(vector<student>& stL, int id, int& check, student& st
 	}
 }
 
-void ExportToCSVFile(ofstream& fsave, vector<student> stL)
+void ExportToCSVFile(ofstream& fsave, vector<tt::student> stL)
 {
 	int size = stL.size();
 	fsave << "No," << "ID," << "Lastname," << "Firstname," << "Gender," << "Date of birth" << endl;
@@ -827,7 +827,7 @@ void ExportToCSVFile(ofstream& fsave, vector<student> stL)
 	}
 }
 
-void ExportFromProgram(vector<student>stL, string fsname)
+void ExportFromProgram(vector<tt::student>stL, string fsname)
 {
 	ofstream fsave;
 	int choice = -1;
@@ -844,7 +844,7 @@ void ExportFromProgram(vector<student>stL, string fsname)
 	}
 }
 
-void FindStudentIn1Class(vector<student> stL, int id, string classname, int& check, student& st, int& count)
+void FindStudentIn1Class(vector<tt::student> stL, int id, string classname, int& check, tt::student& st, int& count)
 {
 	check = 0;
 	count = 0;
@@ -867,9 +867,9 @@ void FindStudentIn1Class(vector<student> stL, int id, string classname, int& che
 	}
 }
 
-void LoadFromDATFile(ifstream& fload, vector<student>& stL)
+void LoadFromDATFile(ifstream& fload, vector<tt::student>& stL)
 {
-	student st;
+	tt::student st;
 	string temp, line;
 	while(fload>>st.number)
 	{
@@ -889,7 +889,7 @@ void LoadFromDATFile(ifstream& fload, vector<student>& stL)
 	}
 }
 
-void ImportToProgram2(vector<student>& stL, string flname)
+void ImportToProgram2(vector<tt::student>& stL, string flname)
 {
 	ifstream fload;
 	fload.open(flname);
@@ -904,7 +904,7 @@ void ImportToProgram2(vector<student>& stL, string flname)
 	}
 }
 
-void SaveToDATFile(ofstream& fsave, vector<student> stL)
+void SaveToDATFile(ofstream& fsave, vector<tt::student> stL)
 {
 	int n = stL.size();
 	for (int i = 0; i < n; i++)
@@ -922,7 +922,7 @@ void SaveToDATFile(ofstream& fsave, vector<student> stL)
 	}
 }
 
-void ExportFromProgram2(vector<student> stL, string fsname)
+void ExportFromProgram2(vector<tt::student> stL, string fsname)
 {
 	ofstream fsave;
 	fsave.open(fsname);
@@ -938,10 +938,10 @@ void ExportFromProgram2(vector<student> stL, string fsname)
 	}
 }
 
-void SortClassInAscendingOrderByID(vector<student>& stL)
+void SortClassInAscendingOrderByID(vector<tt::student>& stL)
 {
 	int Notemp;
-	student sttemp;
+	tt::student sttemp;
 	int n = stL.size();
 	for (int i = 0; i < n - 1; i++)
 	{
@@ -1004,7 +1004,7 @@ void AddClassname(string classname)
 
 void ManageClassFunction()
 {
-	vector<student> stL;
+	vector<tt::student> stL;
 	int choice = -1;
 	int temp = 10 * 10 * 10 * 10 * 10 * 10 * 10;
 	string filepath = "data/classes/";
@@ -1084,7 +1084,7 @@ void ManageClassFunction()
 				SortClassInAscendingOrderByID(stL);
 				string fsclassname1 = filepath + classname1 + ".dat";
 				ExportFromProgram2(stL, fsclassname1);
-				if (CheckClassnameSavedorNot(classname1) == 0);
+				if (CheckClassnameSavedorNot(classname1) == 0)
 				{
 					AddClassname(classname1);
 				}
@@ -1227,7 +1227,7 @@ void ManageClassFunction()
 			int choice32, choice3 = -1, choice3s;
 			string classname3;
 			string flclassname3;
-			student st3;
+			tt::student st3;
 			string fsclassname3;
 			cout << endl << "Do you know the class or the ID of the student you want to edit?" << endl;
 			cout << "Enter 1 to say input his/her class." << endl;
@@ -1691,7 +1691,7 @@ void ManageClassFunction()
 		{
 			stL.clear();
 			int check4 = 0, id4, count4 = 1, count42 = 0, choice4 = -1, choice42, choice4s;
-			student st4;
+			tt::student st4;
 			string classname4;
 			string flclassname4, fsclassname4;
 			cout << "Do you know the class or the ID of the student you want to remove?" << endl;
@@ -1986,9 +1986,9 @@ void ManageClassFunction()
 		}
 		case 5:
 		{
-			vector<student>stLA;
-			student st5;
-			vector<student>stLB;
+			vector<tt::student>stLA;
+			tt::student st5;
+			vector<tt::student>stLB;
 			stLA.clear();
 			stLB.clear();
 			string clsAname, clsBname;
