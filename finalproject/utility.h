@@ -63,6 +63,7 @@ namespace tt
             size_t _capacity;
             size_t _size;
 
+            vector(const vector& srcVector);
             void reallocate(size_t newCap);
     };
 
