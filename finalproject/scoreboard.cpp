@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void ViewStudentScoreBoard1(vector<student> A,vector<score> B) {
+void ViewStudentScoreBoard(vector<score> B) {
 	cout << "\n\n\t\t=====YOUR SCOREBOARD=====\n";
 	for (int i = 0; i < 87; i++) {
 		cout << "-";
@@ -20,9 +20,9 @@ void ViewStudentScoreBoard1(vector<student> A,vector<score> B) {
 		cout << "-";
 	}
 	cout << "\n";
-	for (int i = 0; i < A.size(); i++) {
-		cout << left << setw(10) << A[i].id << left << setw(7) << B[i].Class << left << setw(30) << A[i].lastName + " " + A[i].firstName
-			<< left << setw(10) << B[i].mid << left << setw(10) << B[i].final << left << setw(10) << B[i].bonus
+	for (int i = 0; i < B.size(); i++) {
+		cout << left << setw(10) << B[i].id << left << setw(7) << B[i].cls << left << setw(30) << B[i].studentName
+			<< left << setw(10) << B[i].mid << left << setw(10) << B[i].final << left << setw(10) << B[i].total
 			<< left << setw(10) << B[i].bonus << endl;
 		for (int i = 0; i < 87; i++) {
 			cout << "-";
@@ -38,14 +38,14 @@ void FindStudent(student &A, int ID) {
 	vector<student> list;
 	int a;
 	int check = 0;
-	fin.open("data/classes/class.dat");
+	fin.open("./data/classes/class.dat");
 	if (!fin.is_open()) {
 		cout << "Error" << endl;
 	}
 	else {
 		while (fin >> classname) {
 			list.clear();
-			inputpath = "data/classes/" + classname + ".dat";
+			inputpath = "./data/classes/" + classname + ".dat";
 			LoadClass(list, inputpath);
 			for (int i = 0; i < list.size(); i++) {
 				if (list[i].id == ID) {
@@ -110,7 +110,7 @@ void LoadStudentCourse(ifstream& file, vector<string>& course, string inputpath)
 
 	}
 }
-void SearchCourse() {
+void SearchCourse(string &Year,string &Semester ,string &Course) {
 	ifstream file;
 	int choice1, choice2, choice3, choice4;
 	vector<string> year;
@@ -118,8 +118,8 @@ void SearchCourse() {
 	vector<course> course;
 	string inputpath;
 
-	inputpath = "data/course/year.dat";
-	LoadFile(inputpath, year);
+	inputpath = "./data/course/year.dat";
+	LoadYearFile(inputpath, year);
 	cout << " Year(s):\n";
 	for (int i = 0; i < year.size(); i++) {
 		cout << "(" << i << ") " << year[i] << endl;
@@ -133,7 +133,7 @@ void SearchCourse() {
 		cin >> choice1;
 	}
 
-	inputpath = "data/course/" + year[choice1] + "/semester.dat";
+	inputpath = "./data/course/" + year[choice1] + "/semester.dat";
 	LoadFile(inputpath, semester);
 	cout << "Semester(s):\n";
 	for (int i = 0; i < semester.size(); i++) {
@@ -148,7 +148,7 @@ void SearchCourse() {
 		cin >> choice2;
 	}
 
-	inputpath = "data/course/" + year[choice1] +"/"+ semester[choice2] + "/course.dat";
+	inputpath = "./data/course/" + year[choice1] +"/"+ semester[choice2] + "/course.dat";
 	LoadCourseFile(course, inputpath);
 	cout << "Course(s):\n";
 	for (int i = 0; i < course.size(); i++) {
@@ -163,19 +163,9 @@ void SearchCourse() {
 		cin >> choice3;
 	}
 
-	cout << "Do you want to view scoreboard of the whole course or only some students ?" << endl;
-	cout << "(0) Whole course" << endl;
-	cout << "(1) Selected Students" << endl;
-	cout << "Your choice: ";
-	cin >> choice4;
-	while (choice4 < 0 || choice4 > 1 || cin.fail()) {
-		cin.clear();
-		cout << "Error , try again" << endl;
-		cout << "Your choice: ";
-		cin >> choice4;
-	}
-	inputpath = "data/course/" + year[choice1] +"/"+ semester[choice2] + "/" +course[choice3].id + ".dat";
-	PrintStudentScore(inputpath, choice4,year[choice1],semester[choice2],course[choice3].id);
+	Year = year[choice1];
+	Semester = semester[choice2];
+	Course = course[choice3].id;
 
 }
 void LoadFile(string inputpath, vector<string> &A) {
@@ -202,8 +192,9 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 	int id,number,number1,decide;
 	student A;
 	score tmp;
-	student tmp1;
-	string trash, last, middle, first;
+	date tmp1;
+	Time tmp2;
+	string line, last, middle, first;
 	if (choice == 0) {
 		fin.open(inputpath);
 		if (!fin.is_open()) {
@@ -213,20 +204,17 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 			while (fin >> id) {
 				/*FindStudent(A, id);
 				Student.push_back(A);*/
-				scoreboard = "data/course/" + year +"/"+ semester +"/"+ course +"/"+ to_string(id) + ".dat";
+				scoreboard = "./data/course/" + year +"/"+ semester +"/"+ course +"/"+ to_string(id) + ".dat";
 				fin1.open(scoreboard);
 				if (!fin1.is_open()) {
 					cout << "Student " << id << " can't be found" << endl;
 				}
 				else {
-					tmp1.id = id;
-					getline(fin1, trash);
-					getline(fin1, last, ' ');
-					getline(fin1, middle, ' ');
-					getline(fin1, first);
-					tmp1.lastName = last + " " + middle;
-					tmp1.firstName = first;
-					Student.push_back(tmp1);
+					tmp.id = id;
+					getline(fin1, line);
+					tmp.cls = line;
+					getline(fin1, line);
+					tmp.studentName = line;
 					fin1 >> tmp.mid;
 					fin1.ignore(1);
 					fin1 >> tmp.final;
@@ -234,12 +222,28 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 					fin1 >> tmp.total;
 					fin1.ignore(1);
 					fin1 >> tmp.bonus;
+					fin1.ignore(1);
+					while (fin1 >> tmp1.y) {
+						fin1.ignore(1);
+						fin1 >> tmp1.m;
+						fin1.ignore(1);
+						fin1 >> tmp1.d;
+						fin1.ignore(1);
+						tmp.checkedDate.push_back(tmp1);
+						fin1 >> tmp2.h;
+						fin1.ignore(1);
+						fin1 >> tmp2.m;
+						fin1.ignore(1);
+						fin1 >> tmp2.s;
+						fin1.ignore(1);
+						tmp.checkedTime.push_back(tmp2);
+					}
 					Score.push_back(tmp);
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard1(Student, Score);
-			ExportCsv(Student, Score);
+			ViewStudentScoreBoard(Score);
+			ExportCsv(Score);
 		}
 		fin.close();
 	}
@@ -286,20 +290,17 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				}
 			} while (decide == 1);
 			for (int i = 0; i < Select.size();i++) {
-				scoreboard = "data/course/" + year +"/"+ semester +"/"+ course +"/"+ to_string(Select[i]) + ".dat";
+				scoreboard = "./data/course/" + year +"/"+ semester +"/"+ course +"/"+ to_string(Select[i]) + ".dat";
 				fin1.open(scoreboard);
 				if (!fin1.is_open()) {
 					cout << "Can't open file score" << endl;
 				}
 				else {
-					tmp1.id = ID[i];
-					getline(fin1, tmp.Class);
-					getline(fin1, last, ' ');
-					getline(fin1, middle, ' ');
-					getline(fin1, first);
-					tmp1.lastName = last + " " + middle;
-					tmp1.firstName = first;
-					Student.push_back(tmp1);
+					tmp.id = id;
+					getline(fin1, line);
+					tmp.cls = line;
+					getline(fin1, line);
+					tmp.studentName = line;
 					fin1 >> tmp.mid;
 					fin1.ignore(1);
 					fin1 >> tmp.final;
@@ -307,12 +308,28 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 					fin1 >> tmp.total;
 					fin1.ignore(1);
 					fin1 >> tmp.bonus;
+					fin1.ignore(1);
+					while (fin1 >> tmp1.y) {
+						fin1.ignore(1);
+						fin1 >> tmp1.m;
+						fin1.ignore(1);
+						fin1 >> tmp1.d;
+						fin1.ignore(1);
+						tmp.checkedDate.push_back(tmp1);
+						fin1 >> tmp2.h;
+						fin1.ignore(1);
+						fin1 >> tmp2.m;
+						fin1.ignore(1);
+						fin1 >> tmp2.s;
+						fin1.ignore(1);
+						tmp.checkedTime.push_back(tmp2);
+					}
 					Score.push_back(tmp);
-					fin.clear();
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard1(Student, Score);
+			ViewStudentScoreBoard(Score);
+			ExportCsv(Score);
 		}
 	}
 	else {
@@ -361,39 +378,36 @@ void LoadCourseFile(vector<course>& list, string filePath)
 	}
 	myFile.close();
 }
-void ExportCsv(vector<student>A,vector<score>B) {
+void ExportCsv(vector<score>B) {
 	ofstream fout;
-	fout.open("export/scoreboard.csv");
+	fout.open("./export/scoreboard.csv");
 	if (!fout.is_open()) {
 		cout << "Can't open file export" << endl;
 	}
 	else {
-		fout << "ID," << "Class," << "LastName," << "FirstName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
-		for (int i = 0; i < A.size(); i++) {
-			fout << A[i].id << "," << B[i].Class << "," << A[i].lastName << "," << A[i].firstName << "," << B[i].mid << "," << B[i].final << "," << B[i].bonus << "," << B[i].bonus << endl;
+		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
+		for (int i = 0; i < B.size(); i++) {
+			fout << B[i].id << "," << B[i].cls << "," << B[i].studentName << ","  << B[i].mid << "," << B[i].final << "," << B[i].total << "," << B[i].bonus << endl;
 		}
 	}
 	fout.close();
 }
-void ImportCsv(vector<student>&A, vector<score>&B) {
+void ImportCsv(string importpath,vector<score>&B) {
 	ifstream fin;
 	string trash,tmp;
-	student tmp1;
 	score tmp2;
-	fin.open("import/scoreboard.csv");
+	fin.open(importpath);
 	if (!fin.is_open()) {
 		cout << "Can't open file import" << endl;
 	}
 	else {
 		getline(fin, trash);
 		while (getline(fin, tmp, ',')) {
-			tmp1.id = stoi(tmp);
+			tmp2.id = stoi(tmp);
 			getline(fin, tmp, ',');
-			tmp2.Class = tmp;
+			tmp2.cls = tmp;
 			getline(fin, tmp, ',');
-			tmp1.lastName = tmp;
-			getline(fin, tmp, ',');
-			tmp1.firstName = tmp;
+			tmp2.studentName = tmp;
 			getline(fin, tmp, ',');
 			tmp2.mid = stof(tmp);
 			getline(fin, tmp, ',');
@@ -402,9 +416,166 @@ void ImportCsv(vector<student>&A, vector<score>&B) {
 			tmp2.total = stof(tmp);
 			getline(fin, tmp);
 			tmp2.bonus = stof(tmp);
-			A.push_back(tmp1);
 			B.push_back(tmp2);
 		}
 	}
 	fin.close();
+}
+void LoadYearFile(string inputpath, vector<string>& A) {
+	ifstream fin;
+	string tmp;
+	string year1, year2;
+	fin.open(inputpath);
+	if (!fin.is_open()) {
+		cout << "File cannot be found";
+	}
+	else {
+		while (getline(fin, year1,' ')) {
+			getline(fin, year2);
+			tmp = year1 + "-" + year2;
+			A.push_back(tmp);
+		}
+		fin.close();
+	}
+}
+void DecideToView(string year , string semester, string course) {
+	int choice;
+	string inputpath;
+	cout << "Do you want to view scoreboard of the whole course or only some students ?" << endl;
+	cout << "(0) Whole course" << endl;
+	cout << "(1) Selected Students" << endl;
+	cout << "Your choice: ";
+	cin >> choice;
+	while (choice < 0 || choice > 1 || cin.fail()) {
+		cin.clear();
+		cout << "Error , try again" << endl;
+		cout << "Your choice: ";
+		cin >> choice;
+	}
+	inputpath = "./data/course/" + year + "/" + semester + "/" + course + ".dat";
+	PrintStudentScore(inputpath, choice, year, semester, course);
+
+}
+void EditScore(string inputpath, string year, string semester , string course) {
+	ifstream fin, fin1;
+	int id,number,choice,choice1 = 0;
+	vector<int>ID;
+	string studentfile, line;
+	vector<score>Score;
+	score tmp;
+	date tmp1;
+	Time tmp2;
+	fin.open(inputpath);
+	if (!fin.is_open()) {
+		cout << "Can't edit score" << endl;
+	}
+	else {
+		while (fin >> id) {
+			ID.push_back(id);
+		}
+		cout << "Student(s) of this course: " << endl;
+		for (int i = 0; i < ID.size(); i++) {
+			cout << "(" << i << ") : " << ID[i] << endl;
+		}
+		cout << "Enter the ordinal number of the student you want to edit score: ";
+		cin >> number;
+		cin.ignore(1);
+		studentfile = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(ID[number])+ ".dat";
+		fin1.open(studentfile);
+		if (!fin1.is_open()) {
+			cout << "Can't open student file to edit" << endl;
+		}
+		else {
+			tmp.id = id;
+			getline(fin1, line);
+			tmp.cls = line;
+			getline(fin1, line);
+			tmp.studentName = line;
+			fin1 >> tmp.mid;
+			fin1.ignore(1);
+			fin1 >> tmp.final;
+			fin1.ignore(1);
+			fin1 >> tmp.total;
+			fin1.ignore(1);
+			fin1 >> tmp.bonus;
+			fin1.ignore(1);
+			while (fin1 >> tmp1.y ) {
+				fin1.ignore(1);
+				fin1 >> tmp1.m;
+				fin1.ignore(1);
+				fin1 >> tmp1.d;
+				fin1.ignore(1);
+				tmp.checkedDate.push_back(tmp1);
+				fin1 >> tmp2.h;
+				fin1.ignore(1);
+				fin1 >> tmp2.m;
+				fin1.ignore(1);
+				fin1 >> tmp2.s;
+				fin1.ignore(1);
+				tmp.checkedTime.push_back(tmp2);
+			}
+			Score.push_back(tmp);
+		}
+		fin1.close();
+		ViewStudentScoreBoard(Score);
+		cout << "\n\nDo you want to edit this student's score ?" << endl;
+		cout << "(1) Yes" << endl << "(2) No" << endl;
+		cout << "Your choice : ";
+		cin >> choice;
+		while (choice != 1 && choice != 2 || cin.fail()) {
+			cin.clear();
+			cout << "Error , try again" << endl;
+			cout << "Your choice : ";
+			cin >> choice;
+		}
+		do{
+			if (choice == 1) {
+				cout << "\nEnter the new score: " << endl;
+				cout << "Midterm score : ";
+				cin >> Score[0].mid;
+				cin.ignore(1);
+				cout << "Final score : ";
+				cin >> Score[0].final;
+				cin.ignore(1);
+				cout << "Total score : ";
+				cin >> Score[0].total;
+				cin.ignore(1);
+				cout << "Bonus : ";
+				cin >> Score[0].bonus;
+				cin.ignore(1);
+				ViewStudentScoreBoard(Score);
+				cout << "\nDo you want to edit again ?" << endl;
+				cout << "(1) Yes " << endl << "(2) No" << endl;
+				cout << "Your choice: ";
+				cin >> choice1;
+				cin.ignore(1);
+				while (choice1 != 1 && choice1 != 2 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+				}
+			}
+		} while (choice1 == 1);
+		SaveFileScore(studentfile, Score[0]);
+		fin1.close();
+	}
+	fin.close();
+}
+void SaveFileScore(string outputpath, score student) {
+	ofstream fout;
+	fout.open(outputpath);
+	if (!fout.is_open()) {
+		cout << "Can't open file to save" << endl;
+	}
+	else {
+		fout << student.cls << endl;
+		fout << student.studentName << endl;
+		fout << student.mid << " " << student.final << " " << student.total << " " << student.bonus << endl;
+		for (int i = 0; i < student.checkedDate.size(); i++) {
+			fout << student.checkedDate[i].y << " " << student.checkedDate[i].m << " " << student.checkedDate[i].d << " " << 
+				student.checkedTime[i].h << " " << student.checkedTime[i].m << " " << student.checkedTime[i].s << endl;
+		}
+	}
+	fout.close();
 }

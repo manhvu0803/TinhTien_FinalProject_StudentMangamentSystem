@@ -39,10 +39,12 @@ struct student
 
 struct score
 {
-	string Class;
-	int number;
+	std::string cls; // class of the student
+	std::string studentName;
 	int id; // ID of the student this score belongs to
 	float mid, final, bonus, total;
+	vector<date> checkedDate;
+	vector<Time> checkedTime;
 };
 
 /*struct score
@@ -62,15 +64,19 @@ struct course
 	//std::vector<student *> students;
 	std::string room;
 };
-void ViewStudentScoreBoard1(vector<student> A, vector<score> B);
+void ViewStudentScoreBoard(vector<score> B);
 void FindStudent(student& A, int ID);
 void LoadClass(vector<student>& list, string inputpath);
 void LoadStudent(ifstream& fin, vector<student>& list);
 void LoadStudentCourse(ifstream& file, vector<string>& course, string inputpath);
-void SearchCourse();
+void SearchCourse(string& Year, string& Semester, string& Course);
 void LoadFile(string inputpath, vector<string>& A);
 void PrintStudentScore(string inputpath, int choice, string year, string semester, string course);
 void LoadCourseFile(vector<course>& list, string filePath);
-void ExportCsv(vector<student>A, vector<score>B);
-void ImportCsv(vector<student>& A, vector<score>& B);
-#endif
+void ExportCsv(vector<score>B);
+void ImportCsv(string importpath,vector<score>& B);
+void LoadYearFile(string inputpath, vector<string>& A);
+void DecideToView(string year, string semester, string course);
+void EditScore(string inputpath, string year, string semester, string course);
+void SaveFileScore(string outputpath, score student);
+#endif _SCOREBOARD_H_INCLUDED_
