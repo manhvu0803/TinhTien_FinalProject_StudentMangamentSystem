@@ -311,6 +311,9 @@ namespace tt
         ptr = tmp;
         _capacity = newCap;
     }
+
+    // Return all cap version of input string, support YYYY-MM-DD and MM/DD/YYY
+    std::string capitalize(std::string s);
 }
 
 #endif // UTILITY_H_INCLUDED

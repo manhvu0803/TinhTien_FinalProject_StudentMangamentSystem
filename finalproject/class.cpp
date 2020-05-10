@@ -1,9 +1,16 @@
 #include "class.h"
+#include "dataStructure.h"
+#include "utility.h"
 #include <sstream>
 #include <fstream>
+#include <limits>
+
+using namespace std;
 
 const char* clss::classDir = "data\\classes\\";
 const char* clss::classDat = "data\\classes\\class.dat";
+
+const auto ignoreMax = numeric_limits<streamsize>::max();
 
 clss::clss()
 {
@@ -16,7 +23,6 @@ clss::clss()
 
 clss::~clss()
 {
-
 }
 
 int clss::classPos(string className)
@@ -26,23 +32,63 @@ int clss::classPos(string className)
     return -1;
 }
 
-void toFile(string dir, tt::vector<tt::student>& newClass)
+void inline clss::studentToStream(ostream& stream, const tt::student& newStd)
 {
-    ofstream file(dir);
-    for (int i = 0, lim = newClass.size(); i < lim; ++i) {
-        file << newClass[i].number << '\n' << newClass[i].id << '\n';
-        file << newClass[i].lastName << '\n' << newClass[i].firstName << '\n' << newClass[i].gender << '\n';
-        file << newClass[i].DoB.y << '\n' << newClass[i].DoB.m << '\n' << newClass[i].DoB.d << '\n';
-    }
+    stream << newStd.number << '\n' << newStd.id << '\n';
+    stream << newStd.lastName << '\n' << newStd.firstName << '\n' << newStd.gender << '\n';
+    stream << newStd.DoB.y << ' ' << newStd.DoB.m << ' ' << newStd.DoB.d << ' ';
+}
+
+void clss::classesToFile()
+{
+    ofstream file(classDat);
+    for (int i = 0, lim = classes.size(); i < lim; ++i)
+        file << classes[i] << '\n';
+}
+
+void clss::studentToFile(string className, tt::student newStd)
+{
+    ofstream file(classDir + className + ".dat", ios::app);
+    studentToStream(file, newStd);
     file.close();
 }
 
-void clss::import(ifstream& inFile, string className)
+void clss::studentsToFile(string className, tt::vector<tt::student>& newClass)
+{
+    ofstream file(classDir + className + ".dat");
+    for (int i = 0, lim = newClass.size(); i < lim; ++i)
+        studentToStream(file, newClass[i]);
+    file.close();
+}
+
+tt::student clss::getStudent(string className, int id)
+{
+    tt::student res;
+    res.id = -1;
+    ifstream file(classDir + className + ".dat");
+    if (!file.is_open()) return res;
+    while (file >> res.number) {
+        file >> res.id;
+        if (id == res.id) {
+            file.ignore(ignoreMax, '\n');
+            getline(file, res.lastName);
+            getline(file, res.firstName);
+            file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+        }
+        else {
+            for (int i = 0; i < 4; ++i)
+                file.ignore(ignoreMax, '\n');
+        }
+    }
+    file.close();
+    res.id = -1;
+    return res;
+}
+
+void clss::import(istream& inFile, string className)
 {
     for (int i = 0, lim = className.length(); i < lim; ++i)
         className[i] = toupper(className[i]);
-
-    classes.push_back(classDir + className + ".dat");
 
     ofstream outFile(classDir + className + ".dat");
     string s;
@@ -62,18 +108,51 @@ void clss::import(ifstream& inFile, string className)
         getline(ss, input, ',');
         outFile << (char)toupper(input[0]) << '\n';
         getline(ss, input, ',');
-        tt::date DoB = tt::parseToDate(input);
+        tt::date DoB = tt::stringToDate(input);
         outFile << DoB.y << ' ' << DoB.m << ' ' << DoB.d << '\n';
     }
-
-    inFile.close();
     outFile.close();
+
+    classes.push_back(className);
+    classesToFile();
+}
+
+tt::student clss::addStudentMenu(string className, int id)
+{
+    tt::student newStd;
+    newStd.id = id;
+    cout << "Student number: ";
+    cin >> newStd.number;
+    cout << "Family name and surname: ";
+    cin.ignore(ignoreMax, '\n');
+    getline(cin, newStd.lastName);
+    cout << "Given name: ";
+    getline(cin, newStd.firstName);
+    do {
+        cout << "Gender (F/M): ";
+        cin >> newStd.gender;
+        newStd.gender = toupper(newStd.gender);
+        cin.clear();
+        cin.ignore(ignoreMax, '\n');
+        if (cin.fail() || (newStd.gender != 'F' && newStd.gender != 'M'))
+            cout << "Invalid gender\n";
+        else break;
+    }
+    while (true);
+    while (true) {
+        cout << "Date of birth (YYYY MM DD): ";
+        cin >> newStd.DoB.y >> newStd.DoB.m >> newStd.DoB.d;
+        cin.clear();
+        cin.ignore(ignoreMax, '\n');
+        if (cin.fail() || tt::checkDate(newStd.DoB) < 0) cout << "Invalid input\n";
+        else break;
+    }
+    return newStd;
 }
 
 void clss::menu()
 {
     cout << "===================== Class menu =====================\n\n";
-    cout << "Please enter your choice\n";
 
     int choice;
     do {
@@ -89,7 +168,7 @@ void clss::menu()
         cout << "Your choice: ";
         cin >> choice;
         cin.clear();
-        cin.ignore(1024, '\n');
+        cin.ignore(ignoreMax, '\n');
         if (cin.fail()) choice = -1;
 
         switch (choice) {
@@ -97,19 +176,19 @@ void clss::menu()
                 break;
             case 1: {
                 string importDir, className;
-                cout << "\nThe csv must be in format: No.,Student ID,Fullname,Gender,DoB\n";
-                cout << "Please enter the file directory to import: ";
+                cout << "\nThe csv file must be in format: No.,Student ID,Full name,Gender,Date of birth\n";
+                cout << "File directory to import: ";
                 cin >> importDir;
                 ifstream inFile(importDir);
                 if (!inFile.is_open()) {
                     cout << importDir << " not found\n\n";
                     break;
                 }
-                cout << "Please enter the class' name: ";
+                cout << "Class name: ";
                 cin >> className;
                 char cfm = 'y';
                 if (classPos(className) > -1) {
-                    cout << className << " is already existed\nDo you want to overwrite it? (Y/N)";
+                    cout << className << " is already existed\nDo you want to overwrite it? (Y/N): ";
                     cin >> cfm;
                 }
                 if (cfm == 'Y' || cfm == 'y') {
@@ -117,6 +196,38 @@ void clss::menu()
                     cout << "Import successfully\n\n";
                 }
                 inFile.close();
+                break;
+            }
+            case 2: {
+                string className;
+                cout << "\nClass to add new student: ";
+                cin >> className;
+                className = tt::capitalize(className);
+                if (classPos(className) == -1) {
+                    cout << "Class " << className << " doesn't exist. Do you want to create it? (Y/N): ";
+                    char cfm;
+                    cin >> cfm;
+                    cin.clear();
+                    cin.ignore(ignoreMax, '\n');
+                    if (cfm == 'y' || cfm == 'Y') {
+                        classes.push_back(className);
+                        cout << "Created " << className << '\n';
+                    }
+                    else {
+                        cout << "Aborted\n\n";
+                        break;
+                    }
+                }
+                cout << "\nNew student info\n";
+                cout << "Student ID: ";
+                int id;
+                cin >> id;
+                if (getStudent(className, id).id > -1) {
+                    cout << "ID " << id << " is already existed\n";
+                    break;
+                }
+                studentToFile(className, addStudentMenu(className, id));
+                cout << "Student added\n\n";
                 break;
             }
             default:
