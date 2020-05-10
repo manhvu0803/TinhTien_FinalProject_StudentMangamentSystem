@@ -8,7 +8,7 @@ namespace tt
 {
     struct date
     {
-        int d, m, y;
+        int d = 0, m = 0, y = 0;
     };
 
     struct time
@@ -57,6 +57,11 @@ namespace tt
         //tt::vector<student *> students;
         std::string room;
     };
+
+    // Check input for invalid month (return -1) or invalid day (return -2). Return 1 if valid
+    int checkDate(date d);
+    // Parse string to date struct, support YYYY-MM-DD and MM/DD/YYYY
+    date stringToDate(std::string s);
 }
 
 #endif // DATASTRUCTURE_H_INCLUDED

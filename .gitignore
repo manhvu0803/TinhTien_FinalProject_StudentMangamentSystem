@@ -10,3 +10,4 @@ obj
 Debug
 .vs
 .sln
+*.csv

@@ -63,6 +63,7 @@ namespace tt
             size_t _capacity;
             size_t _size;
 
+            vector(const vector& srcVector);
             void reallocate(size_t newCap);
     };
 
@@ -311,6 +312,15 @@ namespace tt
         ptr = tmp;
         _capacity = newCap;
     }
+
+    // Return all cap version of input string, support YYYY-MM-DD and MM/DD/YYY
+    std::string capitalize(std::string s);
+
+    // Create folder
+    int makeFolder(std::string s);
+
+    // Create directory from string. String must be in format: "./subdir1/subdir2/.../"
+    bool makeDir(std::string dir);
 }
 
 #endif // UTILITY_H_INCLUDED
