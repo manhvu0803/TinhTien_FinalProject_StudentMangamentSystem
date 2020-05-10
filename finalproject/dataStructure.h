@@ -65,10 +65,11 @@ namespace tt
         time cTime;
     };
 
-    // Check input for invalid month (return -1) or invalid day (return -2). Return 1 if valid
-    int checkDate(date d);
+    // Check is date valid. Return -1 if month is invalid, -2 if day is invalid, 1 otherwise
+    int checkDate(const date& d);
+
     // Parse string to date struct, support YYYY-MM-DD and MM/DD/YYYY
-    date stringToDate(std::string s);
+    date stringToDate(const std::string& str);
 }
 
 #endif // DATASTRUCTURE_H_INCLUDED
