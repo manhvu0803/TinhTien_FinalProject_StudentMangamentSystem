@@ -39,7 +39,7 @@ namespace tt
         std::string cls; // class of the student
         std::string studentName;
         int id; // ID of the student this score belongs to
-        int mid, final, bonus, total;
+        float mid, final, bonus, total;
         tt::vector<date> checkedDate;
         tt::vector<time> checkedTime;
     };
@@ -56,6 +56,13 @@ namespace tt
         time startTime, endTime;
         //tt::vector<student *> students;
         std::string room;
+    };
+
+    struct checkIn
+    {
+        int id;
+        date cDate;
+        time cTime;
     };
 
     // Check input for invalid month (return -1) or invalid day (return -2). Return 1 if valid
