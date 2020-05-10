@@ -3,17 +3,22 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-std::string tt::capitalize(std::string s)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    #include <direct.h>
+#endif // defined
+
+std::string tt::capitalize(const std::string& str)
 {
+    std::string s = str;
     for (int i = 0, lim = s.size(); i < lim; ++i)
         s[i] = toupper(s[i]);
     return s;
 }
 
-int tt::makeFolder(std::string s)
+int tt::makeFolder(const std::string& s)
 {
     #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
-        return mkdir(s.c_str());
+        return _mkdir(s.c_str());
     #elif __APPLE__
         #include <TargetConditionals.h>
         #if TARGET_IPHONE_SIMULATOR
@@ -38,13 +43,15 @@ int tt::makeFolder(std::string s)
     return 0;
 }
 
-bool tt::makeDir(std::string dir)
+bool tt::makeDir(const std::string& dir)
 {
-    bool created = false;
-    size_t pos = dir.find('/', dir.find('/') + 1);
+    size_t pos;
+    if (dir[0] == '.') pos = dir.find('/', dir.find('/') + 1);
+    else pos = dir.find('/') + 1;
     while (pos < std::string::npos) {
-        if (makeFolder(dir.substr(0, pos)) == 0) created = true;
+        if (makeFolder(dir.substr(0, pos)) == 0);
         pos = dir.find('/', pos + 1);
     }
-    return created;
+    if (makeFolder(dir) == 0) return true;
+    return false;
 }
