@@ -17,6 +17,7 @@ namespace tt
             vector();
             vector(size_t amount, const T& value);
             vector(T* aBegin, T* aEnd);
+            vector(const vector<T>& vecToCopy) = delete;
             ~vector();
 
             // Assignment
@@ -63,7 +64,6 @@ namespace tt
             size_t _capacity;
             size_t _size;
 
-            vector(const vector<T>& vecToCopy);
             void reallocate(size_t newCap);
     };
 
@@ -89,14 +89,6 @@ namespace tt
     template <typename T> vector<T>::vector(T* aBegin, T* aEnd)
     {
         assign(aBegin, aEnd);
-    }
-
-    template <typename T> vector<T>::vector(const vector<T>& vecToCopy)
-    {
-        _capacity = vecToCopy.capacity();
-        _size = vecToCopy.size();
-        ptr = new T[_capacity];
-        memcpy(ptr, vecToCopy.ptr, sizeof(T) * _size);
     }
 
     // Destructor
