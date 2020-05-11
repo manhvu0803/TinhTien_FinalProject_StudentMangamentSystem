@@ -63,8 +63,13 @@ namespace tt
         time cTime;
     };
 
-    // Check is date valid. Return -1 if month is invalid, -2 if day is invalid, 1 otherwise
-    int checkDate(const date& d);
+    date currentDate();
+
+    // Return 24-hour format
+    time currentTime();
+
+    // Return -1 if month is invalid, -2 if day is invalid, 1 if valid past date, 2 if valid future date
+    int checkDate(const date& dt);
 
     // Parse string to date struct, support YYYY-MM-DD and MM/DD/YYYY
     date stringToDate(const std::string& str);

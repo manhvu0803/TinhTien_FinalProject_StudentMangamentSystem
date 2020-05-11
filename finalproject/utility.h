@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <limits>
 
 namespace tt
 {
@@ -312,6 +313,18 @@ namespace tt
         delete [] ptr;
         ptr = tmp;
         _capacity = newCap;
+    }
+
+    // Clear for input stream (cin, ifstream,...)
+    template <typename T> bool cinIg(std::istream& stream, T& val, const bool clr = true)
+    {
+        stream >> val;
+        bool res = !stream.fail();
+        if (clr) {
+            stream.clear();
+            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        return res;
     }
 
     // Return all cap version of input string, support YYYY-MM-DD and MM/DD/YYY
