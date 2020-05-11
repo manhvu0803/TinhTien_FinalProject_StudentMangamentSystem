@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <algorithm>
+#include <limits>
 
 namespace tt
 {
@@ -15,8 +16,9 @@ namespace tt
 
             // Constructor and destructor
             vector();
-            vector(size_t amount, T val);
+            vector(size_t amount, const T& value);
             vector(T* aBegin, T* aEnd);
+            vector(const vector<T>& vecToCopy) = delete;
             ~vector();
 
             // Assignment
@@ -47,15 +49,15 @@ namespace tt
             T& back();
 
             // Modifier
-            void push_back(T value);
+            void push_back(const T& value);
             void pop_back();
-            void insert(size_t pos, T value);
+            void insert(size_t pos, const T& value);
             void erase(size_t pos);
-            void eraseSelect(size_t aSize, T pos[]);
+            void eraseSelect(size_t aSize, const T pos[]);
             void reserve(size_t newCap);
             void clear();
             void resize(size_t newSize);
-            void resize(size_t newSize, T value);
+            void resize(size_t newSize, const T& value);
             void swap(vector<T>& vecToSwap);
 
         private:
@@ -63,7 +65,6 @@ namespace tt
             size_t _capacity;
             size_t _size;
 
-            vector(const vector& srcVector);
             void reallocate(size_t newCap);
     };
 
@@ -78,11 +79,12 @@ namespace tt
         _size = 0;
     }
 
-    template <typename T> vector<T>::vector(size_t amount, T val)
+    template <typename T> vector<T>::vector(size_t amount, const T& value)
     {
         _size = amount;
         _capacity = initCapacity + _size;
-        std::fill(ptr, ptr + _size, val);
+        ptr = new T[_capacity];
+        std::fill(ptr, ptr + _size, value);
     }
 
     template <typename T> vector<T>::vector(T* aBegin, T* aEnd)
@@ -103,7 +105,7 @@ namespace tt
 
         _capacity = vecToCopy.capacity();
         _size = vecToCopy.size();
-        ptr = new T[_size];
+        ptr = new T[_capacity];
         memcpy(ptr, vecToCopy.ptr, sizeof(T) * _size);
 
         return this;
@@ -226,7 +228,7 @@ namespace tt
     }
 
     // Modifier
-    template <typename T> inline void vector<T>::push_back(T value)
+    template <typename T> inline void vector<T>::push_back(const T& value)
     {
         if (_size >= _capacity) reserve(_capacity + capToIncrease);
         ptr[_size] = value;
@@ -238,7 +240,7 @@ namespace tt
         --_size;
     }
 
-    template <typename T> void vector<T>::insert(size_t pos, T value)
+    template <typename T> void vector<T>::insert(size_t pos, const T& value)
     {
         if (pos > _size || pos < 0) throw std::out_of_range("Out of range");
 
@@ -259,7 +261,7 @@ namespace tt
         --_size;
     }
 
-    template <typename T> void vector<T>::eraseSelect(size_t aSize, T pos[])
+    template <typename T> void vector<T>::eraseSelect(size_t aSize, const T pos[])
     {
         for (size_t i = 0; i < aSize; ++i)
             if (pos[i] < 0 || pos[i] > _size) throw std::out_of_range("Out of range");
@@ -271,24 +273,24 @@ namespace tt
         _size -= aSize;
     }
 
-    template <typename T> void vector<T>::reserve(size_t newCap)
+    template <typename T> inline void vector<T>::reserve(size_t newCap)
     {
-        if (newCap < _capacity) throw std::invalid_argument("New capacity is not bigger than old capacity");
+        if (newCap < _capacity) throw std::invalid_argument("New capacity is smaller than old capacity");
         reallocate(newCap);
     }
 
-    template <typename T> void vector<T>::clear()
+    template <typename T> inline void vector<T>::clear()
     {
         _size = 0;
     }
 
-    template <typename T> void vector<T>::resize(size_t newSize)
+    template <typename T> inline void vector<T>::resize(size_t newSize)
     {
         _size = newSize;
         if (newSize > _capacity) reserve(newSize + capToIncrease);
     }
 
-    template <typename T> void vector<T>::resize(size_t newSize, T value)
+    template <typename T> void vector<T>::resize(size_t newSize, const T& value)
     {
         if (newSize > _capacity) reserve(newSize + capToIncrease);
         for (size_t i = _size; i < newSize; ++i)
@@ -296,7 +298,7 @@ namespace tt
         _size = newSize;
     }
 
-    template <typename T> void vector<T>::swap(vector<T>& vecToSwap)
+    template <typename T> inline void vector<T>::swap(vector<T>& vecToSwap)
     {
         std::swap(_size, vecToSwap._size);
         std::swap(_capacity, vecToSwap._capacity);
@@ -313,14 +315,28 @@ namespace tt
         _capacity = newCap;
     }
 
+    // Clear for input stream (cin, ifstream,...)
+    template <typename T> bool cinIg(std::istream& stream, T& val, const bool clr = true)
+    {
+        stream >> val;
+        bool res = !stream.fail();
+        if (clr) {
+            stream.clear();
+            stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+        return res;
+    }
+
     // Return all cap version of input string, support YYYY-MM-DD and MM/DD/YYY
-    std::string capitalize(std::string s);
+    std::string capitalize(const std::string& str);
 
     // Create folder
-    int makeFolder(std::string s);
+    int makeFolder(const std::string& s);
 
     // Create directory from string. String must be in format: "./subdir1/subdir2/.../"
-    bool makeDir(std::string dir);
+    // Return true if the last folder in the directory is created,
+    // false otherwise (folder already existed, no permission,...)
+    bool makeDir(const std::string& dir);
 }
 
 #endif // UTILITY_H_INCLUDED
