@@ -14,11 +14,13 @@ class clss
         clss();
         ~clss();
         int classPos(string className);
-        void studentToFile(string className, tt::student newStd);
-        void studentsToFile(string className, tt::vector<tt::student>& newClass);
-        tt::student getStudent(string className, int id);
+        // Return true if student is valid and added to file
+        bool studentToFile(string className, tt::student newStd, bool cap = true);
+        void classToFile(string className, tt::vector<tt::student>& newClass);
+        tt::student getStudent(string className, int id, bool cap = true);
         tt::student getStudent(int id);
-        void import(istream& inFile, string className);
+        // Return true if the file is valid and saved
+        bool import(istream& inFile, string className);
         void menu();
     private:
         static const char* classDir;
@@ -26,7 +28,7 @@ class clss
         tt::vector<string> classes;
 
         void studentToStream(ostream& stream, const tt::student& newStd);
-        tt::student addStudentMenu(string className, int id);
+        tt::student addStudentMenu(string className);
         void classesToFile();
 };
 
