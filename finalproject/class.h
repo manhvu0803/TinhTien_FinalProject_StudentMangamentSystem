@@ -17,6 +17,7 @@ class clss
         void studentToFile(string className, tt::student newStd);
         void studentsToFile(string className, tt::vector<tt::student>& newClass);
         tt::student getStudent(string className, int id);
+        tt::student getStudent(int id);
         void import(istream& inFile, string className);
         void menu();
     private:

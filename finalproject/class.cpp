@@ -7,8 +7,8 @@
 
 using namespace std;
 
-const char* clss::classDir = "data\\classes\\";
-const char* clss::classDat = "data\\classes\\class.dat";
+const char* clss::classDir = "data/classes/";
+const char* clss::classDat = "data/classes/class.dat";
 
 const auto ignoreMax = numeric_limits<streamsize>::max();
 
@@ -74,6 +74,7 @@ tt::student clss::getStudent(string className, int id)
             getline(file, res.lastName);
             getline(file, res.firstName);
             file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+            return res;
         }
         else {
             for (int i = 0; i < 4; ++i)
@@ -81,6 +82,18 @@ tt::student clss::getStudent(string className, int id)
         }
     }
     file.close();
+    res.id = -1;
+    return res;
+}
+
+tt::student clss::getStudent(int id)
+{
+    tt::student res;
+    res.id = -1;
+    for (int i = 0, lim = classes.size(); i < lim; ++i) {
+        res = getStudent(classes[i], id);
+        if (res.id > 0) return res;
+    }
     res.id = -1;
     return res;
 }
@@ -121,30 +134,26 @@ tt::student clss::addStudentMenu(string className, int id)
 {
     tt::student newStd;
     newStd.id = id;
+
     cout << "Student number: ";
-    cin >> newStd.number;
+    tt::cinIg(cin, newStd.number);
     cout << "Family name and surname: ";
-    cin.ignore(ignoreMax, '\n');
     getline(cin, newStd.lastName);
-    cout << "Given name: ";
+    cout << "Given name (first name): ";
     getline(cin, newStd.firstName);
-    do {
+    while (true) {
         cout << "Gender (F/M): ";
-        cin >> newStd.gender;
+        bool valid = tt::cinIg(cin, newStd.gender);
         newStd.gender = toupper(newStd.gender);
-        cin.clear();
-        cin.ignore(ignoreMax, '\n');
-        if (cin.fail() || (newStd.gender != 'F' && newStd.gender != 'M'))
+        if (!valid || (newStd.gender != 'F' && newStd.gender != 'M'))
             cout << "Invalid gender\n";
         else break;
     }
-    while (true);
     while (true) {
         cout << "Date of birth (YYYY MM DD): ";
-        cin >> newStd.DoB.y >> newStd.DoB.m >> newStd.DoB.d;
-        cin.clear();
-        cin.ignore(ignoreMax, '\n');
-        if (cin.fail() || tt::checkDate(newStd.DoB) < 0) cout << "Invalid input\n";
+        bool sc = tt::cinIg(cin, newStd.DoB.y, false) && tt::cinIg(cin, newStd.DoB.m, false) && tt::cinIg(cin, newStd.DoB.y);
+        if (!sc || tt::checkDate(newStd.DoB) < 0)
+            cout << "Invalid date\n";
         else break;
     }
     return newStd;
@@ -166,10 +175,7 @@ void clss::menu()
         cout << "Press 0: Exit\n";
 
         cout << "Your choice: ";
-        cin >> choice;
-        cin.clear();
-        cin.ignore(ignoreMax, '\n');
-        if (cin.fail()) choice = -1;
+        if (!tt::cinIg(cin, choice)) choice = -1;
 
         switch (choice) {
             case 0:
@@ -223,7 +229,7 @@ void clss::menu()
                 int id;
                 cin >> id;
                 if (getStudent(className, id).id > -1) {
-                    cout << "ID " << id << " is already existed\n";
+                    cout << "ID " << id << " is already existed\n\n";
                     break;
                 }
                 studentToFile(className, addStudentMenu(className, id));
