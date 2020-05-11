@@ -30,6 +30,7 @@ namespace tt
         int number = -1;
         int id = -1;
         std::string lastName = "", firstName = "";
+        std::cls = "" // class of the student, won't be use most of the time
         char gender = 'T'; // 'M' for male, 'F' for female
         date DoB; // date of birth
     };
