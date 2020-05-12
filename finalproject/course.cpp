@@ -10,9 +10,10 @@ void courseMenu(int year, string semester)
 	filePath.append(semester);
 	filePath.append("/");
 	bool First = true;
-	int cont = 0;
+	int cont = 1;
 	int choice = -1;
 	tt::vector<tt::course> List;
+	tt::vector<tt::vector<int>> students;
 	cout << setfill('=') << setw(50) << "=" << endl;
 	cout << "*" << setfill('-') << setw(24) << "COURSE MENU" << setfill('-') << setw(23) << "*" << endl;
 	cout << setfill('=') << setw(50) << "=" << endl;
@@ -39,183 +40,204 @@ void courseMenu(int year, string semester)
 			{
 				cout << "Error! Choose agian:" << endl;
 			}
-			
+
 		}
-			switch (choice)
+		switch (choice)
+		{
+		case 0:
+		{
+			cont = choice;
+		}
+		case 1:
+		{
+			if (First)
 			{
-			case 1:
+				importCsvFile(List, students, filePath);
+				sortList(List, students);
+				outputCourseList(List, students);
+				saveCourseList(List, students, filePath + "courses.dat");
+				First = false;
+			}
+			else
 			{
-				if (First)
+				tt::vector<tt::course> moreList;
+				importCsvFile(moreList, students, filePath);
+				if (moreList != List)
 				{
-					importCsvFile(List, filePath);
-					sortList(List);
-					outputCourseList(List);
-					saveCourseList(List, filePath + "courses.dat");
-					First = false;
+					int newSize = moreList.size() + List.size();
+					for (int i = List.size(); i < newSize; ++i)
+					{
+						List.push_back(moreList[newSize - i - 1]);
+					}
+					sortList(List, students);
+					saveCourseList(List, students, filePath + "courses.dat");
+					moreList.clear();
+					moreList.shrink_to_fit();
+				}
+			}
+			break;
+		}
+		case 2:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			tt::course temp;
+			tt::vector<int>classStudents;
+			input1Course(temp, classStudents);
+			if (temp.number != -1)
+			{
+				List.push_back(temp);
+				students.push_back(classStudents);
+				saveCourseList(List, students, filePath + "courses.dat");
+			}
+			classStudents.clear();
+			break;
+		}
+		case 3:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			outputCourseList(List, students);
+			editCourse(List, students, filePath);
+			saveCourseList(List, students, filePath + "courses.dat");
+			break;
+		}
+		case 4:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			deleteCourse(List, students, filePath);
+			break;
+		}
+		case 5:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			outputSchedule(List);
+			break;
+		}
+		case 6:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			int n, check;
+			outputCourseList(List, students);
+			while (true)
+			{
+				cout << "Input the course no: "; cin >> n;
+				int listSize = List.size();
+				if (n <= 0 || n > listSize)
+				{
+					cout << "Error!!!No available course!!!" << endl;
+					cout << "Input (0) to break or (1) to continue: ";
+					cin >> cont;
+					if (cont == 0)
+					{
+						break;
+					}
 				}
 				else
 				{
-					tt::vector<tt::course> moreList;
-					importCsvFile(moreList, filePath);
-					if (moreList != List)
-					{
-						int newSize = moreList.size() + List.size();
-						for (int i = List.size(); i < newSize; ++i)
-						{
-							List.push_back(moreList[newSize - i - 1]);
-						}
-						sortList(List);
-						saveCourseList(List, filePath + "courses.dat");
-						moreList.clear();
-						moreList.shrink_to_fit();
-					}
+					break;
 				}
-				break;
 			}
-			case 2:
+			if (cont != 0)
 			{
-				if (!First)
-				{
-					loadDatFile(List, filePath);
-				}
-				tt::course temp;
-				input1Course(temp);
-				if (temp.number != -1)
-				{
-					List.push_back(temp);
-					saveCourseList(List, filePath + "courses.dat");
-				}
-				break;
+				tt::vector<int> classStudent;
+				add1Student(List[n - 1], classStudent);
+				students.push_back(classStudent);
+				saveCourseList(List, students, filePath + "courses.dat");
 			}
-			case 3:
+			break;
+		}
+		case 7:
+		{
+			if (!First)
 			{
-				if (!First)
-				{
-					loadDatFile(List, filePath);
-				}
-				outputCourseList(List);
-				editCourse(List, filePath);
-				saveCourseList(List, filePath + "courses.dat");
-				break;
+				loadDatFile(List, students, filePath);
 			}
-			case 4:
+			int n, check;
+			outputCourseList(List, students);
+			while (true)
 			{
-				if (!First)
+				check = -1;
+				cout << "Input the course no: "; cin >> n;
+				int listSize = List.size();
+				if (n <= 0 || n > listSize)
 				{
-					loadDatFile(List, filePath);
-				}
-				deleteCourse(List, filePath + "courses.dat");
-				break;
-			}
-			case 5:
-			{
-				if (!First)
-				{
-					loadDatFile(List, filePath);
-				}
-				outputSchedule(List);
-				break;
-			}
-			case 6:
-			{
-				if (!First)
-				{
-					loadDatFile(List, filePath);
-				}
-				int n, check;
-				outputCourseList(List);
-				while (true)
-				{
-					cout << "Input the course number: "; cin >> n;
-					int listSize = List.size();
-					if (n <= 0 || n > listSize)
-					{
-						cout << "Error!!!No available course!!!" << endl;
-						cout << "Input (0) to break or (1) to continue: ";
-						cin >> check;
-						if (check == 0)
-						{
-							return;
-						}
-					}
-					else
+					cout << "Error!!!No available course!!!" << endl;
+					cout << "Input (0) to break or (1) to continue: ";
+					cin >> cont;
+					if (cont == 0)
 					{
 						break;
 					}
 				}
-				add1Student(List[n - 1]);
-				saveCourseList(List, filePath + "courses.dat");
-				break;
-			}
-			case 7:
-			{
-				if (!First)
+				else
 				{
-					loadDatFile(List, filePath);
+					break;
 				}
-				int n, check;
-				outputCourseList(List);
-				while (true)
+			}
+			if (check == -1)
+			{
+				remove1Student(students[n - 1]);
+				saveCourseList(List, students, filePath + "courses.dat");
+			}
+			break;
+		}
+		case 8:
+		{
+			if (!First)
+			{
+				loadDatFile(List, students, filePath);
+			}
+			int n, check;
+			outputCourseList(List, students);
+			while (true)
+			{
+				check = -1;
+				cout << "Input the course no: "; cin >> n;
+				int listSize = List.size();
+				if (n <= 0 || n > listSize)
 				{
-					check = -1;
-					cout << "Input the course number: "; cin >> n;
-					int listSize = List.size();
-					if (n <= 0 || n > listSize)
-					{
-						cout << "Error!!!No available course!!!" << endl;
-						cout << "Input (0) to break or (1) to continue: ";
-						cin >> check;
-						if (check == 0)
-						{
-							break;
-						}
-					}
-					else
+					cout << "Error!!!No available course!!!" << endl;
+					cout << "Input (0) to break or (1) to continue: ";
+					cin >> cont;
+					if (cont == 0)
 					{
 						break;
 					}
 				}
-				if (check == -1)
+				else
 				{
-					remove1Student(List[n - 1]);
-					saveCourseList(List, filePath + "courses.dat");
+					break;
 				}
-				break;
 			}
-			case 8:
+			if (check == -1)
 			{
-				if (!First)
+				tt::vector<int>classStudents;
+				for (int i = 0; i < students[n - 1].size(); ++i)
 				{
-					loadDatFile(List, filePath);
+					classStudents.push_back(students[n - 1][i]);
 				}
-				int n, check;
-				outputCourseList(List);
-				while (true)
-				{
-					check = -1;
-					cout << "Input the course number: "; cin >> n;
-					int listSize = List.size();
-					if (n <= 0 || n > listSize)
-					{
-						cout << "Error!!!No available course!!!" << endl;
-						cout << "Input (0) to break or (1) to continue: ";
-						cin >> check;
-						if (check == 0)
-						{
-							break;
-						}
-					}
-					else
-					{
-						break;
-					}
-				}
-				if (check == -1)
-					viewStudentList(List[n - 1]);
-				break;
+				viewStudentList(classStudents);
 			}
-			}
+			break;
+		}
+		}
 	}
+	List.clear();
+	students.clear();
 }
 void upperCase(string& name)
 {
@@ -226,7 +248,7 @@ void upperCase(string& name)
 			name[i] -= 32;
 	}
 }
-void loadCsvFile(tt::vector<tt::course>& list, string filePath)
+void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	if (filePath.compare(filePath.size() - 4, 4, ".csv") != 0)
 	{
@@ -251,7 +273,8 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 		string token;
 		getline(csvFile, line);
 		tt::vector<tt::student> studentList;
-		tt::vector <string> numbertFound;
+		tt::vector <string> notFound;
+		tt::vector<int>classStudents;
 		while (!csvFile.eof())
 		{
 			tt::course temp;
@@ -280,13 +303,15 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 					int n = studentList.size();
 					for (int i = 0; i < n; ++i)
 					{
-						temp.students.push_back(studentList[i].id);
+						classStudents.push_back(studentList[i].id);
 					}
+					students.push_back(classStudents);
+					classStudents.clear();
 				}
 				else
 				{
 					temp.number = -1;
-					numbertFound.push_back(token);
+					notFound.push_back(token);
 				}
 				classFile.close();
 				getline(check, token, ',');
@@ -386,7 +411,7 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 			cout << " Not found!" << endl;
 			notFound.clear();
 			notFound.shrink_to_fit();
-			sortList(list);
+			sortList(list, students);
 		}
 	}
 	else
@@ -395,22 +420,23 @@ void loadCsvFile(tt::vector<tt::course>& list, string filePath)
 	}
 	csvFile.close();
 }
-void loadDatFile(tt::vector<tt::course>& list, string filePath)
+void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	ifstream myFile(filePath + "courses.dat");
 	string line;
 	tt::course temp;
-	int number;
+	tt::vector<int>classStudents;
+	int no;
 	if (myFile.is_open())
 	{
-		while (myFile >> number)
+		while (myFile >> no)
 		{
-			temp.number = number;
+			temp.number = no;
 			myFile.ignore(1);
 			getline(myFile, temp.id);
 			getline(myFile, temp.name);
 			getline(myFile, temp.className);
-			loadCourseStudentFile(temp, filePath);
+			loadCourseStudentFile(temp, classStudents, filePath);
 			getline(myFile, temp.lecturer);
 			myFile >> temp.startDate.y;
 			myFile >> temp.startDate.m;
@@ -437,9 +463,9 @@ void loadDatFile(tt::vector<tt::course>& list, string filePath)
 		return;
 	}
 	myFile.close();
-	sortList(list);
+	sortList(list, students);
 }
-void loadCourseStudentFile(tt::course& Course, string filePath)
+void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath)
 {
 	ifstream myFile(filePath + Course.className + ".dat");
 	if (myFile.is_open())
@@ -447,12 +473,16 @@ void loadCourseStudentFile(tt::course& Course, string filePath)
 		int id;
 		while (myFile >> id)
 		{
-			Course.students.push_back(id);
+			classStudents.push_back(id);
 		}
+	}
+	else
+	{
+		Course.number = -1;
 	}
 	myFile.close();
 }
-void saveCourseList(tt::vector<tt::course> list, string filePath)
+void saveCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	int n = list.size();
 	ofstream dataFile(filePath);
@@ -464,7 +494,7 @@ void saveCourseList(tt::vector<tt::course> list, string filePath)
 			dataFile << list[i].id << endl;
 			dataFile << list[i].name << endl;
 			dataFile << list[i].className << endl;
-			saveCourseStudentFile(list[i], filePath);
+			saveCourseStudentFile(list[i], students[i], filePath);
 			dataFile << list[i].lecturer << endl;
 			dataFile << list[i].startDate.y << " ";
 			dataFile << list[i].startDate.m << " ";
@@ -486,20 +516,20 @@ void saveCourseList(tt::vector<tt::course> list, string filePath)
 	}
 	dataFile.close();
 }
-void saveCourseStudentFile(tt::course Course, string filePath)
+void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, string filePath)
 {
 	ofstream myFile(filePath + Course.className + ".dat");
 	if (myFile.is_open())
 	{
-		int n = Course.students.size();
+		int n = classStudent.size();
 		for (int i = 0; i < n; i++)
 		{
-			myFile << Course.students[i] << endl;
+			myFile << classStudent[i] << endl;
 		}
 	}
 	myFile.close();
 }
-void importCsvFile(tt::vector<tt::course>& list, string filePath)
+void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	int option;
 	string newPath;
@@ -528,34 +558,34 @@ void importCsvFile(tt::vector<tt::course>& list, string filePath)
 		cout << "Input your file address: ";
 
 		cin >> newPath;
-		loadCsvFile(list, newPath);
+		loadCsvFile(list, students, newPath);
 		break;
 	}
 	case 2:
 	{
-		loadDatFile(list, filePath);
+		loadDatFile(list, students, filePath);
 		break;
 	}
 	}
 	if (list.size() != 0)
-		outputCourseList(list);
+		outputCourseList(list, students);
 }
-void output1Course(tt::course Course)
+void output1Course(tt::course& Course, tt::vector<int>& classStudent)
 {
-	cout << endl << setw(3) << Course.number << " - " << setw(35) << Course.name << "(" << setw(7) << Course.id << ") - Student: " << setw(4) << Course.students.size() << endl;
+	cout << endl << setw(3) << Course.number << " - " << setw(35) << Course.name << "(" << setw(7) << Course.id << ") - Student: " << setw(4) << classStudent.size() << endl;
 }
-void outputCourseList(tt::vector<tt::course> list)
+void outputCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students)
 {
 	cout << "Course: ";
 	int n = list.size();
 	cout << endl << setfill('=') << setw(49) << "=" << endl;
 	for (int i = 0; i < n; ++i)
 	{
-		output1Course(list[i]);
+		output1Course(list[i], students[i]);
 		cout << endl << setfill('=') << setw(49) << "=" << endl;
 	}
 }
-void output1CourseData(tt::course Course)
+void output1CourseData(tt::course& Course)
 {
 	cout << " No            : " << Course.number << endl;
 	cout << " Id            : " << Course.id << endl;
@@ -613,7 +643,7 @@ void output1CourseData(tt::course Course)
 	cout << " Room          :" << Course.room;
 
 }
-void outputSchedule(tt::vector<tt::course> list)
+void outputSchedule(tt::vector<tt::course>& list)
 {
 	cout << "Schedule:  " << endl;
 	int n = list.size();
@@ -690,24 +720,24 @@ int  inputDate(tt::date& Date)
 	time_t now = std::time(0);
 	tm ltm;
 	localtime_s(&ltm, &now);
-	while (true)
-	{
-		cout << "	Input day  :   "; cin >> temp.d;
-		if ((temp.d > maxdayinmonth(temp.m, temp.y)) || (temp.d < 1))
-		{
-			cout << "Error!! Please check your input again." << endl;
-			cout << "Input (0) to break or (1) to continue: ";
-			cin >> check;
-			if (check == 0)
-			{
-				break;
-			}
-		}
-		else
-		{
-			break;
-		}
-	}
+	//while (true)
+	//{
+	//	cout << "	Input day  :   "; cin >> temp.d;
+	//	if ((temp.d > maxdayinmonth(temp.m, temp.y)) || (temp.d < 1))
+	//	{
+	cout << "Error!! Please check your input again." << endl;
+	cout << "Input (0) to break or (1) to continue: ";
+	cin >> check;
+	//		if (check == 0)
+	//		{
+	//			break;
+	//		}
+	//	}
+	//	else
+	//	{
+	//		break;
+	//	}
+	//}
 	if (check == 0)
 	{
 		Date = { 0 };
@@ -765,7 +795,7 @@ int  inputDate(tt::date& Date)
 	Date = temp;
 	return 1;
 }
-void input1Course(tt::course& newCourse)
+void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 {
 	int check;
 	cout << " Id                : "; getline(cin, newCourse.id);
@@ -827,32 +857,34 @@ void input1Course(tt::course& newCourse)
 		return;
 	}
 	cout << " Room            : \n"; getline(cin, newCourse.room);
-	addStudent(newCourse);
+	addStudent(newCourse, classStudents);
 }
-void inputCourse(tt::vector<tt::course>& list, string filePath)
+void inputCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	int n;
 	cout << "Numbers of new course: ";
 	cin >> n;
-
+	tt::vector<int>classStudents;
 	tt::course temp;
 	for (int i = 0; i < n; ++i)
 	{
-		input1Course(temp);
+		input1Course(temp, classStudents);
 		if (temp.number != -1)
 		{
 			list.push_back(temp);
+			students.push_back(classStudents);
+			classStudents.clear();
 		}
 	}
-	saveCourseList(list, filePath);
-	outputCourseList(list);
+	saveCourseList(list, students, filePath);
+	outputCourseList(list, students);
 }
-void editCourse(tt::vector<tt::course>& list, string filePath)
+void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	int n, check;
 	while (true)
 	{
-		cout << "Input the course number: "; cin >> n;
+		cout << "Input the course no: "; cin >> n;
 		int listSize = list.size();
 		if (n <= 0 || n > listSize)
 		{
@@ -983,22 +1015,27 @@ void editCourse(tt::vector<tt::course>& list, string filePath)
 	case 11:
 	{
 		tt::course newCourse;
-		input1Course(newCourse);
+		tt::vector<int> classStudent;
+		input1Course(newCourse, classStudent);
 		if (newCourse.number != -1)
+		{
+			students.push_back(classStudent);
 			list[n - 1] = newCourse;
+		}
+		classStudent.clear();
 		break;
 	}
 	}
 	output1CourseData(list[n - 1]);
-	sortList(list);
+	sortList(list, students);
 }
-void deleteCourse(tt::vector<tt::course>& list, string filePath)
+void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	int n, check;
-	outputCourseList(list);
+	outputCourseList(list, students);
 	while (true)
 	{
-		cout << "Input the course number: "; cin >> n;
+		cout << "Input the course no: "; cin >> n;
 		int listSize = list.size();
 		if (n <= 0 || n > listSize)
 		{
@@ -1015,20 +1052,25 @@ void deleteCourse(tt::vector<tt::course>& list, string filePath)
 			break;
 		}
 	}
-	list[n - 1].students.clear();
-	list[n - 1].students.shrink_to_fit();
-	list.erase( n - 1);
+	string path = filePath;
+	path += "/";
+	path += list[n - 1].className.c_str();
+	path += ".dat";
+	remove(path.c_str());
+	students[n - 1].clear();
+	students.shrink_to_fit();
+	list.erase(n - 1);
 	list.shrink_to_fit();
-	saveCourseList(list, filePath);
+	saveCourseList(list, students, filePath + ".dat");
 }
-void remove1Student(tt::course& Course)
+void remove1Student(tt::vector<int>& classStudent)
 {
-	viewStudentList(Course);
+	viewStudentList(classStudent);
 	int n, check;
 	while (true)
 	{
-		cout << "Input the studnet number: "; cin >> n;
-		int studentSize = Course.students.size();
+		cout << "Input the studnet no: "; cin >> n;
+		int studentSize = classStudent.size();
 		if (n <= 0 || n > studentSize)
 		{
 			cout << "Error!!!No student at that position!!!" << endl;
@@ -1044,10 +1086,10 @@ void remove1Student(tt::course& Course)
 			break;
 		}
 	}
-	Course.students.erase( n - 1);
-	Course.students.shrink_to_fit();
+	classStudent.erase(n - 1);
+	classStudent.shrink_to_fit();
 }
-void add1Student(tt::course& Course)
+void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 {
 	int Id, check;
 	int n;
@@ -1057,10 +1099,10 @@ void add1Student(tt::course& Course)
 		cout << "Student id: "; cin >> Id;
 		if (log10(Id) + 1 == 7 || log10(Id) + 1 == 8)
 		{
-			n = Course.students.size();
+			n = classStudents.size();
 			for (int i = 0; i < n; ++i)
 			{
-				if (Course.students[i] == Id)
+				if (classStudents[i] == Id)
 				{
 					cout << "Student have already been here!!" << endl;
 				}
@@ -1073,7 +1115,7 @@ void add1Student(tt::course& Course)
 			}
 			if (check == -1)
 			{
-				Course.students.push_back(Id);
+				classStudents.push_back(Id);
 				break;
 			}
 		}
@@ -1089,13 +1131,13 @@ void add1Student(tt::course& Course)
 		}
 	}
 }
-void addStudent(tt::course& Course)
+void addStudent(tt::course& Course, tt::vector<int>& classStudents)
 {
 	int num;
-	cout << "Number of new student: "; cin >> num;
+	cout << "Numbers of new student: "; cin >> num;
 	for (int i = 0; i < num; ++i)
 	{
-		add1Student(Course);
+		add1Student(Course, classStudents);
 	}
 }
 tt::student searchStudent(int id)
@@ -1109,7 +1151,7 @@ tt::student searchStudent(int id)
 	int check = 0;
 	if (!fload.is_open())
 	{
-		cout << "Can numbert open file." << endl;
+		cout << "Can not open file." << endl;
 		Student.number = -2;
 		return Student;
 	}
@@ -1144,12 +1186,16 @@ tt::student searchStudent(int id)
 		return Student;
 	}
 }
-void viewStudentList(tt::course courseName)// Đợi file class của Nhật
+void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nhật
 {
-	int n = courseName.students.size();
+	int n = classStudent.size();
+	sort(classStudent.begin(), classStudent.end(), [](const int& lhs, const int& rhs)
+		{
+			return lhs < rhs;
+		});
 	if (n == 0)
 	{
-		cout << "There is number student in this course yet!" << endl;
+		cout << "There is no student in this course yet!" << endl;
 	}
 	else
 	{
@@ -1157,24 +1203,25 @@ void viewStudentList(tt::course courseName)// Đợi file class của Nhật
 		tt::vector<int> Drop;
 		for (int i = 0; i < n; ++i)
 		{
-			Student = searchStudent(courseName.students[i]);
+			Student = searchStudent(classStudent[i]);
 			if (Student.id == -2)//allclassname.txt is missing
 			{
-				cout << "Error!!! number student id found!\n";
-				courseName.students.clear();
-				courseName.students.shrink_to_fit();
+				cout << "Error!!! No student id found!\n";
+				classStudent.clear();
+				classStudent.shrink_to_fit();
 				break;
 			}
 			if (Student.id == -1)
 			{
-				Drop.push_back(courseName.students[i]);
-				courseName.students.erase(i);
-				courseName.students.shrink_to_fit();
+				Drop.push_back(classStudent[i]);
+				classStudent.erase(i);
+				classStudent.shrink_to_fit();
 				n--;
 				i--;
 			}
 			else
 			{
+				Student.number = i + 1;
 				display1studentline(Student);
 			}
 		}
@@ -1196,7 +1243,7 @@ void viewStudentList(tt::course courseName)// Đợi file class của Nhật
 		}
 	}
 }
-void sortList(tt::vector<tt::course>& List)
+void sortList(tt::vector<tt::course>& List, tt::vector<tt::vector<int>>& students)
 {
 	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
 		{
@@ -1206,23 +1253,56 @@ void sortList(tt::vector<tt::course>& List)
 		{
 			return lhs.name < rhs.name;
 		});
+
 	int n = List.size();
+	for (int i = 0; i < n; ++i)
+	{
+		swap(students[i], students[List[i].number - 1]);
+	}
 	for (int i = 0; i < n; ++i)
 	{
 		List[i].number = i + 1;
 	}
 }
+void swap(tt::vector<int>& list1, tt::vector<int>& list2)
+{
+	tt::vector<int>temp;
+	for (int i = 0; i < list1.size(); ++i)
+	{
+		temp.push_back(list1[i]);
+	}
+	list1.clear();
+	for (int i = 0; i < list2.size(); ++i)
+	{
+		list1.push_back(list2[i]);
+	}
+	list1.shrink_to_fit();
+	list2.clear();
+	for (int i = 0; i < temp.size(); ++i)
+	{
+		list2.push_back(temp[i]);
+	}
+	list2.shrink_to_fit();
+	temp.clear();
+	temp.shrink_to_fit();
+}
 tt::course searchCourse(string filePath, string Id)
 {
 	tt::vector<tt::course>List;
-	loadDatFile(List, filePath);
+	tt::course Course;
+	tt::vector<tt::vector<int>>students;
+	loadDatFile(List, students, filePath);
 	int listSize = List.size();
 	for (int i = 0; i < listSize; ++i)
 	{
 		if (List[i].id == Id)
-			return List[i];
+		{
+			Course = List[i];
+			return Course;
+
+		}
 	}
-	tt::course Error;
-	Error.number = -1;
-	return Error;
+	Course.number = -1;
+	students.clear();
+	return Course;
 }

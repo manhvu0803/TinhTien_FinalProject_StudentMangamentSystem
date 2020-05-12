@@ -5,11 +5,12 @@
 #include <string>
 #include <fstream>
 #include <iomanip>
-//#include "course.h"
+#include "course.h"
 using namespace std;
 void semesterMenu(int year);
-void outputSemester(tt::vector<string>semester);
+void outputSemester(tt::vector<string>& semester);
 void scanSemester(string filePath, tt::vector<string>& semester);
-void changeToCourse(int year, tt::vector<string>semester);
-
+void changeToCourse(int year, tt::vector<string>& semester);
+void saveSemester(string filePath, tt::vector<string>& semester);
+void createSemester(string filePath, tt::vector<string>& semester);
 #endif
