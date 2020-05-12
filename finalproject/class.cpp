@@ -3,6 +3,7 @@
 #include "utility.h"
 #include <sstream>
 #include <fstream>
+#include <iomanip>
 #include <limits>
 
 using namespace std;
@@ -31,6 +32,45 @@ int clss::classPos(string className)
     for (int i = 0, lim = classes.size(); i < lim; ++i)
         if (className == classes[i]) return i;
     return -1;
+}
+
+tt::student clss::getStudent(string className, int id, bool cap)
+{
+    if (cap) className = tt::capitalize(className);
+    tt::student res;
+    res.id = -1;
+    res.cls = className;
+    ifstream file(classDir + className + ".dat");
+    if (!file.is_open()) return res;
+    while (file >> res.number) {
+        file >> res.id;
+        if (id == res.id) {
+            file.ignore(ignoreMax, '\n');
+            getline(file, res.lastName);
+            getline(file, res.firstName);
+            file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+            return res;
+        }
+        else {
+            for (int i = 0; i < 5; ++i)
+                file.ignore(ignoreMax, '\n');
+        }
+    }
+    file.close();
+    res.id = -1;
+    return res;
+}
+
+tt::student clss::getStudent(int id)
+{
+    tt::student res;
+    res.id = -1;
+    for (int i = 0, lim = classes.size(); i < lim; ++i) {
+        res = getStudent(classes[i], id, false);
+        if (res.id > 0) return res;
+    }
+    res.id = -1;
+    return res;
 }
 
 void inline clss::studentToStream(ostream& stream, const tt::student& newStd)
@@ -91,45 +131,6 @@ bool clss::rewriteStudent(string className, const tt::student& newStd, int mode,
 
     if (added) classToFile(className, thisCls);
     return added;
-}
-
-tt::student clss::getStudent(string className, int id, bool cap)
-{
-    if (cap) className = tt::capitalize(className);
-    tt::student res;
-    res.id = -1;
-    res.cls = className;
-    ifstream file(classDir + className + ".dat");
-    if (!file.is_open()) return res;
-    while (file >> res.number) {
-        file >> res.id;
-        if (id == res.id) {
-            file.ignore(ignoreMax, '\n');
-            getline(file, res.lastName);
-            getline(file, res.firstName);
-            file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-            return res;
-        }
-        else {
-            for (int i = 0; i < 5; ++i)
-                file.ignore(ignoreMax, '\n');
-        }
-    }
-    file.close();
-    res.id = -1;
-    return res;
-}
-
-tt::student clss::getStudent(int id)
-{
-    tt::student res;
-    res.id = -1;
-    for (int i = 0, lim = classes.size(); i < lim; ++i) {
-        res = getStudent(classes[i], id, false);
-        if (res.id > 0) return res;
-    }
-    res.id = -1;
-    return res;
 }
 
 bool clss::import(istream& inFile, string className)
@@ -215,17 +216,43 @@ tt::student clss::addStudentMenu(string className)
     newStd.number = -1;
 
     cout << "\nStudent info\n";
-    cout << "Student ID: ";
-    if (!tt::cinIg(cin, newStd.id)) return newStd;
-    newStd = getStudent(newStd.id);
+    cout << "Student ID (no more than 12 character): ";
+    int id;
+    if (!tt::cinIg(cin, id) || id > 999999999999) return newStd;
+    newStd = getStudent(id);
     if (newStd.id > -1) {
         cout << "Student " << newStd.id << " has already existed in class " << newStd.cls << "\n\n";
         newStd.number = -1;
         return newStd;
     }
+    newStd.id = id;
 
     inputStudent(newStd);
     return newStd;
+}
+
+void clss::showClass(string className)
+{
+    ifstream file(classDir + className + ".dat");
+    tt::student res;
+
+    cout << "No. |  ID         |    Name                          | Gender | Date of birth\n";
+
+    while (file >> res.number) {
+        cout << "-------------------------------------------------------------------------------\n";
+        cout << left << setw(4) << res.number;
+        file >> res.id;
+        cout << "| " << setw(12) << res.id;
+        file.ignore(ignoreMax, '\n');
+        getline(file, res.lastName);
+        getline(file, res.firstName);
+        cout << "| " << setw(33) << res.lastName + " " + res.firstName;
+        file >> res.gender;
+        cout << "| " << setw(7) << ((res.gender == 'M') ? "Male" : "Female");
+        file >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+        cout << "|  " << res.DoB.y << '-' << res.DoB.m << '-' << res.DoB.d << "\n";
+    }
+    cout << '\n';
 }
 
 void clss::menu()
@@ -374,6 +401,23 @@ void clss::menu()
                     cout << "Moved student " << tmpStd.id << " from " << tmpStd.cls << " to " << newClass << "\n\n";
                 }
 
+                break;
+            }
+            case 6: {
+                cout << "\nList of classes:\n";
+                for (int i = 0, lim = classes.size(); i < lim; ++i)
+                    cout << classes[i] << '\n';
+                cout << "\nPress enter to continue...";
+                getchar();
+                cout << '\n';
+            }
+            case 7: {
+                cout << "\nClass to show: ";
+                string className;
+                tt::cinIg(cin, className);
+                if (classPos(className) > 0)
+                    showClass(className);
+                else cout << "That class doesn't exist\n\n";
                 break;
             }
             default:
