@@ -40,7 +40,7 @@ void inline clss::studentToStream(ostream& stream, const tt::student& newStd)
     stream << newStd.DoB.y << ' ' << newStd.DoB.m << ' ' << newStd.DoB.d << '\n';
 }
 
-void clss::classesToFile()
+void clss::classListToFile()
 {
     ofstream file(classDat);
     for (int i = 0, lim = classes.size(); i < lim; ++i)
@@ -49,8 +49,8 @@ void clss::classesToFile()
 
 bool clss::studentToFile(string className, tt::student newStd, bool cap)
 {
-    if (cap) className = tt::capitalize(className);
     if (newStd.number == -1 || newStd.id == -1 || newStd.firstName == "" || newStd.lastName == "") return false;
+    if (cap) className = tt::capitalize(className);
     ofstream file(classDir + className + ".dat", ios::app);
     studentToStream(file, newStd);
     file.close();
@@ -64,6 +64,33 @@ void clss::classToFile(string className, tt::vector<tt::student>& newClass)
     for (int i = 0, lim = newClass.size(); i < lim; ++i)
         studentToStream(file, newClass[i]);
     file.close();
+}
+
+bool clss::rewriteStudent(string className, tt::student newStd, bool cap)
+{
+    if (newStd.number == -1 || newStd.id == -1 || newStd.firstName == "" || newStd.lastName == "") return false;
+    if (cap) className = tt::capitalize(className);
+
+    ifstream file(classDir + className + ".dat");
+    tt::vector<tt::student> thisCls;
+    tt::student res;
+    bool added = false;
+
+    while (file >> res.number) {
+        file >> res.id;
+        file.ignore(ignoreMax, '\n');
+        getline(file, res.lastName);
+        getline(file, res.firstName);
+        file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+        if (res.id == newStd.id) {
+            added = true;
+            thisCls.push_back(newStd);
+        }
+        else thisCls.push_back(res);
+    }
+
+    if (added) classToFile(className, thisCls);
+    return added;
 }
 
 tt::student clss::getStudent(string className, int id, bool cap)
@@ -147,27 +174,17 @@ bool clss::import(istream& inFile, string className)
 
     classToFile(className, newClass);
     if (classPos(className) < 0) classes.push_back(className);
-    classesToFile();
+    classListToFile();
     return true;
 }
 
-tt::student clss::addStudentMenu(string className)
+bool clss::inputStudent(tt::student& newStd)
 {
-    className = tt::capitalize(className);
-    tt::student newStd;
-    newStd.number = -1;
-
-    cout << "\nNew student info\n";
-    cout << "Student ID: ";
-    int id;
-    if (!tt::cinIg(cin, id)) return newStd;
-    newStd = getStudent(id);
-    if (newStd.id > -1) {
-        cout << "ID " << id << " has already existed in class " << newStd.cls << "\n\n";
-        return newStd;
-    }
     cout << "Student number: ";
-    if (!tt::cinIg(cin, newStd.number)) return newStd;
+    if (!tt::cinIg(cin, newStd.number) || newStd.number < 0) {
+        newStd.id = -1;
+        return false;
+    }
     cout << "Family name and surname: ";
     getline(cin, newStd.lastName);
     cout << "Given name (first name): ";
@@ -188,6 +205,26 @@ tt::student clss::addStudentMenu(string className)
         else break;
     }
 
+    return true;
+}
+
+tt::student clss::addStudentMenu(string className)
+{
+    className = tt::capitalize(className);
+    tt::student newStd;
+    newStd.number = -1;
+
+    cout << "\nStudent info\n";
+    cout << "Student ID: ";
+    if (!tt::cinIg(cin, newStd.id)) return newStd;
+    newStd = getStudent(newStd.id);
+    if (newStd.id > -1) {
+        cout << "Student " << newStd.id << " has already existed in class " << newStd.cls << "\n\n";
+        newStd.number = -1;
+        return newStd;
+    }
+
+    inputStudent(newStd);
     return newStd;
 }
 
@@ -261,6 +298,25 @@ void clss::menu()
                     }
                 }
                 if (studentToFile(className, addStudentMenu(className))) cout << "Student added\n\n";
+                else cout << "Aborted\n\n";
+                break;
+            }
+            case 3: {
+                tt::student newStd;
+                newStd.number = -1;
+
+                cout << "\nStudent ID to edit: ";
+                if (!tt::cinIg(cin, newStd.id)) break;
+                newStd = getStudent(newStd.id);
+
+                if (newStd.id < 0) {
+                    cout << "Student " << newStd.id << " does not existed\n\n";
+                    break;
+                }
+                cout << "\nEditing student " << newStd.id << " in class " << newStd.cls << "\n";
+
+                inputStudent(newStd);
+                if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id << "\n\n";
                 else cout << "Aborted\n\n";
                 break;
             }
