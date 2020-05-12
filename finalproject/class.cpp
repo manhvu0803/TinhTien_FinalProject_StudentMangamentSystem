@@ -66,7 +66,7 @@ void clss::classToFile(string className, tt::vector<tt::student>& newClass)
     file.close();
 }
 
-bool clss::rewriteStudent(string className, tt::student newStd, int mode, bool cap)
+bool clss::rewriteStudent(string className, const tt::student& newStd, int mode, bool cap)
 {
     if (newStd.number == -1 || newStd.id == -1 || newStd.firstName == "" || newStd.lastName == "") return false;
     if (cap) className = tt::capitalize(className);
@@ -238,7 +238,7 @@ void clss::menu()
         cout << "Press 2: Add a student to a class\n";
         cout << "Press 3: Edit a student\n";
         cout << "Press 4: Remove a student from a class\n";
-        cout << "Press 5: Change a student's class";
+        cout << "Press 5: Change a student's class\n";
         cout << "Press 6: View list of class\n";
         cout << "Press 7: View list of student in a class\n";
         cout << "Press 0: Exit\n";
@@ -310,7 +310,7 @@ void clss::menu()
                 newStd = getStudent(newStd.id);
 
                 if (newStd.id < 0) {
-                    cout << "Student " << newStd.id << " does not existed\n\n";
+                    cout << "That student does not existed\n\n";
                     break;
                 }
 
@@ -328,24 +328,52 @@ void clss::menu()
                 break;
             }
             case 4: {
-                tt::student newStd;
-                newStd.number = -1;
+                tt::student tmpStd;
+                tmpStd.number = -1;
 
                 cout << "\nStudent ID to remove: ";
-                if (!tt::cinIg(cin, newStd.id)) break;
-                newStd = getStudent(newStd.id);
+                if (!tt::cinIg(cin, tmpStd.id)) break;
+                tmpStd = getStudent(tmpStd.id);
 
-                if (newStd.id < 0) {
-                    cout << "Student " << newStd.id << " does not existed\n\n";
+                if (tmpStd.id < 0) {
+                    cout << "That student does not existed\n\n";
                     break;
                 }
 
                 char cfm;
-                cout << "\nRemove student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
+                cout << "\nRemove student " << tmpStd.id << " in class " << tmpStd.cls << " (Y/N)?: ";
                 tt::cinIg(cin, cfm);
 
-                if ((cfm == 'Y' || cfm == 'y') && rewriteStudent(newStd.cls, newStd, 2)) cout << "Removed\n\n";
+                if ((cfm == 'Y' || cfm == 'y') && rewriteStudent(tmpStd.cls, tmpStd, 2)) cout << "Removed\n\n";
                 else cout << "Aborted\n\n";
+                break;
+            }
+            case 5: {
+                tt::student tmpStd;
+                tmpStd.number = -1;
+
+                cout << "\nStudent ID to move: ";
+                if (!tt::cinIg(cin, tmpStd.id)) break;
+                tmpStd = getStudent(tmpStd.id);
+
+                if (tmpStd.id < 0) {
+                    cout << "That student does not existed\n\n";
+                    break;
+                }
+                cout << "Found in class " << tmpStd.cls << '\n';
+
+                cout << "Class to move this student to: ";
+                string newClass;
+                tt::cinIg(cin, newClass);
+                newClass = tt::capitalize(newClass);
+                if (newClass == tmpStd.cls) cout << "Same class. Abort move\n\n";
+                else if (classPos(newClass) < 0) cout << "That class doesn't exist\n\n";
+                else {
+                    rewriteStudent(tmpStd.cls, tmpStd, 2);
+                    studentToFile(newClass, tmpStd, false);
+                    cout << "Moved student " << tmpStd.id << " from " << tmpStd.cls << " to " << newClass << "\n\n";
+                }
+
                 break;
             }
             default:
