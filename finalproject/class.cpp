@@ -66,7 +66,7 @@ void clss::classToFile(string className, tt::vector<tt::student>& newClass)
     file.close();
 }
 
-bool clss::rewriteStudent(string className, tt::student newStd, bool cap)
+bool clss::rewriteStudent(string className, tt::student newStd, int mode, bool cap)
 {
     if (newStd.number == -1 || newStd.id == -1 || newStd.firstName == "" || newStd.lastName == "") return false;
     if (cap) className = tt::capitalize(className);
@@ -84,7 +84,7 @@ bool clss::rewriteStudent(string className, tt::student newStd, bool cap)
         file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
         if (res.id == newStd.id) {
             added = true;
-            thisCls.push_back(newStd);
+            if (mode == 1) thisCls.push_back(newStd);
         }
         else thisCls.push_back(res);
     }
@@ -313,10 +313,38 @@ void clss::menu()
                     cout << "Student " << newStd.id << " does not existed\n\n";
                     break;
                 }
-                cout << "\nEditing student " << newStd.id << " in class " << newStd.cls << "\n";
+
+                char cfm;
+                cout << "\nEdit student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
+                tt::cinIg(cin, cfm);
+                if (cfm != 'Y' && cfm != 'y') {
+                    cout << "Aborted\n\n";
+                    break;
+                }
 
                 inputStudent(newStd);
                 if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id << "\n\n";
+                else cout << "Aborted\n\n";
+                break;
+            }
+            case 4: {
+                tt::student newStd;
+                newStd.number = -1;
+
+                cout << "\nStudent ID to remove: ";
+                if (!tt::cinIg(cin, newStd.id)) break;
+                newStd = getStudent(newStd.id);
+
+                if (newStd.id < 0) {
+                    cout << "Student " << newStd.id << " does not existed\n\n";
+                    break;
+                }
+
+                char cfm;
+                cout << "\nRemove student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
+                tt::cinIg(cin, cfm);
+
+                if ((cfm == 'Y' || cfm == 'y') && rewriteStudent(newStd.cls, newStd, 2)) cout << "Removed\n\n";
                 else cout << "Aborted\n\n";
                 break;
             }

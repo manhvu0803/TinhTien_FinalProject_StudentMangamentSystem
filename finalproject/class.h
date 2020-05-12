@@ -17,7 +17,7 @@ class clss
         // Return true if student is valid and added to file
         bool studentToFile(string className, tt::student newStd, bool cap = true);
         void classToFile(string className, tt::vector<tt::student>& newClass);
-        bool rewriteStudent(string className, tt::student newStd, bool cap = true);
+        bool rewriteStudent(string className, tt::student newStd, int mode = 1, bool cap = true);
         tt::student getStudent(string className, int id, bool cap = true);
         tt::student getStudent(int id);
         // Return true if the file is valid and saved
