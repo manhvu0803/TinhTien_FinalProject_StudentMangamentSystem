@@ -1,5 +1,5 @@
-#ifndef _FUNCTION_H_
-#define _FUNCTION_H_
+#ifndef ACADEMICYEAR_H_INCLUDE
+#define ACADEMICYEAR_H_INCLUDE
 
 #include "semester.h"
 #include "utility.h"
