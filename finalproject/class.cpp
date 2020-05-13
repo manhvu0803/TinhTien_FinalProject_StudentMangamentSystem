@@ -4,6 +4,7 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
+#include "accountControl.h"
 #include <limits>
 
 using namespace std;
@@ -324,8 +325,13 @@ void clss::menu()
                         break;
                     }
                 }
-                if (studentToFile(className, addStudentMenu(className))) cout << "Student added\n\n";
+                tt::student newStd = addStudentMenu(className);
+                if (studentToFile(className, newStd)) {
+                    cout << "Student added\n\n";
+                    acc::createAccount(newStd);
+                }
                 else cout << "Aborted\n\n";
+
                 break;
             }
             case 3: {
