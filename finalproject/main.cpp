@@ -1,47 +1,55 @@
 #include <iostream>
-#include <conio.h>
+#include <limits>
 #include "accountControl.h"
 
 using namespace std;
 
 int main()
 {
-    cout << "Welcome to Tinh Tien's Student Management System\nPlease log out before closing the program";
+    cout << "Welcome to Tinh Tien's Student Management System\n";
+    cout << "Please log out before closing the program\n\n";
 
-    account user = login();
-    if (user.type == 0)
-        return 0;
+    acc::account* user = acc::login();
 
-    do {
+    int choice;
+    while (user) {
         cout << "Please choose an option:\n";
-        cout << "Press 1: View profile\n";
-        cout << "Press 2: Change password\n";
-        cout << "Press 3: Log out\n";
+        cout << "Enter 1: View profile\n";
+        cout << "Enter 2: Change password\n";
+        cout << "Enter 3: Log out\n\n";
 
-        int choice;
+        cout << "Your choice: ";
         cin >> choice;
-
+        if (cin.fail()) {
+            cin.clear();
+            cin.ignore(numeric_limits<int>::max(), '\n');
+            choice = -1;
+        }
         switch (choice) {
             case 1:
-                showProfile(user);
+                acc::showProfile(*user);
+                cout << "\nPress Enter to continue...\n";
+                cin.get();
+                cin.clear();
+                cin.ignore(numeric_limits<int>::max(), '\n');
                 break;
             case 2:
-                changePassword(user);
+                cin.ignore(256, '\n');
+                acc::changePassword(user);
                 break;
             case 3:
-                saveAccount();
-                cout << "Logged out\n";
-                user = login();
+                acc::saveToFile();
+                cout << "Logged out successfully\n\n";
+                cin.ignore(256, '\n');
+                user = acc::login();
                 break;
             default:
-                cout << "Invalid choice\n";
-                _getch();
+                cout << "\nInvalid choice\n";
         }
-
-        if (choice == 4)
-            break;
+        cout << "\n";
     }
-    while (true);
+
+    delete user;
 
     return 0;
 }
