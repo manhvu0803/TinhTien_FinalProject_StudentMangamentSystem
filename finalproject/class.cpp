@@ -19,8 +19,8 @@ clss::clss()
     ifstream file(classDat);
     string name;
     while (getline(file, name)) {
-        classes.push_back(name);
         ifstream classFile(classDir + name + ".dat");
+        tt::vector<tt::student> tmpVec;
         tt::student res;
         res.cls = name;
         if (!classFile.is_open()) break;
@@ -30,8 +30,10 @@ clss::clss()
             getline(classFile, res.lastName);
             getline(classFile, res.firstName);
             classFile >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-            students.push_back(res);
+            tmpVec.push_back(res);
         }
+        classes.push_back(name);
+        students.push_back(tmpVec);
         classFile.close();
     }
     file.close();
@@ -55,18 +57,20 @@ tt::student clss::getStudent(string className, int id, bool cap)
     tt::student res;
     res.number = -1;
     res.id = -1;
-    for (int i = 0, lim = students.size(); i < lim; ++i)
-        if (id == students[i].id && className == students[i].cls) return students[i];
+    int pos = classPos(className);
+    for (int i = 0, lim = students[pos].size(); i < lim; ++i)
+        if (id == students[pos][i].id) return students[pos][i];
     return res;
 }
 
 tt::student clss::getStudent(int id)
 {
     tt::student res;
-    res.id = -1;
     res.number = -1;
-    for (int i = 0, lim = students.size(); i < lim; ++i)
-        if (id == students[i].id) return students[i];
+    res.id = -1;
+    for (int pos = 0, lim = classes.size(); pos < lim; ++pos)
+        for (int i = 0, lim2 = students[pos].size(); i < lim2; ++i)
+            if (id == students[pos][i].id) return students[pos][i];
     return res;
 }
 
@@ -128,8 +132,12 @@ bool clss::rewriteStudent(string className, const tt::student& newStd, int mode,
 
     if (added) {
         classToFile(className, thisCls);
-        for (int i = 0, lim = students.size(); i < lim; ++i)
-            if (students[i].id == newStd.id) students[i] = newStd;
+        int pos = classPos(className);
+        for (int i = 0, lim = students[pos].size(); i < lim; ++i)
+            if (students[pos][i].id == newStd.id) {
+                if (mode == 1) students[pos][i] = newStd;
+                else students[pos].erase(i);
+            }
     }
     return added;
 }
@@ -148,15 +156,16 @@ bool clss::import(istream& inFile, string className)
 
         getline(ss, input, ',');
         newStd.number = stoi(input);
-        if (getStudent(newStd.id).id > 0) {
-            cout << "Student number cannot exceed 3 characters";
+        if (newStd.number < 0 || newStd.number > 999) {
+            cout << "Student number cannot be lower than 0 and exceed 999";
             return false;
         }
 
         getline(ss, input, ',');
         newStd.id = stoi(input);
-        if (getStudent(newStd.id).id > 0) {
-            cout << "Student" << newStd.id << "has already existed\n\n";
+        tt::student res = getStudent(newStd.id);
+        if (res.id > 0 && res.cls != className) {
+            cout << "Student " << newStd.id << "has already existed\n\n";
             return false;
         }
 
@@ -236,42 +245,33 @@ tt::student clss::addStudentMenu(string className)
         return newStd;
     }
     newStd.id = id;
-
+    newStd.cls = className;
     inputStudent(newStd);
-    students.push_back(newStd);
+    students[classPos(className)].push_back(newStd);
     return newStd;
 }
 
-void clss::showClass(string className)
+void clss::showClass(tt::vector<tt::student>& thisCls)
 {
-    ifstream file(classDir + className + ".dat");
-    tt::student res;
-
     cout << "No. |  ID         |    Name                          | Gender | Date of birth\n";
 
-    while (file >> res.number) {
+    for (int i = 0, lim = thisCls.size(); i < lim; ++i) {
         cout << "-------------------------------------------------------------------------------\n";
-        cout << left << setw(4) << res.number;
-        file >> res.id;
-        cout << "| " << setw(12) << res.id;
-        file.ignore(ignoreMax, '\n');
-        getline(file, res.lastName);
-        getline(file, res.firstName);
-        cout << "| " << setw(33) << res.lastName + " " + res.firstName;
-        file >> res.gender;
-        cout << "| " << setw(7) << ((res.gender == 'M') ? "Male" : "Female");
-        file >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-        cout << "|  " << res.DoB.y << '-' << res.DoB.m << '-' << res.DoB.d << "\n";
+        cout << left << setw(4) << thisCls[i].number;
+        cout << "| " << setw(12) << thisCls[i].id;
+        cout << "| " << setw(33) << thisCls[i].lastName + " " + thisCls[i].firstName;
+        cout << "| " << setw(7) << ((thisCls[i].gender == 'M') ? "Male" : "Female");
+        cout << "|  " << thisCls[i].DoB.y << '-' << thisCls[i].DoB.m << '-' << thisCls[i].DoB.d << "\n";
     }
     cout << '\n';
 }
 
 void clss::menu()
 {
-    cout << "===================== Class menu =====================\n\n";
-
     int choice;
     do {
+        tt::clearConsole();
+        cout << "===================== Class menu =====================\n\n";
         cout << "Press 1: Import a class from a csv file\n";
         cout << "Press 2: Add a student to a class\n";
         cout << "Press 3: Edit a student\n";
@@ -279,17 +279,18 @@ void clss::menu()
         cout << "Press 5: Change a student's class\n";
         cout << "Press 6: View list of class\n";
         cout << "Press 7: View list of student in a class\n";
-        cout << "Press 0: Exit\n";
+        cout << "Press 0: Return\n";
 
         cout << "Your choice: ";
         if (!tt::cinIg(cin, choice)) choice = -1;
+        if (choice > -1 && choice < 8) tt::clearConsole();
 
         switch (choice) {
             case 0:
                 break;
             case 1: {
                 string importDir, className;
-                cout << "\nThe csv file must be in format: No.,Student ID,Full name,Gender,Date of birth\n";
+                cout << "The csv file must be in format: No.,Student ID,Full name,Gender,Date of birth\n";
 
                 cout << "Class name: ";
                 cin >> className;
@@ -298,7 +299,8 @@ void clss::menu()
                     cout << className << " has already existed\nDo you want to overwrite it? (Y/N): ";
                     cin >> cfm;
                     if (cfm != 'y' && cfm != 'Y') {
-                        cout << "Aborted\n\n";
+                        cout << "Aborted";
+                        getchar();
                         break;
                     }
                 }
@@ -306,23 +308,22 @@ void clss::menu()
                 cout << "File directory to import: ";
                 cin >> importDir;
                 ifstream inFile(importDir);
-                if (!inFile.is_open()) {
-                    cout << importDir << " not found\n\n";
-                    break;
+                if (!inFile.is_open()) cout << importDir << " not found";
+                else {
+                    if (import(inFile, className)) cout << "Import successfully";
+                    else cout << "Aborted";
+                    inFile.close();
                 }
-                if (import(inFile, className)) cout << "Import successfully\n\n";
-                else cout << "Aborted\n\n";
-                inFile.close();
-
+                getchar();
                 break;
             }
             case 2: {
                 string className;
-                cout << "\nClass to add new student: ";
+                cout << "Class to add new student: ";
                 cin >> className;
+                char cfm = 'y';
                 if (classPos(className) == -1) {
                     cout << "Class " << className << " doesn't exist. Do you want to create it? (Y/N): ";
-                    char cfm;
                     cin >> cfm;
                     cin.clear();
                     cin.ignore(ignoreMax, '\n');
@@ -330,17 +331,17 @@ void clss::menu()
                         classes.push_back(className);
                         cout << "Created " << className << '\n';
                     }
-                    else {
-                        cout << "Aborted\n\n";
-                        break;
+                    else cout << "Aborted";
+                }
+
+                if (cfm == 'y' || cfm == 'T') {
+                    tt::student newStd = addStudentMenu(className);
+                    if (studentToFile(className, newStd)) {
+                        cout << "Student added";
+                        acc::createAccount(newStd);
                     }
+                    else cout << "Aborted";
                 }
-                tt::student newStd = addStudentMenu(className);
-                if (studentToFile(className, newStd)) {
-                    cout << "Student added\n\n";
-                    acc::createAccount(newStd);
-                }
-                else cout << "Aborted\n\n";
 
                 break;
             }
@@ -348,59 +349,56 @@ void clss::menu()
                 tt::student newStd;
                 newStd.number = -1;
 
-                cout << "\nStudent ID to edit: ";
+                cout << "Student ID to edit: ";
                 if (!tt::cinIg(cin, newStd.id)) break;
                 newStd = getStudent(newStd.id);
 
                 if (newStd.id < 0) {
-                    cout << "That student does not existed\n\n";
+                    cout << "That student does not existed";
                     break;
                 }
 
                 char cfm;
                 cout << "\nEdit student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
                 tt::cinIg(cin, cfm);
-                if (cfm != 'Y' && cfm != 'y') {
-                    cout << "Aborted\n\n";
-                    break;
+                if (cfm != 'Y' && cfm != 'y') cout << "Aborted";
+                else {
+                    inputStudent(newStd);
+                    if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id;
+                    else cout << "Aborted";
                 }
-
-                inputStudent(newStd);
-                if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id << "\n\n";
-                else cout << "Aborted\n\n";
                 break;
             }
             case 4: {
                 tt::student tmpStd;
                 tmpStd.number = -1;
 
-                cout << "\nStudent ID to remove: ";
+                cout << "Student ID to remove: ";
                 if (!tt::cinIg(cin, tmpStd.id)) break;
                 tmpStd = getStudent(tmpStd.id);
 
-                if (tmpStd.id < 0) {
-                    cout << "That student does not existed\n\n";
-                    break;
+                if (tmpStd.id < 0) cout << "That student does not existed";
+                else {
+                    char cfm;
+                    cout << "\nRemove student " << tmpStd.id << " in class " << tmpStd.cls << " (Y/N)?: ";
+                    tt::cinIg(cin, cfm);
+
+                    if ((cfm == 'Y' || cfm == 'y') && rewriteStudent(tmpStd.cls, tmpStd, 2))
+                        cout << "Student removed";
+                    else cout << "Aborted";
                 }
-
-                char cfm;
-                cout << "\nRemove student " << tmpStd.id << " in class " << tmpStd.cls << " (Y/N)?: ";
-                tt::cinIg(cin, cfm);
-
-                if ((cfm == 'Y' || cfm == 'y') && rewriteStudent(tmpStd.cls, tmpStd, 2)) cout << "Removed\n\n";
-                else cout << "Aborted\n\n";
                 break;
             }
             case 5: {
                 tt::student tmpStd;
                 tmpStd.number = -1;
 
-                cout << "\nStudent ID to move: ";
+                cout << "Student ID to move: ";
                 if (!tt::cinIg(cin, tmpStd.id)) break;
                 tmpStd = getStudent(tmpStd.id);
 
                 if (tmpStd.id < 0) {
-                    cout << "That student does not existed\n\n";
+                    cout << "That student does not existed";
                     break;
                 }
                 cout << "Found in class " << tmpStd.cls << '\n';
@@ -414,31 +412,33 @@ void clss::menu()
                 else {
                     rewriteStudent(tmpStd.cls, tmpStd, 2);
                     studentToFile(newClass, tmpStd, false);
-                    cout << "Moved student " << tmpStd.id << " from " << tmpStd.cls << " to " << newClass << "\n\n";
+                    cout << "Moved student " << tmpStd.id << " from " << tmpStd.cls << " to " << newClass;
                 }
 
                 break;
             }
             case 6: {
-                cout << "\nList of classes:\n";
+                cout << "List of classes:\n";
                 for (int i = 0, lim = classes.size(); i < lim; ++i)
                     cout << classes[i] << '\n';
-                cout << "\nPress enter to continue...";
-                getchar();
                 cout << '\n';
+                break;
             }
             case 7: {
-                cout << "\nClass to show: ";
+                cout << "Class to show: ";
                 string className;
                 tt::cinIg(cin, className);
-                if (classPos(className) > 0)
-                    showClass(className);
-                else cout << "That class doesn't exist\n\n";
+                int pos = classPos(className);
+                if (pos > -1) showClass(students[pos]);
+                else cout << "That class doesn't exist";
                 break;
             }
             default:
-                cout << "Invalid choice\n\n";
+                cout << "Invalid choice";
         }
+
+        cout << "\nPress enter to continue...";
+        if (choice != 0) getchar();
     }
     while (choice != 0);
 }

@@ -158,7 +158,7 @@ bool passwordCheck(string password, const char* type = "")
 {
     string input;
     do {
-        cout << "Please enter your " << type << " password (enter \"" << cancelCmd << "\" to return):\n";
+        cout << "Please enter your " << type << "password (enter \"" << cancelCmd << "\" to return):\n";
         input = passwordBuffer();
         if (input == cancelCmd) return false;
         if (input == password) return true;
@@ -213,7 +213,7 @@ void acc::changePassword(account* user)
 {
     cout << "\nChange password\n";
 
-    if (!passwordCheck(user->password, "old")) return;
+    if (!passwordCheck(user->password, "old ")) return;
 
     string input;
     do {

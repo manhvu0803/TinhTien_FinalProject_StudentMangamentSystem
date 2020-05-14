@@ -35,12 +35,21 @@ namespace tt
         date DoB; // date of birth
     };
 
+    struct checkIn
+    {
+        int id = -1;
+        date cDate;
+        time cTime;
+    };
+    
     struct score
     {
         std::string cls = ""; // class of the student
         std::string studentName = "";
         int id = -1; // ID of the student this score belongs to
         float mid = -1, final = -1, bonus = -1, total = -1;
+        float mid = -1, final = -1, bonus = -1, total = -1;
+        tt::vector<checkIn> chkIn;
     };
 
     struct course
@@ -55,13 +64,6 @@ namespace tt
         time startTime, endTime;
         //tt::vector<student *> students;
         std::string room = "";
-    };
-
-    struct checkIn
-    {
-        int id = -1;
-        date cDate;
-        time cTime;
     };
 
     date currentDate();
