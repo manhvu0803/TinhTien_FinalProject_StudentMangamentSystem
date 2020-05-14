@@ -337,6 +337,8 @@ namespace tt
     // Return true if the last folder in the directory is created,
     // false otherwise (folder already existed, no permission,...)
     bool makeDir(const std::string& dir);
+
+    void clearConsole();
 }
 
 #endif // UTILITY_H_INCLUDED
