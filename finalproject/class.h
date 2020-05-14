@@ -34,7 +34,9 @@ class clss
     private:
         static const char* classDir;
         static const char* classDat;
+
         tt::vector<string> classes;
+        tt::vector<tt::student> students;
 
         void studentToStream(ostream& stream, const tt::student& newStd);
 
