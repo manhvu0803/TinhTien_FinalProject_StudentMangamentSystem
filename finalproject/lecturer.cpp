@@ -1,23 +1,15 @@
 #include "lecturer.h"
 #include "dataStructure.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
 const char* ltr::ltrFile = "data/lecturer.dat";
 
-void saveToFile()
-{
-    ofstream file.open(ltrFile);
-    for (int i = 0, lim = ltrs.size(); i < lim; ++i) {
-        file << ltrs[i].username << '\n' << ltrs[i].
-    }
-    file.close();
-}
-
 ltr::ltr()
 {
-    ifstream file.open(ltrFile);
+    ifstream file(ltrFile);
     tt::lecturer newLtr;
     while (getline(file, newLtr.username)) {
         getline(file, newLtr.fullName);
@@ -31,6 +23,16 @@ ltr::ltr()
 
 ltr::~ltr()
 {
+}
+
+void ltr::saveToFile()
+{
+    ofstream file(ltrFile);
+    for (int i = 0, lim = ltrs.size(); i < lim; ++i) {
+        file << ltrs[i].username << '\n' << ltrs[i].fullName << '\n';
+        file << ltrs[i].degree << '\n' << ltrs[i].gender << '\n';
+    }
+    file.close();
 }
 
 int ltr::position(tt::lecturer user)
@@ -48,7 +50,7 @@ void ltr::input(tt::lecturer newLtr)
         cout << "Gender (F/M): ";
         bool valid = tt::cinIg(cin, newLtr.gender);
         newLtr.gender = toupper(newLtr.gender);
-        if ((g == 'F' || g == 'M') && valid) break;
+        if ((newLtr.gender == 'F' || newLtr.gender == 'M') && valid) break;
         cout << "Invalid input\n";
     }
     while (true);
@@ -66,7 +68,18 @@ void ltr::replace(tt::lecturer user, int pos)
     saveToFile();
 }
 
-void ltr::courseMenu()
+void ltr::showAll()
+{
+    cout << "Username      |  Name                            | Degree           | Gender\n";
+    for (int i = 0, lim = ltrs.size(); i < lim; ++i) {
+        cout << left << setw(14) << ltrs[i].username;
+        cout << "| " << setw(33) << ltrs[i].fullName;
+        cout << "| " << setw(17) << ltrs[i].degree;
+        cout << "| " << ((ltrs[i].gender == 'M') ? "Male" : "Female") << '\n';
+    }
+}
+
+void ltr::menu()
 {
     int choice;
     do {
@@ -77,9 +90,9 @@ void ltr::courseMenu()
         cout << "Enter 4: View all lecturer\n";
         cout << "Enter 0: Exit\n";
 
-        cin >> choice;
+        cout << "Your choice: ";
         if (!tt::cinIg(cin, choice)) choice = -1;
-        if (choice < -1 || choice > 4) tt::clearConsole();
+        if (choice < -1 || choice > 4);
 
         switch (choice) {
             case 0:
@@ -101,6 +114,7 @@ void ltr::courseMenu()
             case 3:
                 break;
             case 4:
+                showAll();
                 break;
             case 5:
                 break;
