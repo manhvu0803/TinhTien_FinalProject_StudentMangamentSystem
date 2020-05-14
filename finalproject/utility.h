@@ -106,7 +106,8 @@ namespace tt
         _capacity = vecToCopy.capacity();
         _size = vecToCopy.size();
         ptr = new T[_capacity];
-        memcpy(ptr, vecToCopy.ptr, sizeof(T) * _size);
+        for (size_t i = 0; i < _size; ++i)
+            ptr[i] = vecToCopy.ptr[i];
 
         return this;
     }
