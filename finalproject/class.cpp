@@ -19,8 +19,8 @@ clss::clss()
     ifstream file(classDat);
     string name;
     while (getline(file, name)) {
-        classes.push_back(name);
         ifstream classFile(classDir + name + ".dat");
+        tt::vector<tt::student> tmpVec;
         tt::student res;
         res.cls = name;
         if (!classFile.is_open()) break;
@@ -30,8 +30,10 @@ clss::clss()
             getline(classFile, res.lastName);
             getline(classFile, res.firstName);
             classFile >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-            students.push_back(res);
+            tmpVec.push_back(res);
         }
+        classes.push_back(name);
+        students.push_back(tmpVec);
         classFile.close();
     }
     file.close();
@@ -55,18 +57,20 @@ tt::student clss::getStudent(string className, int id, bool cap)
     tt::student res;
     res.number = -1;
     res.id = -1;
-    for (int i = 0, lim = students.size(); i < lim; ++i)
-        if (id == students[i].id && className == students[i].cls) return students[i];
+    int pos = classPos(className);
+    for (int i = 0, lim = students[pos].size(); i < lim; ++i)
+        if (id == students[pos][i].id) return students[pos][i];
     return res;
 }
 
 tt::student clss::getStudent(int id)
 {
     tt::student res;
-    res.id = -1;
     res.number = -1;
-    for (int i = 0, lim = students.size(); i < lim; ++i)
-        if (id == students[i].id) return students[i];
+    res.id = -1;
+    for (int pos = 0, lim = classes.size(); pos < lim; ++pos)
+        for (int i = 0, lim2 = students[pos].size(); i < lim2; ++i)
+            if (id == students[pos][i].id) return students[pos][i];
     return res;
 }
 
@@ -128,10 +132,11 @@ bool clss::rewriteStudent(string className, const tt::student& newStd, int mode,
 
     if (added) {
         classToFile(className, thisCls);
-        for (int i = 0, lim = students.size();  i < lim; ++i)
-            if (students[i].id == newStd.id) {
-                if (mode == 1) students[i] = newStd;
-                else students.erase(i);
+        int pos = classPos(className);
+        for (int i = 0, lim = students[pos].size(); i < lim; ++i)
+            if (students[pos][i].id == newStd.id) {
+                if (mode == 1) students[pos][i] = newStd;
+                else students[pos].erase(i);
             }
     }
     return added;
@@ -242,30 +247,21 @@ tt::student clss::addStudentMenu(string className)
     newStd.id = id;
     newStd.cls = className;
     inputStudent(newStd);
-    students.push_back(newStd);
+    students[classPos(className)].push_back(newStd);
     return newStd;
 }
 
-void clss::showClass(string className)
+void clss::showClass(tt::vector<tt::student>& thisCls)
 {
-    ifstream file(classDir + className + ".dat");
-    tt::student res;
-
     cout << "No. |  ID         |    Name                          | Gender | Date of birth\n";
 
-    while (file >> res.number) {
+    for (int i = 0, lim = thisCls.size(); i < lim; ++i) {
         cout << "-------------------------------------------------------------------------------\n";
-        cout << left << setw(4) << res.number;
-        file >> res.id;
-        cout << "| " << setw(12) << res.id;
-        file.ignore(ignoreMax, '\n');
-        getline(file, res.lastName);
-        getline(file, res.firstName);
-        cout << "| " << setw(33) << res.lastName + " " + res.firstName;
-        file >> res.gender;
-        cout << "| " << setw(7) << ((res.gender == 'M') ? "Male" : "Female");
-        file >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-        cout << "|  " << res.DoB.y << '-' << res.DoB.m << '-' << res.DoB.d << "\n";
+        cout << left << setw(4) << thisCls[i].number;
+        cout << "| " << setw(12) << thisCls[i].id;
+        cout << "| " << setw(33) << thisCls[i].lastName + " " + thisCls[i].firstName;
+        cout << "| " << setw(7) << ((thisCls[i].gender == 'M') ? "Male" : "Female");
+        cout << "|  " << thisCls[i].DoB.y << '-' << thisCls[i].DoB.m << '-' << thisCls[i].DoB.d << "\n";
     }
     cout << '\n';
 }
@@ -432,7 +428,8 @@ void clss::menu()
                 cout << "Class to show: ";
                 string className;
                 tt::cinIg(cin, className);
-                if (classPos(className) > 0) showClass(className);
+                int pos = classPos(className);
+                if (pos > -1) showClass(students[pos]);
                 else cout << "That class doesn't exist";
                 break;
             }
