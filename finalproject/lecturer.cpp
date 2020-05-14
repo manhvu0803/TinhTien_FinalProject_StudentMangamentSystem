@@ -1,6 +1,7 @@
 #include "lecturer.h"
 #include "dataStructure.h"
 #include <iostream>
+#include "accountControl.h"
 #include <iomanip>
 
 using namespace std;
@@ -35,14 +36,14 @@ void ltr::saveToFile()
     file.close();
 }
 
-int ltr::position(tt::lecturer user)
+int ltr::position(const tt::lecturer& user)
 {
     for (int i = 0, lim = ltrs.size(); i < lim; ++i)
         if (user.username == ltrs[i].username) return i;
     return -1;
 }
 
-void ltr::input(tt::lecturer newLtr)
+void ltr::input(tt::lecturer& newLtr)
 {
     cout << "Degree: ";
     getline(cin, newLtr.degree);
@@ -101,11 +102,12 @@ void ltr::menu()
                 tt::lecturer newLtr;
                 cout << "\nAdd a lecturer\n";
                 cout << "Name: ";
-                cin.ignore(1024, '\n');
                 getline(cin , newLtr.fullName);
-                if (position(newLtr) > -1) cout << "Lecturer has already exist";
+                newLtr.username = acc::createUsername(newLtr.fullName);
+                if (position(newLtr) > -1) cout << "Lecturer has already existed";
                 else {
                     input(newLtr);
+                    acc::createAccount(newLtr);
                     add(newLtr);
                     cout << "Added successfully";
                 }

@@ -24,7 +24,7 @@ void acc::saveToFile()
     loginFile.close();
 }
 
-string createUsername(string name)
+string acc::createUsername(string name)
 {
     size_t pos1 = name.find(' ');
     size_t pos2 = name.find(' ', pos1 + 1);
@@ -52,14 +52,13 @@ bool addAccount(account user)
     return true;
 }
 
-bool acc::createAccount(tt::lecturer& user)
+bool acc::createAccount(const tt::lecturer& user)
 {
     account newAcc;
     // Lecturer's username is also their ID
     newAcc.id = createUsername(user.fullName);
     newAcc.type = 2;
     newAcc.username = newAcc.id;
-    user.username = newAcc.id;
 
     // Lecturer default password is their degree + full name with no caps or space
     newAcc.password = "";
