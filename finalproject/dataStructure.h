@@ -41,6 +41,9 @@ namespace tt
         std::string studentName = "";
         int id = -1; // ID of the student this score belongs to
         float mid = -1, final = -1, bonus = -1, total = -1;
+        float mid = -1, final = -1, bonus = -1, total = -1;
+        tt::vector<date> checkedDate;
+        tt::vector<time> checkedTime;
     };
 
     struct course
