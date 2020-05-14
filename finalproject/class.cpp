@@ -17,8 +17,22 @@ clss::clss()
 {
     ifstream file(classDat);
     string name;
-    while (getline(file, name))
+    while (getline(file, name)) {
         classes.push_back(name);
+        ifstream classFile(classDir + name + ".dat");
+        tt::student res;
+        res.cls = name;
+        if (!classFile.is_open()) break;
+        while (classFile >> res.number) {
+            classFile >> res.id;
+            classFile.ignore(ignoreMax, '\n');
+            getline(classFile, res.lastName);
+            getline(classFile, res.firstName);
+            classFile >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
+            students.push_back(res);
+        }
+        classFile.close();
+    }
     file.close();
 }
 
@@ -38,26 +52,10 @@ tt::student clss::getStudent(string className, int id, bool cap)
 {
     if (cap) className = tt::capitalize(className);
     tt::student res;
+    res.number = -1;
     res.id = -1;
-    res.cls = className;
-    ifstream file(classDir + className + ".dat");
-    if (!file.is_open()) return res;
-    while (file >> res.number) {
-        file >> res.id;
-        if (id == res.id) {
-            file.ignore(ignoreMax, '\n');
-            getline(file, res.lastName);
-            getline(file, res.firstName);
-            file >> res.gender >> res.DoB.y >> res.DoB.m >> res.DoB.d;
-            return res;
-        }
-        else {
-            for (int i = 0; i < 5; ++i)
-                file.ignore(ignoreMax, '\n');
-        }
-    }
-    file.close();
-    res.id = -1;
+    for (int i = 0, lim = students.size(); i < lim; ++i)
+        if (id == students[i].id && className == students[i].cls) return students[i];
     return res;
 }
 
@@ -65,11 +63,9 @@ tt::student clss::getStudent(int id)
 {
     tt::student res;
     res.id = -1;
-    for (int i = 0, lim = classes.size(); i < lim; ++i) {
-        res = getStudent(classes[i], id, false);
-        if (res.id > 0) return res;
-    }
-    res.id = -1;
+    res.number = -1;
+    for (int i = 0, lim = students.size(); i < lim; ++i)
+        if (id == students[i].id) return students[i];
     return res;
 }
 
@@ -129,7 +125,11 @@ bool clss::rewriteStudent(string className, const tt::student& newStd, int mode,
         else thisCls.push_back(res);
     }
 
-    if (added) classToFile(className, thisCls);
+    if (added) {
+        classToFile(className, thisCls);
+        for (int i = 0, lim = students.size(); i < lim; ++i)
+            if (students[i].id == newStd.id) students[i] = newStd;
+    }
     return added;
 }
 
@@ -147,9 +147,17 @@ bool clss::import(istream& inFile, string className)
 
         getline(ss, input, ',');
         newStd.number = stoi(input);
+        if (getStudent(newStd.id).id > 0) {
+            cout << "Student number cannot exceed 3 characters";
+            return false;
+        }
 
         getline(ss, input, ',');
         newStd.id = stoi(input);
+        if (getStudent(newStd.id).id > 0) {
+            cout << "Student" << newStd.id << "has already existed\n\n";
+            return false;
+        }
 
         getline(ss, input, ',');
         int pos = input.find_last_of(' ');
@@ -182,7 +190,8 @@ bool clss::import(istream& inFile, string className)
 bool clss::inputStudent(tt::student& newStd)
 {
     cout << "Student number: ";
-    if (!tt::cinIg(cin, newStd.number) || newStd.number < 0) {
+    if (!tt::cinIg(cin, newStd.number) || newStd.number < 0 || newStd.number > 999) {
+        cout << "Student number cannot be negative and exceed 3 character\n";
         newStd.id = -1;
         return false;
     }
@@ -228,6 +237,7 @@ tt::student clss::addStudentMenu(string className)
     newStd.id = id;
 
     inputStudent(newStd);
+    students.push_back(newStd);
     return newStd;
 }
 
