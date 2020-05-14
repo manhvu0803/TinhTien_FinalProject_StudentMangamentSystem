@@ -24,7 +24,7 @@ void acc::saveToFile()
     loginFile.close();
 }
 
-string createUsername(string name)
+string acc::createUsername(string name)
 {
     size_t pos1 = name.find(' ');
     size_t pos2 = name.find(' ', pos1 + 1);
@@ -52,14 +52,13 @@ bool addAccount(account user)
     return true;
 }
 
-bool acc::createAccount(tt::lecturer& user)
+bool acc::createAccount(const tt::lecturer& user)
 {
     account newAcc;
     // Lecturer's username is also their ID
     newAcc.id = createUsername(user.fullName);
     newAcc.type = 2;
     newAcc.username = newAcc.id;
-    user.username = newAcc.id;
 
     // Lecturer default password is their degree + full name with no caps or space
     newAcc.password = "";
@@ -158,7 +157,7 @@ bool passwordCheck(string password, const char* type = "")
 {
     string input;
     do {
-        cout << "Please enter your " << type << " password (enter \"" << cancelCmd << "\" to return):\n";
+        cout << "Please enter your " << type << "password (enter \"" << cancelCmd << "\" to return):\n";
         input = passwordBuffer();
         if (input == cancelCmd) return false;
         if (input == password) return true;
@@ -213,7 +212,7 @@ void acc::changePassword(account* user)
 {
     cout << "\nChange password\n";
 
-    if (!passwordCheck(user->password, "old")) return;
+    if (!passwordCheck(user->password, "old ")) return;
 
     string input;
     do {
