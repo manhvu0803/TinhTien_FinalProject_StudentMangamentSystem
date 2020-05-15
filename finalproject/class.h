@@ -20,6 +20,8 @@ class clss
         tt::student getStudent(string className, int id, bool cap = true);
         tt::student getStudent(int id);
 
+        const tt::vector<tt::student>& getClass(string className);
+
         void showClass(tt::vector<tt::student>& thisCls);
 
         void menu();
