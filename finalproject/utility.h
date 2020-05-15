@@ -22,7 +22,7 @@ namespace tt
             ~vector();
 
             // Assignment
-            vector<T>* operator=(const vector<T>& vecToCopy);
+            vector<T>& operator=(const vector<T>& vecToCopy);
             void assign(T* aBegin, T* aEnd);
 
             // Pointers
@@ -99,7 +99,7 @@ namespace tt
     }
 
     // Assignment
-    template <typename T> vector<T>* vector<T>::operator=(const vector<T>& vecToCopy)
+    template <typename T> vector<T>& vector<T>::operator=(const vector<T>& vecToCopy)
     {
         delete [] ptr;
 
@@ -109,7 +109,7 @@ namespace tt
         for (size_t i = 0; i < _size; ++i)
             ptr[i] = vecToCopy.ptr[i];
 
-        return this;
+        return *this;
     }
 
     template <typename T> void vector<T>::assign(T* aBegin, T* aEnd)
