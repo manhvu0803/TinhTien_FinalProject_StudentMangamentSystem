@@ -63,6 +63,12 @@ tt::student clss::getStudent(string className, int id, bool cap)
     return res;
 }
 
+const tt::vector<tt::student>& clss::getClass(string className)
+{
+    className = tt::capitalize(className);
+    return students[classPos(className)];
+}
+
 tt::student clss::getStudent(int id)
 {
     tt::student res;
