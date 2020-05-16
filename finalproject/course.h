@@ -35,9 +35,8 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents);
 void addStudent(tt::course& Course, tt::vector<int>& classStudents);
 void viewStudentList(tt::vector<int>& classStudent);
 void sortList(tt::vector<tt::course>& List, tt::vector<tt::vector<int>>& students);
-void upperCase(string& name);
+int maxdayinmonth(int month, int year);
 void swap(tt::vector<int>& list1, tt::vector<int>& list2);
-tt::student searchStudent(int id);
 tt::course searchCourse(string filePath, string Id);
 
 #endif
