@@ -20,7 +20,7 @@ void courseMenu(int year, string semester)
 		if (title != 0)
 		{
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(24) << "COURSE MENU" << setfill('-') << setw(25) << "*" << endl;
+			cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 			title = 0;
 		}
@@ -50,7 +50,7 @@ void courseMenu(int year, string semester)
 				tt::clearConsole();
 			}
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(24) << "COURSE MENU" << setfill('-') << setw(23) << "*" << endl;
+			cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 		}
 		switch (choice)
@@ -174,10 +174,9 @@ void courseMenu(int year, string semester)
 			}
 			if (cont != 0)
 			{
-				tt::vector<int> classStudent;
+				int id = 0;
 				output1Course(List[n - 1], students[n - 1]);
-				add1Student(List[n - 1], classStudent);
-				students.push_back(classStudent);
+				add1Student(List[n - 1], students[n - 1]);
 				saveCourseList(List, students, filePath);
 			}
 			title = 1;
@@ -196,12 +195,14 @@ void courseMenu(int year, string semester)
 			{
 				check = -1;
 				cout << "Input the course no: "; cin >> n;
+				tt::clearConsole();
 				int listSize = List.size();
 				if (n <= 0 || n > listSize)
 				{
 					cout << "Error!!!No available course!!!" << endl;
 					cout << "Input (0) to break or (1) to continue: ";
 					cin >> cont;
+					tt::clearConsole();
 					if (cont == 0)
 					{
 						break;
@@ -233,12 +234,14 @@ void courseMenu(int year, string semester)
 			{
 				check = -1;
 				cout << "Input the course no: "; cin >> n;
+				tt::clearConsole();
 				int listSize = List.size();
 				if (n <= 0 || n > listSize)
 				{
 					cout << "Error!!!No available course!!!" << endl;
 					cout << "Input (0) to break or (1) to continue: ";
 					cin >> cont;
+					tt::clearConsole();
 					if (cont == 0)
 					{
 						break;
@@ -248,6 +251,7 @@ void courseMenu(int year, string semester)
 				{
 					break;
 				}
+				outputCourseList(List, students);
 			}
 			if (check == -1)
 			{
@@ -256,7 +260,12 @@ void courseMenu(int year, string semester)
 				{
 					classStudents.push_back(students[n - 1][i]);
 				}
+				cout << "Course: " << List[n - 1].name << "(" << List[n - 1].id << ") \n";
 				viewStudentList(classStudents);
+				cout << "Press Enter to continue... ";
+				getchar();
+				getchar();
+				tt::clearConsole();
 			}
 			title = 1;
 			break;
@@ -421,7 +430,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 			cout << " Not found!" << endl;
 			notFound.clear();
 			notFound.shrink_to_fit();
-			sortList(list, students);
+			//sortList(list,students);
 		}
 	}
 	else
@@ -474,7 +483,7 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		return;
 	}
 	myFile.close();
-	sortList(list, students);
+	//sortList(list,students);
 }
 void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath)
 {
@@ -588,7 +597,7 @@ void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& st
 		break;
 	}
 	}
-	sortList(list, students);
+	//sortList(list, students);
 	outputCourseList(list, students);
 	cout << "\nPress Enter to continue...";
 	getchar();
@@ -1098,7 +1107,7 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	cout << "\nPress Enter to continue... ";
 	getchar();
 	tt::clearConsole();
-	sortList(list, students);
+	//sortList(list,students);
 }
 void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
@@ -1135,24 +1144,26 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 	cout << "Course: " << list[n - 1].className << " is deleted.\n";
 	list.erase(n - 1);
 	list.shrink_to_fit();
-	saveCourseList(list, students, filePath + "course.dat");
+	saveCourseList(list, students, filePath);
 	getchar();
 	getchar();
 	tt::clearConsole();
 }
 void remove1Student(tt::vector<int>& classStudent)
 {
-	viewStudentList(classStudent);
 	int n, check;
 	while (true)
 	{
+		viewStudentList(classStudent);
 		cout << "Input the studnet no: "; cin >> n;
+		tt::clearConsole();
 		int studentSize = classStudent.size();
 		if (n <= 0 || n > studentSize)
 		{
 			cout << "Error!!!No student at that position!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			cin >> check;
+			tt::clearConsole();
 			if (check == 0)
 			{
 				return;
@@ -1163,6 +1174,11 @@ void remove1Student(tt::vector<int>& classStudent)
 			break;
 		}
 	}
+	cout << "Student: " << classStudent[n - 1] << " is deleted!!!\n";
+	cout << "Press Enter to continune... ";
+	getchar();
+	getchar();
+	tt::clearConsole();
 	classStudent.erase(n - 1);
 	classStudent.shrink_to_fit();
 }
@@ -1183,16 +1199,13 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 				if (classStudents[i] == Id)
 				{
 					cout << "Student have already been here!!" << endl;
-					getchar();
-					getchar();
+					cout << "Input (0) to break or (1) to continue: ";
+					cin >> check;
 					tt::clearConsole();
-				}
-				cout << "Input (0) to break or (1) to continue: ";
-				cin >> check;
-				tt::clearConsole();
-				if (check == 0)
-				{
-					break;
+					if (check == 0)
+					{
+						break;
+					}
 				}
 			}
 			if (check == -1)
@@ -1215,7 +1228,10 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 	}
 	if (check != 0)
 	{
-
+		cout << "Student " << Id << " has been added!";
+		getchar();
+		getchar();
+		tt::clearConsole();
 	}
 }
 void addStudent(tt::course& Course, tt::vector<int>& classStudents)
@@ -1280,49 +1296,58 @@ void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nh
 		}
 	}
 }
-void sortList(tt::vector<tt::course>& List, tt::vector<tt::vector<int>>& students)
+void outputVecInt(tt::vector<int>& students)
 {
-	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
-		{
-			return lhs.id < rhs.id;
-		});
-	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
-		{
-			return lhs.name < rhs.name;
-		});
-
-	int n = List.size();
-	for (int i = 0; i < n; ++i)
+	for (int i : students)
 	{
-		swap(students[i], students[List[i].number - 1]);
+		cout << i << " ";
 	}
-	for (int i = 0; i < n; ++i)
-	{
-		List[i].number = i + 1;
-	}
+	cout << endl;
 }
-void swap(tt::vector<int>& list1, tt::vector<int>& list2)
-{
-	tt::vector<int>temp;
-	for (int i = 0; i < list1.size(); ++i)
-	{
-		temp.push_back(list1[i]);
-	}
-	list1.clear();
-	for (int i = 0; i < list2.size(); ++i)
-	{
-		list1.push_back(list2[i]);
-	}
-	list1.shrink_to_fit();
-	list2.clear();
-	for (int i = 0; i < temp.size(); ++i)
-	{
-		list2.push_back(temp[i]);
-	}
-	list2.shrink_to_fit();
-	temp.clear();
-	temp.shrink_to_fit();
-}
+//void sortList(tt::vector<tt::course>& List,tt::vector<tt::vector<int>>&students)
+//{
+//	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
+//		{
+//			return lhs.id < rhs.id;
+//		});
+//	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
+//		{
+//			return lhs.name < rhs.name;
+//		});
+//	int n = List.size();
+//	for (int i = 0; i < n; ++i)
+//	{
+//		
+//		swap(students[i], students[List[i].number-1]); 
+//	}
+//	for (int i = 0; i < n; ++i)
+//	{
+//		List[i].number = i + 1;
+//	}
+//	getchar();
+//}
+//void swap(tt::vector<int>& list1, tt::vector<int>& list2)
+//{
+//	tt::vector<int>temp;
+//	for (int i = 0; i < list1.size(); ++i)
+//	{
+//		temp.push_back(list1[i]);
+//	}
+//	list1.clear();
+//	for (int i = 0; i < list2.size(); ++i)
+//	{
+//		list1.push_back(list2[i]);
+//	}
+//	list1.shrink_to_fit();
+//	list2.clear();
+//	for (int i = 0; i < temp.size(); ++i)
+//	{
+//		list2.push_back(temp[i]);
+//	}
+//	list2.shrink_to_fit();
+//	temp.clear();
+//	temp.shrink_to_fit();
+//}
 tt::course searchCourse(string filePath, string Id)
 {
 	tt::vector<tt::course>List;
