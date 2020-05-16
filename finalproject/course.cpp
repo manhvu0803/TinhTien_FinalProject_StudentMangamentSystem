@@ -1296,14 +1296,6 @@ void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nh
 		}
 	}
 }
-void outputVecInt(tt::vector<int>& students)
-{
-	for (int i : students)
-	{
-		cout << i << " ";
-	}
-	cout << endl;
-}
 //void sortList(tt::vector<tt::course>& List,tt::vector<tt::vector<int>>&students)
 //{
 //	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
