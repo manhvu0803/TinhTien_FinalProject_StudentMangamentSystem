@@ -306,8 +306,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		{
 			tt::course temp;
 			if (line[0] == 'N')
-			{
-			}
+			{		}
 			else
 			{
 				stringstream check(line);
