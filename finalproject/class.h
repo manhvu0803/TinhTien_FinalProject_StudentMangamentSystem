@@ -25,9 +25,11 @@ class clss
         void showClass(tt::vector<tt::student>& thisCls);
 
         void menu();
+
     private:
         static const char* classDir;
         static const char* classDat;
+        static tt::vector<tt::student> emptyVec;
 
         tt::vector<string> classes;
         tt::vector<tt::vector<tt::student>> students;
