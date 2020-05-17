@@ -429,7 +429,6 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 			cout << " Not found!" << endl;
 			notFound.clear();
 			notFound.shrink_to_fit();
-			//sortList(list,students);
 		}
 	}
 	else
@@ -482,7 +481,6 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		return;
 	}
 	myFile.close();
-	//sortList(list,students);
 }
 void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath)
 {
@@ -596,7 +594,6 @@ void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& st
 		break;
 	}
 	}
-	//sortList(list, students);
 	outputCourseList(list, students);
 	cout << "\nPress Enter to continue...";
 	getchar();
@@ -1106,7 +1103,6 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	cout << "\nPress Enter to continue... ";
 	getchar();
 	tt::clearConsole();
-	//sortList(list,students);
 }
 void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
@@ -1295,50 +1291,6 @@ void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nh
 		}
 	}
 }
-//void sortList(tt::vector<tt::course>& List,tt::vector<tt::vector<int>>&students)
-//{
-//	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
-//		{
-//			return lhs.id < rhs.id;
-//		});
-//	sort(List.begin(), List.end(), [](const tt::course& lhs, const tt::course& rhs)
-//		{
-//			return lhs.name < rhs.name;
-//		});
-//	int n = List.size();
-//	for (int i = 0; i < n; ++i)
-//	{
-//		
-//		swap(students[i], students[List[i].number-1]); 
-//	}
-//	for (int i = 0; i < n; ++i)
-//	{
-//		List[i].number = i + 1;
-//	}
-//	getchar();
-//}
-//void swap(tt::vector<int>& list1, tt::vector<int>& list2)
-//{
-//	tt::vector<int>temp;
-//	for (int i = 0; i < list1.size(); ++i)
-//	{
-//		temp.push_back(list1[i]);
-//	}
-//	list1.clear();
-//	for (int i = 0; i < list2.size(); ++i)
-//	{
-//		list1.push_back(list2[i]);
-//	}
-//	list1.shrink_to_fit();
-//	list2.clear();
-//	for (int i = 0; i < temp.size(); ++i)
-//	{
-//		list2.push_back(temp[i]);
-//	}
-//	list2.shrink_to_fit();
-//	temp.clear();
-//	temp.shrink_to_fit();
-//}
 tt::course searchCourse(string filePath, string Id)
 {
 	tt::vector<tt::course>List;

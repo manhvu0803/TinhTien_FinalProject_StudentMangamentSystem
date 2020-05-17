@@ -34,9 +34,7 @@ void remove1Student(tt::vector<int>& classStudent);
 void add1Student(tt::course& Course, tt::vector<int>& classStudents);
 void addStudent(tt::course& Course, tt::vector<int>& classStudents);
 void viewStudentList(tt::vector<int>& classStudent);
-//void sortList(tt::vector<tt::course>& List, tt::vector<tt::vector<int>>& students);
 int  maxdayinmonth(int month, int year);
-//void swap(tt::vector<int>& list1, tt::vector<int>& list2);
 tt::course searchCourse(string filePath, string Id);
 
 #endif
