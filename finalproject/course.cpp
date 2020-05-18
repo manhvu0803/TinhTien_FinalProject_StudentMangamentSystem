@@ -104,6 +104,8 @@ void courseMenu(int year, string semester)
 			}
 			classStudents.clear();
 			title = 1;
+			getchar();
+			tt::clearConsole();
 			break;
 		}
 		case 3:
@@ -161,6 +163,7 @@ void courseMenu(int year, string semester)
 					cout << "Error!!!No available course!!!" << endl;
 					cout << "Input (0) to break or (1) to continue: ";
 					cin >> cont;
+					tt::clearConsole();
 					if (cont == 0)
 					{
 						break;
@@ -1190,6 +1193,10 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 	list.erase(n - 1);
 	list.shrink_to_fit();
 	saveCourseList(list, students, filePath);
+	for (int i = 0; i < list.size(); ++i)
+	{
+		list[i].number = i + 1;
+	}
 	getchar();
 	getchar();
 	tt::clearConsole();
@@ -1231,6 +1238,7 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 {
 	int Id, check;
 	int n;
+	viewStudentList(classStudents);
 	while (true)
 	{
 		check = -1;
@@ -1270,6 +1278,7 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 				break;
 			}
 		}
+		viewStudentList(classStudents);
 	}
 	if (check != 0)
 	{
