@@ -16,6 +16,7 @@ using namespace std;
 void courseMenu(int year, string semester);
 void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
+void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath);
 void saveCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, string filePath);
