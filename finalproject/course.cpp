@@ -176,7 +176,15 @@ void courseMenu(int year, string semester)
 			{
 				int id = 0;
 				output1Course(List[n - 1], students[n - 1]);
+				int studentSize6 = students[n - 1].size();
 				add1Student(List[n - 1], students[n - 1]);
+				if (studentSize6 < students[n - 1].size())
+				{
+					char name[10];
+					itoa(students[n - 1][studentSize6], name, 10);
+					ofstream myFile(filePath + List[n - 1].id + "/" + name + ".dat");
+					myFile.close();
+				}
 				saveCourseList(List, students, filePath);
 			}
 			title = 1;
@@ -275,6 +283,23 @@ void courseMenu(int year, string semester)
 	List.clear();
 	students.clear();
 	tt::clearConsole();
+	makeCourseData(List, students, filePath);
+}
+void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
+{
+	string path = "./";
+	path.append(filePath);
+	char name[10];
+	for (int i = 0; i < list.size(); ++i)
+	{
+		tt::makeDir(path + list[i].id);
+		for (int j = 0; j < students[i].size; ++j)
+		{
+			itoa(students[i][j], name, 10);
+			ofstream myFile(filePath + list[i].id + "/" + name + ".dat");
+			myFile.close();
+		}
+	}
 }
 void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
@@ -306,7 +331,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		{
 			tt::course temp;
 			if (line[0] == 'N')
-			{		}
+			{
+			}
 			else
 			{
 				stringstream check(line);
@@ -427,6 +453,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 				}
 			}
 			cout << " Not found!" << endl;
+			getchar();
+			tt::clearConsole();
 			notFound.clear();
 			notFound.shrink_to_fit();
 		}
@@ -434,6 +462,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 	else
 	{
 		cout << "File not found" << endl;
+		getchar();
+		tt::clearConsole();
 	}
 	csvFile.close();
 }
@@ -478,6 +508,9 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 	else
 	{
 		cout << "course.dat not found" << endl;
+		getchar();
+		getchar();
+		tt::clearConsole();
 		return;
 	}
 	myFile.close();
@@ -1146,6 +1179,7 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 }
 void remove1Student(tt::vector<int>& classStudent)
 {
+	// Chỉnh sửa phần tên Course học sinh cần xóa
 	int n, check;
 	while (true)
 	{
@@ -1227,9 +1261,10 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 		getchar();
 		getchar();
 		tt::clearConsole();
+
 	}
 }
-void addStudent(tt::course& Course, tt::vector<int>& classStudents)
+void addStudent(tt::course& Course, tt::vector<int>& classStudents)// Optional
 {
 	int num;
 	cout << "Numbers of new student: "; cin >> num;
