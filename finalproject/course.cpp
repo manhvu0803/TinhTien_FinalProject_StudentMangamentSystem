@@ -331,7 +331,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		{
 			tt::course temp;
 			if (line[0] == 'N')
-			{			}
+			{
+			}
 			else
 			{
 				stringstream check(line);
@@ -516,7 +517,7 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 }
 void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath)
 {
-	ifstream myFile(filePath + Course.name + ".dat");
+	ifstream myFile(filePath + Course.id + ".dat");
 	if (myFile.is_open())
 	{
 		int id;
@@ -567,7 +568,7 @@ void saveCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 }
 void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, string filePath)
 {
-	ofstream myFile(filePath + Course.name + ".dat");
+	ofstream myFile(filePath + Course.id + ".dat");
 	if (myFile.is_open())
 	{
 		int n = classStudent.size();
@@ -935,7 +936,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 
 	tt::vector<tt::student> Student;
 	clss theClass;
-	Student = theClass.getClass(newCourse.name);
+	Student = theClass.getClass(newCourse.id);
 	if (Student.size() != 0)
 	{
 		int n = Student.size();
@@ -985,6 +986,7 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	while (true)
 	{
 		cout << "Input the course no: "; cin >> n;
+		tt::clearConsole();
 		int listSize = list.size();
 		if (n <= 0 || n > listSize)
 		{
@@ -1001,9 +1003,10 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 		{
 			break;
 		}
+		outputCourseList(list, students);
 	}
 	int choice;
-	output1Course(list[check - 1], students[check - 1]);
+	output1Course(list[n - 1], students[n - 1]);
 	cout << "Please enter your decision: " << endl;
 	cout << "Enter (1) : Name" << endl;
 	cout << "Enter (2) : Id " << endl;
@@ -1033,21 +1036,35 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 		{
 			break;
 		}
+		output1Course(list[n - 1], students[n - 1]);
+		cout << "Please enter your decision: " << endl;
+		cout << "Enter (1) : Name" << endl;
+		cout << "Enter (2) : Id " << endl;
+		cout << "Enter (3) : Class" << endl;
+		cout << "Enter (4) : Lecturer" << endl;
+		cout << "Enter (5) : Day of Week" << endl;
+		cout << "Enter (6) : Room" << endl;
+		cout << "Enter (7) : Start date" << endl;
+		cout << "Enter (8) : End date" << endl;
+		cout << "Enter (9) : Start Hour" << endl;
+		cout << "Enter (10): End Hour" << endl;
+		cout << "Enter (11):  Whole course" << endl;
 	}
 	cin.ignore(1);
 	switch (choice)
 	{
 	case 1:
 	{
+		string oldFileName(filePath + list[n - 1].id + ".dat");
 		cout << " Id: "; getline(cin, list[n - 1].id);
+		string newFileName(filePath + list[n - 1].id + ".dat");
+		rename(oldFileName.c_str(), newFileName.c_str());
 		break;
 	}
 	case 2:
 	{
-		string oldFileName(filePath + list[n - 1].name + ".dat");
 		cout << " Name: "; getline(cin, list[n - 1].name);
-		string newFileName(filePath + list[n - 1].name + ".dat");
-		rename(oldFileName.c_str(), newFileName.c_str());
+
 		break;
 	}
 	case 3:
@@ -1164,7 +1181,7 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 	}
 	string path = filePath;
 	path += "/";
-	path += list[n - 1].name.c_str();
+	path += list[n - 1].id;
 	path += ".dat";
 	remove(path.c_str());
 	students[n - 1].clear();
