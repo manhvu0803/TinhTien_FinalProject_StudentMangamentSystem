@@ -1,5 +1,5 @@
 ﻿#include "course.h"
-
+#define _CRT_SECURE_NO_WARNINGS
 void courseMenu(int year, string semester)
 {
 	string filePath = ("data/course/");
@@ -181,7 +181,7 @@ void courseMenu(int year, string semester)
 				if (studentSize6 < students[n - 1].size())
 				{
 					char name[10];
-					itoa(students[n - 1][studentSize6], name, 10);
+					_itoa_s(students[n - 1][studentSize6], name, 10);
 					ofstream myFile(filePath + List[n - 1].id + "/" + name + ".dat");
 					myFile.close();
 				}
@@ -280,10 +280,10 @@ void courseMenu(int year, string semester)
 		}
 		}
 	}
+	makeCourseData(List, students, filePath);
 	List.clear();
 	students.clear();
 	tt::clearConsole();
-	makeCourseData(List, students, filePath);
 }
 void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
@@ -293,9 +293,9 @@ void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 	for (int i = 0; i < list.size(); ++i)
 	{
 		tt::makeDir(path + list[i].id);
-		for (int j = 0; j < students[i].size; ++j)
+		for (int j = 0; j < students[i].size(); ++j)
 		{
-			itoa(students[i][j], name, 10);
+			_itoa_s(students[i][j], name, 10);
 			ofstream myFile(filePath + list[i].id + "/" + name + ".dat");
 			myFile.close();
 		}
@@ -331,8 +331,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		{
 			tt::course temp;
 			if (line[0] == 'N')
-			{
-			}
+			{			}
 			else
 			{
 				stringstream check(line);
@@ -517,7 +516,7 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 }
 void loadCourseStudentFile(tt::course& Course, tt::vector<int>& classStudents, string filePath)
 {
-	ifstream myFile(filePath + Course.className + ".dat");
+	ifstream myFile(filePath + Course.name + ".dat");
 	if (myFile.is_open())
 	{
 		int id;
@@ -568,7 +567,7 @@ void saveCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 }
 void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, string filePath)
 {
-	ofstream myFile(filePath + Course.className + ".dat");
+	ofstream myFile(filePath + Course.name + ".dat");
 	if (myFile.is_open())
 	{
 		int n = classStudent.size();
@@ -628,7 +627,7 @@ void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& st
 	}
 	}
 	outputCourseList(list, students);
-	cout << "\nPress Enter to continue...";
+	cout << "\nPress Enter to continue...	";
 	getchar();
 	getchar();
 	tt::clearConsole();
@@ -936,7 +935,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 
 	tt::vector<tt::student> Student;
 	clss theClass;
-	Student = theClass.getClass(newCourse.className);
+	Student = theClass.getClass(newCourse.name);
 	if (Student.size() != 0)
 	{
 		int n = Student.size();
@@ -1045,15 +1044,16 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	}
 	case 2:
 	{
+		string oldFileName(filePath + list[n - 1].name + ".dat");
 		cout << " Name: "; getline(cin, list[n - 1].name);
+		string newFileName(filePath + list[n - 1].name + ".dat");
+		rename(oldFileName.c_str(), newFileName.c_str());
 		break;
 	}
 	case 3:
 	{
-		string oldFileName(filePath + list[n - 1].className + ".dat");
 		cout << " Class: "; getline(cin, list[n - 1].className);
-		string newFileName(filePath + list[n - 1].className + ".dat");
-		rename(oldFileName.c_str(), newFileName.c_str());
+
 		break;
 	}
 	case 4:
@@ -1164,12 +1164,12 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 	}
 	string path = filePath;
 	path += "/";
-	path += list[n - 1].className.c_str();
+	path += list[n - 1].name.c_str();
 	path += ".dat";
 	remove(path.c_str());
 	students[n - 1].clear();
 	students.shrink_to_fit();
-	cout << "Course: " << list[n - 1].className << " is deleted.\n";
+	cout << "Course: " << list[n - 1].name << " is deleted.\n";
 	list.erase(n - 1);
 	list.shrink_to_fit();
 	saveCourseList(list, students, filePath);
@@ -1179,7 +1179,6 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 }
 void remove1Student(tt::vector<int>& classStudent)
 {
-	// Chỉnh sửa phần tên Course học sinh cần xóa
 	int n, check;
 	while (true)
 	{
