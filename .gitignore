@@ -11,3 +11,4 @@ Debug
 .vs
 .sln
 *.csv
+*.save-failed

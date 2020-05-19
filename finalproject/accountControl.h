@@ -19,7 +19,9 @@ namespace acc
 
     void saveToFile();
 
-    bool createAccount(tt::lecturer& user);
+    string createUsername(string name);
+
+    bool createAccount(const tt::lecturer& user);
     bool createAccount(const tt::student& user);
 
     bool removeAccount(string id);
