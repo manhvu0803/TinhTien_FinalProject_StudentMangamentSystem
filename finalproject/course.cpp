@@ -1,5 +1,7 @@
 ﻿#include "course.h"
 #define _CRT_SECURE_NO_WARNINGS
+tt::vector<tt::course> emptyVec;
+tt::vector<tt::vector<int>>emptyStudents;
 void courseMenu(int year, string semester)
 {
 	string filePath = ("data/course/");
@@ -11,7 +13,7 @@ void courseMenu(int year, string semester)
 	filePath.append("/");
 	bool First = true;
 	int cont = 1;
-	int choice = -1, title = -1;
+	int choice = -1, title = -1, check;
 	tt::vector<tt::course> List;
 	tt::vector<tt::vector<int>> students;
 
@@ -20,7 +22,7 @@ void courseMenu(int year, string semester)
 		if (title != 0)
 		{
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
+			cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 			title = 0;
 		}
@@ -95,7 +97,7 @@ void courseMenu(int year, string semester)
 			tt::vector<int>classStudents;
 			cout << "New course: \n";
 			cin.ignore(1);
-			input1Course(temp, classStudents);
+			input1Course(temp, classStudents, List.size());
 			if (temp.number != -1)
 			{
 				List.push_back(temp);
@@ -104,8 +106,6 @@ void courseMenu(int year, string semester)
 			}
 			classStudents.clear();
 			title = 1;
-			getchar();
-			tt::clearConsole();
 			break;
 		}
 		case 3:
@@ -155,16 +155,17 @@ void courseMenu(int year, string semester)
 			title = 1;
 			while (true)
 			{
-				cout << "Input the course no: "; cin >> n;
+				check = -1;
+				cout << "\nInput the course no: "; cin >> n;
 				tt::clearConsole();
 				int listSize = List.size();
 				if (n <= 0 || n > listSize)
 				{
 					cout << "Error!!!No available course!!!" << endl;
 					cout << "Input (0) to break or (1) to continue: ";
-					cin >> cont;
+					cin >> check;
 					tt::clearConsole();
-					if (cont == 0)
+					if (check == 0)
 					{
 						break;
 					}
@@ -175,7 +176,7 @@ void courseMenu(int year, string semester)
 				}
 				outputCourseList(List, students);
 			}
-			if (cont != 0)
+			if (check != 0)
 			{
 				int id = 0;
 				output1Course(List[n - 1], students[n - 1]);
@@ -200,7 +201,7 @@ void courseMenu(int year, string semester)
 				loadDatFile(List, students, filePath);
 				First = false;
 			}
-			int n, check;
+			int n;
 			outputCourseList(List, students);
 			while (true)
 			{
@@ -212,9 +213,9 @@ void courseMenu(int year, string semester)
 				{
 					cout << "Error!!!No available course!!!" << endl;
 					cout << "Input (0) to break or (1) to continue: ";
-					cin >> cont;
+					cin >> check;
 					tt::clearConsole();
-					if (cont == 0)
+					if (check == 0)
 					{
 						break;
 					}
@@ -241,43 +242,47 @@ void courseMenu(int year, string semester)
 			}
 			int n, check;
 			outputCourseList(List, students);
-			while (true)
+			if (List.size() != 0)
 			{
-				check = -1;
-				cout << "Input the course no: "; cin >> n;
-				tt::clearConsole();
-				int listSize = List.size();
-				if (n <= 0 || n > listSize)
+				while (true)
 				{
-					cout << "Error!!!No available course!!!" << endl;
-					cout << "Input (0) to break or (1) to continue: ";
-					cin >> cont;
+					check = -1;
+					cout << "\nInput the course no: "; cin >> n;
 					tt::clearConsole();
-					if (cont == 0)
+					int listSize = List.size();
+					if (n <= 0 || n > listSize)
+					{
+						check = 0;
+						cout << "Error!!!No available course!!!" << endl;
+						cout << "Input (0) to break or (1) to continue: ";
+						cin >> check;
+						tt::clearConsole();
+						if (check == 0)
+						{
+							break;
+						}
+					}
+					else
 					{
 						break;
 					}
+					outputCourseList(List, students);
 				}
-				else
+				if (check == -1)
 				{
-					break;
+					tt::vector<int>classStudents;
+					for (int i = 0; i < students[n - 1].size(); ++i)
+					{
+						classStudents.push_back(students[n - 1][i]);
+					}
+					cout << "Course: " << List[n - 1].name << "(" << List[n - 1].id << ") \n\n";
+					viewStudentList(classStudents);
+					getchar();
 				}
-				outputCourseList(List, students);
 			}
-			if (check == -1)
-			{
-				tt::vector<int>classStudents;
-				for (int i = 0; i < students[n - 1].size(); ++i)
-				{
-					classStudents.push_back(students[n - 1][i]);
-				}
-				cout << "Course: " << List[n - 1].name << "(" << List[n - 1].id << ") \n";
-				viewStudentList(classStudents);
-				cout << "Press Enter to continue... ";
-				getchar();
-				getchar();
-				tt::clearConsole();
-			}
+			cout << "Press Enter to continue... ";
+			getchar();
+			tt::clearConsole();
 			title = 1;
 			break;
 		}
@@ -307,11 +312,14 @@ void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	clss theClass;
+	int count = 1;
 	if (filePath.compare(filePath.size() - 4, 4, ".csv") != 0)
 	{
 		cout << "Wrong data file";
 		getchar();
 		getchar();
+		list = emptyVec;
+		students = emptyStudents;
 		tt::clearConsole();
 		return;
 	}
@@ -436,7 +444,11 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 				getline(check, token);
 				temp.room = token;
 				if (temp.number != -1)
+				{
+					temp.number = count;
 					list.push_back(temp);
+					count++;
+				}
 			}
 			getline(csvFile, line);
 		}
@@ -584,61 +596,21 @@ void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, st
 }
 void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
-	int option;
 	string newPath;
-	cout << "Please choose an option: \n";
-	cout << "Enter 1: Link your file address to system\n";
-	cout << "Enter 2: Open existing file  \n";
-	while (true)
-	{
-		cout << "Input: "; cin >> option;
-		tt::clearConsole();
-		if (option <= 0 || option > 2)
-		{
-			cout << "Error!!!No available semester!!!" << endl;
-			cout << "Input (0) to break or (1) to continue: ";
-			cin >> option;
-			getchar();
-			getchar();
-			tt::clearConsole();
-			if (option == 0)
-			{
-				break;
-			}
-		}
-		else
-		{
-			break;
-		}
-	}
-	switch (option)
-	{
-	default:
-		cout << "Break!!!\n";
-		return;
-	case 1:
-	{
-		cout << "Input your file address: ";
-		cin >> newPath;
-		tt::clearConsole();
-		loadCsvFile(list, students, newPath);
-		break;
-	}
-	case 2:
-	{
-		loadDatFile(list, students, filePath);
-		break;
-	}
-	}
+	cout << "Input your file address: ";
+	cin >> newPath;
+	tt::clearConsole();
+	loadCsvFile(list, students, newPath);
 	outputCourseList(list, students);
 	cout << "\nPress Enter to continue...	";
-	getchar();
+	if (list.size() != 0)
+		getchar();
 	getchar();
 	tt::clearConsole();
 }
 void output1Course(tt::course& Course, tt::vector<int>& classStudent)
 {
-	cout << endl << setfill(' ') << setw(3) << Course.number << " - " << setw(35) << Course.name << "(" << setw(7) << Course.id << ") - Students: " << setw(4) << classStudent.size() << endl;
+	cout << endl << setfill(' ') << setw(3) << Course.number << " - " << setw(35) << left << Course.name << "(" << Course.id << ") - Students: " << setw(4) << classStudent.size() << right << endl;
 }
 void outputCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students)
 {
@@ -716,13 +688,17 @@ void outputSchedule(tt::vector<tt::course>& list)
 {
 	cout << "Schedule:  " << endl;
 	int n = list.size();
+	if (n == 0)
+	{
+		cout << "No data" << endl;
+	}
 	cout << endl << setfill('=') << setw(49) << "=" << endl;
 	for (int i = 0; i < n; ++i)
 	{
 		output1CourseData(list[i]);
 		cout << endl << setfill('=') << setw(49) << "=" << endl;
 	}
-	cout << "Press Enter to return.... ";
+	cout << "\nPress Enter to return.... ";
 	getchar();
 	getchar();
 	tt::clearConsole();
@@ -868,9 +844,10 @@ int  inputDate(tt::date& Date)
 	Date = temp;
 	return 1;
 }
-void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
+void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num)
 {
 	int check;
+	newCourse.number = num;
 	cout << " Id                : "; getline(cin, newCourse.id);
 	cout << " Name              : "; getline(cin, newCourse.name);
 	cout << " Class             : "; getline(cin, newCourse.className);
@@ -908,6 +885,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 			cout << "Error!!!Please check your input" << endl;
 			cout << "Enter (0) to break or (1) to continue: ";
 			cin >> check;
+			tt::clearConsole();
 			if (check == 0)
 			{
 				break;
@@ -917,6 +895,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 	if (check == 0)
 	{
 		newCourse.number = -1;
+		tt::clearConsole();
 		return;
 	}
 	cout << "\n";
@@ -924,6 +903,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 	if (check == 0)
 	{
 		newCourse.number = -1;
+		tt::clearConsole();
 		return;
 	}
 	cout << "\n";
@@ -931,6 +911,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents)
 	if (check == 0)
 	{
 		newCourse.number = -1;
+		tt::clearConsole();
 		return;
 	}
 	cout << "\n";
@@ -972,7 +953,7 @@ void inputCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 	tt::course temp;
 	for (int i = 0; i < n; ++i)
 	{
-		input1Course(temp, classStudents);
+		input1Course(temp, classStudents, list.size());
 		if (temp.number != -1)
 		{
 			list.push_back(temp);
@@ -1140,7 +1121,7 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	{
 		tt::course newCourse;
 		tt::vector<int> classStudent;
-		input1Course(newCourse, classStudent);
+		input1Course(newCourse, classStudent, n);
 		if (newCourse.number != -1)
 		{
 			students.push_back(classStudent);

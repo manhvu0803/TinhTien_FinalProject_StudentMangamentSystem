@@ -14,18 +14,18 @@ void academicYearMenu()
 		if (check != 0)
 		{
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+			cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 			check = 0;
 		}
 		cont = 1;
 		while (choice != 0)
 		{
-			cout << "\n\n";
+			cout << "\n";
 			outputYear(year);
 			cout << "\nEnter 0: To exit\n";
 			cout << "Enter 1: Create new academic year\n";
-			cout << "Enter 2: To change semester in academic year\n";
+			cout << "Enter 2: Access semester in academic year\n";
 			cout << "Enter your choice: ";
 			cin >> choice;
 			tt::clearConsole();
@@ -35,13 +35,13 @@ void academicYearMenu()
 			}
 			else
 			{
-				cout << "Error!!! Choose agian:" << endl;
+				cout << "Error!!! Choose agian!" << endl;
 				getchar();
 				getchar();
 				tt::clearConsole();
 			}
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+			cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 		}
 		switch (choice)
@@ -51,7 +51,7 @@ void academicYearMenu()
 			break;
 		case 1:
 			createYear(filePath, year);
-			check = -1;
+			check = 1;
 			break;
 		case 2:
 			changeToSemester(year);
@@ -64,7 +64,7 @@ void academicYearMenu()
 }
 void outputYear(tt::vector<string>& year)
 {
-	cout << "*" << setfill('-') << setw(30) << "Year List:" << setfill('-') << setw(20) << "*\n";
+	cout << "*" << right << setfill('-') << setw(30) << "Year List:" << setfill('-') << setw(20) << "*\n";
 	if (year.size() == 0)
 	{
 		cout << "No data yet!\n";
@@ -80,7 +80,7 @@ void scanYear(string filePath, tt::vector<string>& year)
 {
 	ifstream myFile(filePath);
 	string temp;
-	while (myFile >> temp)
+	while (getline(myFile, temp))
 	{
 		temp[4] = '-';
 		year.push_back(temp);
@@ -90,7 +90,9 @@ void scanYear(string filePath, tt::vector<string>& year)
 }
 void changeToSemester(tt::vector<string>& year)
 {
+	cout << setfill('=') << setw(50) << "=" << endl;
 	outputYear(year);
+	cout << setfill('=') << setw(50) << "=" << endl;
 	int decide;
 	while (true)
 	{
@@ -148,7 +150,7 @@ void createYear(string filePath, tt::vector<string>& year)
 {
 	string input;
 	int decide = -1;
-	bool seen = false,wrong=false;
+	bool seen = false, wrong = false;
 	char year1[5], year2[5];
 	while (true)
 	{
@@ -164,6 +166,7 @@ void createYear(string filePath, tt::vector<string>& year)
 			tt::clearConsole();
 			cout << "Your input " << input << " is wrong" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
+			wrong = true;
 			cin >> decide;
 			tt::clearConsole();
 			if (decide == 0)
@@ -192,7 +195,7 @@ void createYear(string filePath, tt::vector<string>& year)
 					}
 				}
 			}
-		if (!seen)
+		if (!seen && !wrong)
 		{
 			break;
 		}

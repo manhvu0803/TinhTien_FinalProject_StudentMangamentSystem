@@ -20,7 +20,7 @@ void semesterMenu(int year)
 		if (check != 0)
 		{
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(27) << "SEMESTER MENU" << setfill('-') << setw(22) << "*" << endl;
+			cout << "*" << setfill('-') << setw(30) << "SEMESTER MENU" << setfill('-') << setw(19) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 			check = 0;
 		}
@@ -29,8 +29,8 @@ void semesterMenu(int year)
 			cout << "\n";
 			outputSemester(semester);
 			cout << "\nEnter 0: To exit\n";
-			cout << "Enter 1: To create new semester\n";
-			cout << "Enter 2: To change course in semester\n";
+			cout << "Enter 1: Create new semester\n";
+			cout << "Enter 2: Access courses in semester\n";
 			cout << "Enter your choice: "; cin >> choice;
 			tt::clearConsole();
 			if (choice >= 0 && choice <= 2)
@@ -45,7 +45,7 @@ void semesterMenu(int year)
 				tt::clearConsole();
 			}
 			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << setfill('-') << setw(27) << "SEMESTER MENU" << setfill('-') << setw(22) << "*" << endl;
+			cout << "*" << setfill('-') << setw(30) << "SEMESTER MENU" << setfill('-') << setw(19) << "*" << endl;
 			cout << setfill('=') << setw(50) << "=" << endl;
 		}
 		switch (choice)
@@ -68,11 +68,13 @@ void semesterMenu(int year)
 }
 void changeToCourse(int year, tt::vector<string>& semester)
 {
+	cout << setfill('=') << setw(50) << "=" << endl;
 	outputSemester(semester);
+	cout << setfill('=') << setw(50) << "=" << endl;
 	int decide;
 	while (true)
 	{
-		cout << "Input the semester no. :"; cin >> decide;
+		cout << "Input the semester No. :"; cin >> decide;
 		tt::clearConsole();
 		if (decide >= 1 && decide <= semester.size())
 		{
@@ -99,7 +101,7 @@ void changeToCourse(int year, tt::vector<string>& semester)
 void outputSemester(tt::vector<string>& semester)
 {
 	int size = semester.size();
-	cout << "Your semester: " << endl;
+	cout << "*" << right << setfill('-') << setw(30) << "Semesters:" << setfill('-') << setw(20) << "*\n";
 	if (size == 0)
 	{
 		cout << "No data yet!\n";
@@ -110,6 +112,7 @@ void outputSemester(tt::vector<string>& semester)
 	{
 		cout << "(" << i + 1 << ")	" << semester[i] << endl;
 	}
+	cout << "*" << setfill('-') << setw(50) << "*\n";
 }
 void scanSemester(string filePath, tt::vector<string>& semester)
 {
@@ -359,8 +362,10 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		break;
 	}
 	if (choice != 0)
+	{
 		getchar();
-	getchar();
+		getchar();
+	}
 	tt::clearConsole();
 	saveSemester(filePath, semester);
 }
