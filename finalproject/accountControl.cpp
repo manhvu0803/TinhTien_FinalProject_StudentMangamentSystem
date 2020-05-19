@@ -3,7 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
-//#include <conio.h>
+#include "lecturer.h"
+#include "class.h"
 
 using namespace std;
 using namespace acc;
@@ -231,14 +232,28 @@ void acc::changePassword(account* user)
 
 void acc::showProfile(account user)
 {
-    cout << "\nYour profile\n" "Username: " << user.username << "\nAccount type: ";
+    cout << "Username: " << user.username << "\nAccount type: ";
     switch (user.type) {
-        case 1:
+        case 1: {
             cout << "student\n";
+            clss cl;
+            tt::student st = cl.getStudent(stoi(user.id));
+            cout << "ID: " << st.id << '\n';
+            cout << "Class: " << st.cls << '\n';
+            cout << "Name: " << st.lastName + ' ' + st.firstName << '\n';
+            cout << "Gender: " << ((st.gender == 'M') ? "Male\n" : "Female\n");
+            cout << "Date of birth: " << st.DoB.y << '-' << st.DoB.m << '-' << st.DoB.d << '\n';
             break;
-        case 2:
+        }
+        case 2: {
             cout << "lecturer\n";
+            ltr lt;
+            tt::lecturer l = lt.get(user.id);
+            cout << "Name: " << l.fullName << '\n';
+            cout << "Degree: " << l.degree << '\n';
+            cout << "Gender: " << ((l.gender == 'M') ? "Male\n" : "Female\n");
             break;
+        }
         case 3:
             cout << "academic staff\n";
             break;

@@ -11,6 +11,7 @@ class ltr
         ltr();
         ~ltr();
         int position(const std::string& user);
+        tt::lecturer get(const std::string& user);
         bool add(const tt::lecturer& user);
         bool replace(const std::string& username, const tt::lecturer& user);
         bool remove(const std::string& username);

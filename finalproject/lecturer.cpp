@@ -44,6 +44,15 @@ int ltr::position(const string& username)
     return -1;
 }
 
+tt::lecturer ltr::get(const string& user)
+{
+    int pos = position(user);
+    if (pos > -1) return ltrs[position(user)];
+    tt::lecturer l;
+    l.fullName = "";
+    return l;
+}
+
 void ltr::input(tt::lecturer& newLtr)
 {
     cout << "Degree: ";

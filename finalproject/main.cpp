@@ -59,11 +59,14 @@ int main()
                 break;
             case 4:
                 if (user->type == 1);
-                else if (user->type > 2);
+                else;
                 break;
             case 5:
                 if (user->type == 1);
-                else;
+                else if (user->type > 2) {
+                    clss cl;
+                    cl.menu();
+                }
                 break;
             case 6:
             default:
