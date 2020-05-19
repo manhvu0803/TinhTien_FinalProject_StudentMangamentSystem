@@ -12,6 +12,8 @@ using namespace std;
 const char* clss::classDir = "data/classes/";
 const char* clss::classDat = "data/classes/class.dat";
 
+tt::vector<tt::student> clss::emptyVec;
+
 const auto ignoreMax = numeric_limits<streamsize>::max();
 
 clss::clss()
@@ -65,8 +67,9 @@ tt::student clss::getStudent(string className, int id, bool cap)
 
 const tt::vector<tt::student>& clss::getClass(string className)
 {
-    className = tt::capitalize(className);
-    return students[classPos(className)];
+    int pos = classPos(tt::capitalize(className));
+    if (pos > -1) return students[pos];
+    return emptyVec;
 }
 
 tt::student clss::getStudent(int id)
