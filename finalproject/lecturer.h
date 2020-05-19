@@ -3,15 +3,17 @@
 
 #include "utility.h"
 #include "dataStructure.h"
+#include <string>
 
 class ltr
 {
     public:
         ltr();
         ~ltr();
-        int position(const tt::lecturer& user);
-        void add(tt::lecturer user);
-        void replace(tt::lecturer user, int pos);
+        int position(const std::string& user);
+        bool add(const tt::lecturer& user);
+        bool replace(const std::string& username, const tt::lecturer& user);
+        bool remove(const std::string& username);
         void menu();
         void showAll();
     private:

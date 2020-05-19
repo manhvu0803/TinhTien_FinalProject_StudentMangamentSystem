@@ -3,6 +3,7 @@
 #include <iostream>
 #include "accountControl.h"
 #include <iomanip>
+#include <fstream>
 
 using namespace std;
 
@@ -36,10 +37,10 @@ void ltr::saveToFile()
     file.close();
 }
 
-int ltr::position(const tt::lecturer& user)
+int ltr::position(const string& username)
 {
     for (int i = 0, lim = ltrs.size(); i < lim; ++i)
-        if (user.username == ltrs[i].username) return i;
+        if (username == ltrs[i].username) return i;
     return -1;
 }
 
@@ -57,16 +58,31 @@ void ltr::input(tt::lecturer& newLtr)
     while (true);
 }
 
-void ltr::add(tt::lecturer user)
+bool ltr::add(const tt::lecturer& user)
 {
+    if (position(user.username) > -1) return false;
     ltrs.push_back(user);
+    acc::createAccount(user);
     saveToFile();
+    return true;
 }
 
-void ltr::replace(tt::lecturer user, int pos)
+bool ltr::replace(const string& username, const tt::lecturer& user)
 {
+    int pos = position(username);
+    if (pos < 0) return false;
     ltrs[pos] = user;
     saveToFile();
+    return true;
+}
+
+bool ltr::remove(const string& username)
+{
+    int pos = position(username);
+    if (pos < 0) return false;
+    ltrs.erase(pos);
+    saveToFile();
+    return true;
 }
 
 void ltr::showAll()
@@ -100,25 +116,51 @@ void ltr::menu()
                 break;
             case 1: {
                 tt::lecturer newLtr;
-                cout << "\nAdd a lecturer\n";
-                cout << "Name: ";
+                cout << "Add a lecturer\n";
+                cout << "Lecturer full name: ";
                 getline(cin , newLtr.fullName);
                 newLtr.username = acc::createUsername(newLtr.fullName);
-                if (position(newLtr) > -1) cout << "Lecturer has already existed";
+                if (position(newLtr.username) > -1) cout << "Lecturer has already existed";
                 else {
                     input(newLtr);
-                    acc::createAccount(newLtr);
                     add(newLtr);
                     cout << "Added successfully";
                 }
                 break;
             }
-            case 3:
+            case 2: {
+                string username;
+                cout << "Edit a lecturer\n";
+                cout << "Lecturer username: ";
+                getline(cin , username);
+                int pos = position(username);
+                if (pos < 0) cout << "Lecturer doesn't exist";
+                else {
+                    tt::lecturer newLtr;
+                    cout << "Full name: ";
+                    getline(cin , newLtr.fullName);
+                    newLtr.username = acc::createUsername(newLtr.fullName);
+                    int pos2 = position(newLtr.username);
+                    if (pos2 == pos) {
+                        input(newLtr);
+                        replace(username, newLtr);
+                        cout << "Updated successfully";
+                    }
+                    else cout << "Username " << newLtr.username << " conflict with another lecturer";
+                }
                 break;
+            }
+            case 3: {
+                string username;
+                cout << "Remove a lecturer\n";
+                cout << "Username: ";
+                getline(cin , username);
+                if (remove(username)) cout << "Removed successfully";
+                else cout << "Lecturer doesn't exist";
+                break;
+            }
             case 4:
                 showAll();
-                break;
-            case 5:
                 break;
             default:
                 cout << "Invalid choice\n";
