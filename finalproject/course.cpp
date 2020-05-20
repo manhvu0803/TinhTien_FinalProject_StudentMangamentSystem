@@ -11,12 +11,15 @@ void courseMenu(int year, string semester, int mode)
 	filePath.append("/");
 	filePath.append(semester);
 	filePath.append("/");
-	bool First = true;
 	int cont = 1;
 	int choice = -1, title = -1, check;
 	tt::vector<tt::course> List;
 	tt::vector<tt::vector<int>> students;
-
+	cout << setfill('=') << setw(50) << "=" << endl;
+	cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
+	cout << setfill('=') << setw(50) << "=" << endl;
+	title = 0;
+	loadDatFile(List, students, filePath);
 	while (cont != 0)
 	{
 		if (title != 0)
@@ -28,10 +31,9 @@ void courseMenu(int year, string semester, int mode)
 		}
 		if (mode == 1)
 		{
-			tt::clearConsole();
-			loadDatFile(List, students, filePath);
 			if (List.size() == 0)
 			{
+				tt::clearConsole();
 				cout << setfill('=') << setw(50) << "=" << endl;
 				cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
 				cout << setfill('=') << setw(50) << "=" << endl;
@@ -132,35 +134,21 @@ void courseMenu(int year, string semester, int mode)
 		}
 		case 1:
 		{
-			if (First)
+			tt::vector<tt::course> moreList;
+			importCsvFile(moreList, students, filePath);
+			int newSize = moreList.size() + List.size();
+			for (int i = List.size(); i < newSize; ++i)
 			{
-				importCsvFile(List, students, filePath);
-				saveCourseList(List, students, filePath);
-				First = false;
+				List.push_back(moreList[newSize - i - 1]);
 			}
-			else
-			{
-				tt::vector<tt::course> moreList;
-				importCsvFile(moreList, students, filePath);
-				int newSize = moreList.size() + List.size();
-				for (int i = List.size(); i < newSize; ++i)
-				{
-					List.push_back(moreList[newSize - i - 1]);
-				}
-				saveCourseList(List, students, filePath);
-				moreList.clear();
-				moreList.shrink_to_fit();
-			}
+			saveCourseList(List, students, filePath);
+			moreList.clear();
+			moreList.shrink_to_fit();
 			title = 1;
 			break;
 		}
 		case 2:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			tt::course temp;
 			tt::vector<int>classStudents;
 			cout << "New course: \n";
@@ -178,11 +166,6 @@ void courseMenu(int year, string semester, int mode)
 		}
 		case 3:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			outputCourseList(List, students);
 			editCourse(List, students, filePath);
 			saveCourseList(List, students, filePath);
@@ -191,33 +174,18 @@ void courseMenu(int year, string semester, int mode)
 		}
 		case 4:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			deleteCourse(List, students, filePath);
 			title = 1;
 			break;
 		}
 		case 5:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			outputSchedule(List);
 			title = 1;
 			break;
 		}
 		case 6:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			int n;
 			outputCourseList(List, students);
 			title = 1;
@@ -264,11 +232,6 @@ void courseMenu(int year, string semester, int mode)
 		}
 		case 7:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			int n;
 			outputCourseList(List, students);
 			while (true)
@@ -303,11 +266,6 @@ void courseMenu(int year, string semester, int mode)
 		}
 		case 8:
 		{
-			if (First)
-			{
-				loadDatFile(List, students, filePath);
-				First = false;
-			}
 			int n, check;
 			outputCourseList(List, students);
 			if (List.size() != 0)
