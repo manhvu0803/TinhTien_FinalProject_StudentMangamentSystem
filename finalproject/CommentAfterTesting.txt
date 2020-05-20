@@ -1,0 +1,40 @@
+_Ở phần change password thì sau khi chọn chức năng change password xong thì sẽ phải nhấn enter thêm một lần nữa thì mới có thể
+tiến hành đổi mk.
+Rồi t nghĩ là m chưa làm và nếu được thì nên thêm điều kiện chặn người dùng đặt pass với user là “exit” để đề phòng thôi :>>.
+Do là t không kiếm ra login() của m nằm ở đâu nên t không biết m có chặn điều kiện hay k :v.
+
+_Coure, Attendance, Score board vẫn chưa có gì để tổng thể.
+
+_Ở phần class thì do là có 2 file lớp giống hệt nhau là 18CLC7 và 19CLC2 nên t nghĩ nên có chức năng đếm số học sinh có cái ID được
+nhập vào và cho người dùng chọn lớp nếu có 2 student ở cùng ID ở 2 hoặc nhiều lớp và chọn số thứ tự khi 1 lớp vô tình có 2 student
+có cùng ID, trường hợp này chỉ xảy ra khi import từ file csv vì lúc tạo file bằng bàn phím thì mình không có cản người ta được
+nên t nghĩ cần phân biệt như vậy, vd như là 19CLC2 mà ID student lại là 18XXXXXX thì không hợp lí mà do 18CLC7 nằm trước 19CLC2
+nên nó chỉ có thể cho mình sửa ở 18CLC7 mà không thể sửa ở 19CLC2, rồi cũng do vậy nên t mới hỏi m là cho phép người ta chỉnh ID.
+Bth không ai chỉnh ID làm gì cơ nếu lỡ như vô tình bị trùng thôi thì nên cho người ta sửa. Nếu không cách duy nhất là xóa student
+có ID trùng đó đi và tạo mới, cơ mà do 18CLC7 vẫn đứng trước 19CLC2 nên khi xóa thì chắc chắn sẽ phải xóa ở 18CLC7 chứ không thể
+chạy tới 19CLC2 được, nếu muốn xóa ở 19CLC2 thì coi như phải xóa ở 18CLC7 rồi chuyển student qua 19CLC2,
+vậy sẽ khiến người dùng trải qua rất nhiều bước mới có thể đạt được điều mình muốn. Ý t là người đó muốn xếp A có ID là 18000000
+học lớp 18CLC7, rồi cũng có một đứa A khác học lớp 19CLC8 lẽ ra có ID là 19000000 mà người ta ghi lộn 18000000 từ file csv vào,
+lúc này người sẽ chỉ muốn edit lại cái ID của thằng A bên 19CLC8 hoặc là xóa thằng A bên 19CLC8 đi thôi thì cũng sẽ phải khá là
+khó khăn, mình không thể bắt người ta tự nhớ thông tin của từng sinh viên rồi tự thêm lại sau khi xóa được.
+Do đó t mới làm 1 đống bùi nhùi là để bắt người dùng nhập đủ thông tin từ ID đến lớp đến No để mình xác định chính xác đứa cần
+chỉnh sửa, cần xóa hoặc là cần chuyển. Rồi nói tới chuyển lớp á thì t nghĩ không tên dựa vào tên lớp thứ 2 giống tên lớp thứ nhất
+hay không mà phải dựa vào việc cái lớp thứ 2 (lớp chuyển tới) có tồn tại student có ID của student cần chuyển đi ở bên lớp thứ
+nhất hay không. Với còn cái nữa là ở cái chức năng edit á thì lúc mà m hỏi “Edit student….. (Y/N)?” thì m ghi lộn là
+if (“Y” || “y”) thì aborted á.
+À mà với lại giả sử có nhiều lớp quá mà người ta không biết student cần tìm ở đâu thì thay vì bắt người đi dò từng lớp
+với chức năng số 7 thì hay là sửa lại cái chức số 6 mình show luôn các học sinh với cái tên lớp luôn,
+người ta cũng chỉ cần kéo từ trên xuống coi thôi, dù sao mình kẻ bảng nên cũng dễ nhìn mà. 
+
+_Cuối là cái localtime gì á thì hay là m đổi thành localtime_s được không vì t nghĩ dù sao nó cũng safe hơn localtime
+và mình cũng không thể bắt người dùng có cảm giác mạo hiểm khi dùng chương trình của mình.
+
+T có mấy ý kiến vậy thôi :v,
+do là t không biết bad user sẽ dùng cách nào để kiểu phá program nên t mới hay thà làm rối với nhiều
+cơ mà nó chặn hết mấy cái trường hợp xấu cũng tốt hơn là bị phá thì sẽ coi như tốn công
+với lại t thường đi theo những hướng an toàn nên là t cũng hay cố làm ra gì thì nó cũng sẽ an toàn.
+Với lại là tuy t nhìn vô t hiểu m đang làm gì cơ do là cách ghi của m nó lạ quá
+với đụng tới mấy cái thư viện đằng trước rồi thêm cái là m gọi hàm lồng hàm nhiều quá nên t không dám đụng vào
+tại vì sợ sai 1 tí thôi cũng ảnh hưởng tới mấy phần khác.
+À mà cái menu thì t nghĩ lúc xong 1 chức năng thì thay vì output “Press any key to continue….”
+thì ghi là “Press any key to return …. menu”.
