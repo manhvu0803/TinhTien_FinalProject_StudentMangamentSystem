@@ -3,8 +3,13 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 #include "lecturer.h"
 #include "class.h"
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    #include <conio.h>
+#endif // defined
 
 using namespace std;
 using namespace acc;
@@ -119,40 +124,38 @@ account* getAccount(string username)
     return nullptr;
 }
 
-/* For Windows only
-string passwordBuffer()
-{
-    char c;
-    string password;
 
-    do {
-        c = _getch();
-        if (c == '\b' && password.length() > 0) {           // '\b' is backspace char
-            cout << "\b \b";                                // back 1 char, write a space to override that char, and back 1 char
-            password.erase(password.length() - 1, 1);
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
+    string passwordBuffer()
+    {
+        char c;
+        string password;
+
+        do {
+            c = _getch();
+            if (c == '\b' && password.length() > 0) {
+                cout << "\b \b";    // back 1 char, write a space to override that char, and back 1 char
+                password.erase(password.length() - 1, 1);
+            }
+            else if (c != '\r' && c != '\0' && c != '\b') {
+                cout << '*';
+                password += c;
+            }
+            else if (c == '\r')
+                cout << '\n';
         }
-        else if (c != '\r' && c != '\0' && c != '\b') {
-            cout << '*';
-            password += c;
-        }
-        else if (c == '\r')
-            cout << '\n';
-    }
-    while (c != '\r');          // read until enter char
+        while (c != '\r');          // read until enter char
 
-    //cout << '\n' << password << '\n';
-
-    return password;
-}*/
-
-// For any OS
-string passwordBuffer()
-{
-    string s;
-    getline(cin, s);
-
-    return s;
+        return password;
 }
+#else
+    string passwordBuffer()
+    {
+        string s;
+        getline(cin, s);
+        return s;
+    }
+#endif // defined
 
 bool passwordCheck(string password, const char* type = "")
 {
