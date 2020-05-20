@@ -29,7 +29,7 @@ void semesterMenu(int year, int mode)
 			outputSemester(semester);
 			if (semester.size() == 0)
 			{
-				cout << "Nothing to do here!\nPress Etner to return...";
+				cout << "\nNothing to do here!\nPress Etner to return...";
 				getchar();
 				tt::clearConsole();
 				cont = 0;
@@ -40,6 +40,7 @@ void semesterMenu(int year, int mode)
 				{
 					cout << "\nEnter 0: To exit\n";
 					cout << "Enter 1: Access course in academic year\n";
+					cout << "Enter your choice: ";
 					cin >> choice;
 					tt::clearConsole();
 					if (choice >= 0 && choice <= 1)
@@ -56,6 +57,8 @@ void semesterMenu(int year, int mode)
 					cout << setfill('=') << setw(50) << "=" << endl;
 					cout << "*" << setfill('-') << setw(30) << "SEMESTER MENU" << setfill('-') << setw(19) << "*" << endl;
 					cout << setfill('=') << setw(50) << "=" << endl;
+					cout << "\n";
+					outputSemester(semester);
 				}
 				switch (choice)
 				{

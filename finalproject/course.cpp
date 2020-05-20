@@ -28,9 +28,15 @@ void courseMenu(int year, string semester, int mode)
 		}
 		if (mode == 1)
 		{
+			tt::clearConsole();
+			loadDatFile(List, students, filePath);
 			if (List.size() == 0)
 			{
-				cout << "Nothing to do here!\nPress Etner to return...";
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "\nNothing to do here!\nPress Etner to return...";
+				getchar();
 				getchar();
 				tt::clearConsole();
 				cont = 0;
@@ -581,6 +587,10 @@ void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 			list.push_back(temp);
 			classStudents.clear();
 		}
+		for (int i = 0; i < list.size(); ++i)
+		{
+			list[i].number = i + 1;
+		}
 	}
 	else
 	{
@@ -639,7 +649,7 @@ void saveCourseList(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 	}
 	else
 	{
-		cout << "course.dat not found" << endl;
+		cout << "\n course.dat not found" << endl;
 	}
 	dataFile.close();
 }
