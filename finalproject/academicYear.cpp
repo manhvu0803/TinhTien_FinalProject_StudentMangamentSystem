@@ -1,64 +1,147 @@
 #include "academicYear.h"
 
-void academicYearMenu()
+void academicYearMenu(int mode)
 {
 	int check = -1;
 	string filePath = ("data/course/year.dat");
-
 	int cont = 1;
 	int choice = -1;
 	tt::vector<string> year;
 	scanYear(filePath, year);
-	while (cont != 0)
+	if (mode == 1)
 	{
-		if (check != 0)
+		while (cont != 0)
 		{
-			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
-			cout << setfill('=') << setw(50) << "=" << endl;
-			check = 0;
-		}
-		cont = 1;
-		while (choice != 0)
-		{
+			if (check != 0)
+			{
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+				cout << setfill('=') << setw(50) << "=" << endl;
+				check = 0;
+			}
 			cout << "\n";
 			outputYear(year);
-			cout << "\nEnter 0: To exit\n";
-			cout << "Enter 1: Create new academic year\n";
-			cout << "Enter 2: Access semester in academic year\n";
-			cout << "Enter your choice: ";
-			cin >> choice;
-			tt::clearConsole();
-			if (choice >= 0 && choice <= 2)
+			if (year.size() == 0)
 			{
-				break;
+				cout << "Nothing to do here!\nPress Etner to return...";
+				getchar();
+				tt::clearConsole();
+				cont = 0;
 			}
 			else
 			{
-				cout << "Error!!! Choose agian!" << endl;
-				getchar();
-				getchar();
-				tt::clearConsole();
+				while (choice != 0)
+				{
+					cout << "\nEnter 0: To exit\n";
+					cout << "Enter 1: Access semester in academic year\n";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice >= 0 && choice <= 1)
+					{
+						break;
+					}
+					else
+					{
+						cout << "Error!!! Choose agian!" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+					cout << setfill('=') << setw(50) << "=" << endl;
+					cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+					cout << setfill('=') << setw(50) << "=" << endl;
+				}
+				switch (choice)
+				{
+				default:
+					cont = 0;
+					break;
+				case 1:
+					changeToSemester(year, mode);
+					check = 1;
+					break;
+				}
 			}
-			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
-			cout << setfill('=') << setw(50) << "=" << endl;
-		}
-		switch (choice)
-		{
-		default:
-			cont = 0;
-			break;
-		case 1:
-			createYear(filePath, year);
-			check = 1;
-			break;
-		case 2:
-			changeToSemester(year);
-			check = 1;
-			break;
 		}
 	}
+	else
+		while (cont != 0)
+		{
+			if (check != 0)
+			{
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+				cout << setfill('=') << setw(50) << "=" << endl;
+				check = 0;
+			}
+			while (choice != 0)
+			{
+				cout << "\n";
+				outputYear(year);
+				if (year.size() == 0)
+				{
+					cout << "\nEnter 0: To exit\n";
+					cout << "Enter 1: Create new academic year\n";
+					cout << "Enter your choice: ";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice >= 0 && choice <= 1)
+					{
+						break;
+					}
+					else
+					{
+						cout << "Error!!! Choose agian!" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+				}
+				else
+				{
+					cout << "\nEnter 0: To exit\n";
+					cout << "Enter 1: Create new academic year\n";
+					cout << "Enter 2: Delete 1 academic year\n";
+					cout << "Enter 3: Access semester in academic year\n";
+					cout << "Enter your choice: ";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice >= 0 && choice <= 3)
+					{
+						break;
+					}
+					else
+					{
+						cout << "Error!!! Choose agian!" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+				}
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "*" << right << setfill('-') << setw(34) << "ACADEMIC YEAR MENU" << setfill('-') << setw(15) << "*" << endl;
+				cout << setfill('=') << setw(50) << "=" << endl;
+
+			}
+			switch (choice)
+			{
+			default:
+				cont = 0;
+				break;
+			case 1:
+				createYear(filePath, year);
+				check = 1;
+				break;
+			case 2:
+				deleteYear(filePath, year);
+				saveYear(filePath, year);
+				break;
+			case 3:
+				changeToSemester(year, mode);
+				check = 1;
+				break;
+			}
+		}
 	year.clear();
 	tt::clearConsole();
 }
@@ -88,7 +171,7 @@ void scanYear(string filePath, tt::vector<string>& year)
 	myFile.close();
 	sortYear(year);
 }
-void changeToSemester(tt::vector<string>& year)
+void changeToSemester(tt::vector<string>& year, int mode)
 {
 	cout << setfill('=') << setw(50) << "=" << endl;
 	outputYear(year);
@@ -118,7 +201,7 @@ void changeToSemester(tt::vector<string>& year)
 	{
 		char newString[5];
 		year[decide - 1].copy(newString, 4, 0);
-		semesterMenu(atoi(newString));
+		semesterMenu(atoi(newString), mode);
 	}
 }
 void sortYear(tt::vector<string>& year) {
@@ -214,4 +297,37 @@ void createYear(string filePath, tt::vector<string>& year)
 	getchar();
 	getchar();
 	tt::clearConsole();
+}
+void deleteYear(string filePath, tt::vector<string>& year)
+{
+	int choice;
+	outputYear(year);
+	while (true)
+	{
+		cout << "\nEnter year No. : "; cin >> choice;
+		tt::clearConsole();
+		if (choice > 0 && choice <= year.size())
+		{
+			break;
+		}
+		else
+		{
+			cout << "Error!!!No available year!!!" << endl;
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> choice;
+			tt::clearConsole();
+			if (choice == 0)
+			{
+				break;
+			}
+		}
+	}
+	if (choice != 0)
+	{
+		cout << "Academic year: " << year[choice - 1] << " has been delete!";
+		year.erase(choice - 1);
+		getchar();
+		getchar();
+		tt::clearConsole();
+	}
 }

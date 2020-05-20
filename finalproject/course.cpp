@@ -2,7 +2,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 tt::vector<tt::course> emptyVec;
 tt::vector<tt::vector<int>>emptyStudents;
-void courseMenu(int year, string semester)
+void courseMenu(int year, string semester, int mode)
 {
 	string filePath = ("data/course/");
 	filePath.append(to_string(year));
@@ -26,40 +26,102 @@ void courseMenu(int year, string semester)
 			cout << setfill('=') << setw(50) << "=" << endl;
 			title = 0;
 		}
-		while (choice != 0)
+		if (mode == 1)
 		{
-			cout << " Enter 0: To exit" << endl;
-			cout << " Enter 1: Import course" << endl;
-			cout << " Enter 2: Add new course" << endl;
-			cout << " Enter 3: Edit course" << endl;
-			cout << " Enter 4: Remove a course" << endl;
-			cout << " Enter 5: View course list" << endl;
-			cout << " Enter 6: Add a student to a course" << endl;
-			cout << " Enter 7: Remove a student" << endl;
-			cout << " Enter 8: View student list" << endl;
-			cout << " Enter your choice: ";
-			cin >> choice;
-			tt::clearConsole();
-			if (choice >= 0 && choice <= 8)
+			if (List.size() == 0)
 			{
-				break;
-			}
-			else
-			{
-				cout << "Error! Choose agian:" << endl;
-				getchar();
+				cout << "Nothing to do here!\nPress Etner to return...";
 				getchar();
 				tt::clearConsole();
+				cont = 0;
 			}
-			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
-			cout << setfill('=') << setw(50) << "=" << endl;
+			else
+				while (choice != 0)
+				{
+					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 1: View course list" << endl;
+					cout << " Enter 2: View student list" << endl;
+					cout << " Enter your choice: ";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice >= 0 && choice <= 2)
+					{
+						if (choice == 1) choice += 4;
+						if (choice == 2) choice += 6;
+						break;
+					}
+					else
+					{
+						cout << "Error! Choose agian:" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+					cout << setfill('=') << setw(50) << "=" << endl;
+					cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
+					cout << setfill('=') << setw(50) << "=" << endl;
+				}
+		}
+		else
+		{
+
+			while (choice != 0)
+			{
+				if (List.size() == 0)
+				{
+					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 1: Import courses" << endl;
+					cout << " Enter your choice: ";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice == 0 || choice == 1)
+					{
+						break;
+					}
+					else
+					{
+						cout << "Error! Choose agian:" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+				}
+				else
+				{
+					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 1: Import courses" << endl;
+					cout << " Enter 2: Add new course" << endl;
+					cout << " Enter 3: Edit course" << endl;
+					cout << " Enter 4: Remove a course" << endl;
+					cout << " Enter 5: View course list" << endl;
+					cout << " Enter 6: Add a student to a course" << endl;
+					cout << " Enter 7: Remove a student" << endl;
+					cout << " Enter 8: View student list" << endl;
+					cout << " Enter your choice: ";
+					cin >> choice;
+					tt::clearConsole();
+					if (choice >= 0 && choice <= 8)
+					{
+						break;
+					}
+					else
+					{
+						cout << "Error! Choose agian:" << endl;
+						getchar();
+						getchar();
+						tt::clearConsole();
+					}
+				}
+				cout << setfill('=') << setw(50) << "=" << endl;
+				cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
+				cout << setfill('=') << setw(50) << "=" << endl;
+			}
 		}
 		switch (choice)
 		{
 		case 0:
 		{
-			cont = choice;
+			cont = 0;
 			break;
 		}
 		case 1:
@@ -1006,6 +1068,7 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 	while (true)
 	{
 		cout << "Input: "; cin >> choice;
+		tt::clearConsole();
 		if (choice <= 0 || choice > 11)
 		{
 			cout << "Error!!!No choice available!!!" << endl;
@@ -1022,8 +1085,8 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 		}
 		output1Course(list[n - 1], students[n - 1]);
 		cout << "Please enter your decision: " << endl;
-		cout << "Enter (1) : Name" << endl;
-		cout << "Enter (2) : Id " << endl;
+		cout << "Enter (1) : Id" << endl;
+		cout << "Enter (2) : Name " << endl;
 		cout << "Enter (3) : Class" << endl;
 		cout << "Enter (4) : Lecturer" << endl;
 		cout << "Enter (5) : Day of Week" << endl;
@@ -1168,16 +1231,16 @@ void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stu
 	path += list[n - 1].id;
 	path += ".dat";
 	remove(path.c_str());
-	students[n - 1].clear();
+	students.erase(n - 1);
 	students.shrink_to_fit();
 	cout << "Course: " << list[n - 1].name << " is deleted.\n";
 	list.erase(n - 1);
 	list.shrink_to_fit();
-	saveCourseList(list, students, filePath);
 	for (int i = 0; i < list.size(); ++i)
 	{
 		list[i].number = i + 1;
 	}
+	saveCourseList(list, students, filePath);
 	getchar();
 	getchar();
 	tt::clearConsole();

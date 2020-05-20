@@ -13,7 +13,7 @@
 #include <cstdio>
 #include "dataStructure.h"
 using namespace std;
-void courseMenu(int year, string semester);
+void courseMenu(int year, string semester, int mode);
 void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
@@ -27,7 +27,7 @@ void output1CourseData(tt::course& Course);
 void outputSchedule(tt::vector<tt::course>& list);
 int  inputTime(tt::time& courseTime);
 int  inputDate(tt::date& Date);
-void input1Course(tt::course& newCourse, tt::vector<int>& classStudents);
+void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num);
 void inputCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void deleteCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
