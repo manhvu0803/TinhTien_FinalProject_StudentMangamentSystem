@@ -7,27 +7,28 @@
 #include <string>
 #include "dataStructure.h"
 #include "utility.h"
+#include "attendance.h"
 
 using namespace std;
 
-void ViewStudentScoreBoard(tt::vector<tt::score>& B) {
+void ViewStudentScoreBoard(tt::vector<tt::score>& B,string year,string semester , string course) {
 	tt::clearConsole();
 	cout << "\n\n\t\t=====YOUR SCOREBOARD=====\n";
-	for (int i = 0; i < 87; i++) {
+	for (int i = 0; i < 117; i++) {
 		cout << "-";
 	}
 	cout << "\n";
-	cout << left << setw(10) << "ID" << left << setw(7) << "Class" << left << setw(30) << "Name" << left << setw(10) << "Midterm"
+	cout << left << setw(10) << "ID" << left << setw(10) << "Year" << left << setw(10) << "Semester" << left << setw(10) << "Course" << left << setw(7) << "Class" << left << setw(30) << "Name" << left << setw(10) << "Midterm"
 		<< left << setw(10) << "Final" << left << setw(10) << "Total" << left << setw(10) << "Bonus" << endl;
-	for (int i = 0; i < 87; i++) {
+	for (int i = 0; i < 117; i++) {
 		cout << "-";
 	}
 	cout << "\n";
 	for (int i = 0; i < B.size(); i++) {
-		cout << left << setw(10) << B[i].id << left << setw(7) << B[i].cls << left << setw(30) << B[i].studentName
+		cout << left << setw(10) << B[i].id << left << setw(10) << year << left << setw(10) << semester << left << setw(10) << course << left << setw(7) << B[i].cls << left << setw(30) << B[i].studentName
 			<< left << setw(10) << B[i].mid << left << setw(10) << B[i].final << left << setw(10) << B[i].total
 			<< left << setw(10) << B[i].bonus << endl;
-		for (int i = 0; i < 87; i++) {
+		for (int i = 0; i < 117; i++) {
 			cout << "-";
 		}
 		cout << endl;
@@ -209,7 +210,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard(Score);
+			ViewStudentScoreBoard(Score,year,semester,course);
 			cout << "Do you want to export this score board ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No" << endl;
 			cout << "Your choice : ";
@@ -221,7 +222,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				cin >> choice1;
 			}
 			if (choice1 == 1) {
-				ExportCsv(Score,course);
+				ExportCsv(Score,year,semester,course);
 				cout << "Please check your exported scoreboard in export folder" << endl;
 			}
 		}
@@ -309,7 +310,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard(Score);
+			ViewStudentScoreBoard(Score,year,semester,course);
 			cout << "Do you want to export this scoreboard ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No" << endl;
 			cout << "Your choice : ";
@@ -321,7 +322,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				cin >> choice1;
 			}
 			if (choice1 == 1) {
-				ExportCsv(Score, course);
+				ExportCsv(Score, year , semester ,course);
 				cout << "Please check your exported scoreboard in export folder" << endl;
 			}
 		}
@@ -373,7 +374,7 @@ void LoadCourseFile(tt::vector<tt::course>& list, string filePath)
 	}
 	fin.close();
 }
-void ExportCsv(tt::vector<tt::score>&B , string course) {
+void ExportCsv(tt::vector<tt::score>&B , string year, string semester, string course) {
 	ofstream fout;
 	string outputpath;
 	outputpath = "./export/" + course + "_scoreboard.csv";
@@ -382,14 +383,14 @@ void ExportCsv(tt::vector<tt::score>&B , string course) {
 		cout << "Can't open file export" << endl;
 	}
 	else {
-		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
+		fout << "ID," << "Year," << "Semester," << "Course," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
 		for (int i = 0; i < B.size(); i++) {
-			fout << B[i].id << "," << B[i].cls << "," << B[i].studentName << ","  << B[i].mid << "," << B[i].final << "," << B[i].total << "," << B[i].bonus << endl;
+			fout << B[i].id << "," << year << "," << semester << "," << course << "," << B[i].cls << "," << B[i].studentName << ","  << B[i].mid << "," << B[i].final << "," << B[i].total << "," << B[i].bonus << endl;
 		}
 	}
 	fout.close();
 }
-void ImportCsv(string importpath,tt::vector<tt::score>&B) {
+void ImportCsv(string importpath,tt::vector<tt::score>&B, string &year, string &semester, string &course) {
 	ifstream fin;
 	string trash,tmp;
 	tt::score tmp2;
@@ -401,6 +402,12 @@ void ImportCsv(string importpath,tt::vector<tt::score>&B) {
 		getline(fin, trash);
 		while (getline(fin, tmp, ',')) {
 			tmp2.id = stoi(tmp);
+			getline(fin, tmp, ',');
+			year = tmp;
+			getline(fin, tmp, ',');
+			semester = tmp;
+			getline(fin, tmp, ',');
+			course = tmp;
 			getline(fin, tmp, ',');
 			tmp2.cls = tmp;
 			getline(fin, tmp, ',');
@@ -514,7 +521,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 			Score.push_back(tmp);
 		}
 		fin1.close();
-		ViewStudentScoreBoard(Score);
+		ViewStudentScoreBoard(Score,year,semester,course);
 		cout << "\n\nDo you want to edit this student's score ?" << endl;
 		cout << "(1) Yes" << endl << "(2) No" << endl;
 		cout << "Your choice : ";
@@ -541,7 +548,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 				cout << "Bonus : ";
 				cin >> Score[0].bonus;
 				cin.ignore(1);
-				ViewStudentScoreBoard(Score);
+				ViewStudentScoreBoard(Score,year,semester,course);
 				cout << "\nDo you want to edit again ?" << endl;
 				cout << "(1) Yes " << endl << "(2) No" << endl;
 				cout << "Your choice: ";
@@ -597,5 +604,16 @@ int ChangeDayToNumber(string line) {
 	}
 	else if(line == "SUN") {
 		return 6;
+	}
+}
+void SaveScoreFromImport(tt::vector<tt::score> &B,string year,string semester,string course) {
+	string inputpath;
+	tt::score temp;
+	for (int i = 0; i < B.size(); i++) {
+		inputpath = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(B[i].id) + ".dat";
+		LoadScoreFile(temp, inputpath);
+		B[i].chkIn = temp.chkIn;
+		SaveFileScore(inputpath, B[i]);
+		temp.chkIn.clear();
 	}
 }

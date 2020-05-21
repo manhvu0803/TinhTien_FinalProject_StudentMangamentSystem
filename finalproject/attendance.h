@@ -25,5 +25,5 @@ void CheckAttendance(string year, string semester, string course, tt::date Date,
 void ViewCheckinList(tt::score& A, string course,int id);
 void EditAttendance(string year, string semester, string course, tt::vector<tt::score>& A, tt::date Date);
 void ExportAttendance(tt::vector<tt::score>& Att, string course);
-int MainForAttendanceAndScoreboard()
+int MainForAttendanceAndScoreboard();
 #endif _ATTENDANCE_H_INCLUDED_

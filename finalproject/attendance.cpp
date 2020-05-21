@@ -463,13 +463,13 @@ void CheckAttendance(string year,string semester,string course , tt::date Date,t
 void ExportAttendance(tt::vector<tt::score> &Att, string course) {
 	ofstream fout;
 	string inputpath;
-	inputpath = "./export/" + course + "-Attedance.dat";
+	inputpath = "./export/" + course + "-Attedance.csv";
 	fout.open(inputpath);
 	if (fout.is_open()) {
 		fout << "ID," << "Class," << "StudentName," << "Date," << "CheckinTime"<< endl;
 		for (int i = 0; i < Att.size(); i++) {
 			fout << Att[i].id << "," << Att[i].cls << "," << Att[i].studentName << "," << Att[i].chkIn[0].cDate.y << "-" << Att[i].chkIn[0].cDate.m << "-" << Att[i].chkIn[0].cDate.d << "," 
-				<< Att[i].chkIn[0].cTime.h << ":" << Att[i].chkIn[0].cTime.m << "-" << Att[i].chkIn[0].cTime.s << endl;
+				<< Att[i].chkIn[0].cTime.h << ":" << Att[i].chkIn[0].cTime.m << ":" << Att[i].chkIn[0].cTime.s << endl;
 		}
 		fout.close();
 	}
@@ -599,6 +599,7 @@ int MainForAttendanceAndScoreboard() {
 
 	cout << "\t\tWELCOME TO SCOREBOARD" << endl;
 	do {
+		tt::clearConsole();
 		cout << "THESE ARE THE FUNCTIONS: \n";
 		cout << "(1) View and export Scoreboard" << endl;
 		cout << "(2) Import Scoreboard" << endl;
@@ -621,8 +622,9 @@ int MainForAttendanceAndScoreboard() {
 			case 2: {
 				cout << "Enter yout import file address here :";
 				getline(cin, importfile);
-				ImportCsv(importfile, B);
-				ViewStudentScoreBoard(B);
+				ImportCsv(importfile, B, year, semester, course);
+				SaveScoreFromImport(B, year, semester, course);
+				ViewStudentScoreBoard(B, year, semester, course);
 				break;
 			}
 			case 3: {
@@ -701,7 +703,17 @@ int MainForAttendanceAndScoreboard() {
 			default:
 				break;
 			}
+			cout << "Press (-1) to return to the menu or (0) to exit" << endl;
+			cout << "Your choice : ";
+			cin >> choice;
+			while (choice != -1 && choice != 0 || cin.fail()) {
+				cin.clear();
+				cout << "Error , try again" << endl;
+				cout << "Your choice ";
+				cin >> choice;
+			}
 		}
+
 	} while (choice != 0);
 	return 0;
 }
