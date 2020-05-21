@@ -194,7 +194,7 @@ void FindStudent(tt::student& A, int ID , string &course) {
 	}
 }
 void CheckIn() {
-	int id,choice,choice1,same = 0;
+	int id,choice,choice1,same = 0, return1 = 0;
 	string inputpath;
 	tt::vector<string> linkcourse;
 	string studentcourse;
@@ -202,88 +202,102 @@ void CheckIn() {
 	tt::checkIn studenttime;
 	tt::score student;
 	tt::vector<tt::course> coursestudent;
-	cout << "Enter your student's ID : ";
-	cin >> id;
-	cout << "Do you want to check in or view check in ? :" << endl;
-	cout << "(0) Check in" << endl << "(1) View check in" << endl;
-	cout << "Your choice : ";
-	cin >> choice1;
-	while (choice1 < 0 || choice1 > 1 || cin.fail()) {
-		cin.clear();
-		cout << "Error , try again" << endl;
+	do{
+		tt::clearConsole();
+		cout << "Enter your student's ID : ";
+		cin >> id;
+		cout << "Do you want to check in or view check in ? :" << endl;
+		cout << "(0) Check in" << endl << "(1) View check in" << endl;
 		cout << "Your choice : ";
 		cin >> choice1;
-	}
-	FindStudent(A, id, studentcourse);
-	FindStudentCourse(id, studentcourse, linkcourse, coursestudent);
-	if (linkcourse.size() > 1) {
-		cout << "We have " << linkcourse.size() << "course(s)" << endl;
-		for (int i = 0; i < linkcourse.size(); i++) {
-			cout << "(" << i << "): " << linkcourse[i] << endl;
+		while (choice1 < 0 || choice1 > 1 || cin.fail()) {
+			cin.clear();
+			cout << "Error , try again" << endl;
+			cout << "Your choice : ";
+			cin >> choice1;
 		}
-		cout << "Your choice: ";
-		cin >> choice;
-		inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
-		LoadScoreFile(student, inputpath);
-		if (choice1 == 0) {
-			SaveCheckInTime(studenttime);
-			if (isInTime(studenttime, coursestudent[choice])) {
-				for (int i = 0; i < student.chkIn.size(); i++) {
-					if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
-						studenttime.cDate.m == student.chkIn[i].cDate.m &&
-						studenttime.cDate.d == student.chkIn[i].cDate.d) {
-						same = 1;
-						break;
+		FindStudent(A, id, studentcourse);
+		FindStudentCourse(id, studentcourse, linkcourse, coursestudent);
+		if (linkcourse.size() > 1) {
+			cout << "We have " << linkcourse.size() << "course(s)" << endl;
+			for (int i = 0; i < linkcourse.size(); i++) {
+				cout << "(" << i << "): " << linkcourse[i] << endl;
+			}
+			cout << "Your choice: ";
+			cin >> choice;
+			inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
+			LoadScoreFile(student, inputpath);
+			if (choice1 == 0) {
+				SaveCheckInTime(studenttime);
+				if (isInTime(studenttime, coursestudent[choice])) {
+					for (int i = 0; i < student.chkIn.size(); i++) {
+						if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
+							studenttime.cDate.m == student.chkIn[i].cDate.m &&
+							studenttime.cDate.d == student.chkIn[i].cDate.d) {
+							same = 1;
+							break;
+						}
+					}
+					if (same == 0) {
+						student.chkIn.push_back(studenttime);
+						SaveFileScore(inputpath, student);
+						cout << "Successfully check in" << endl;
+					}
+					else {
+						cout << "You have checked in before" << endl;
 					}
 				}
-				if (same == 0) {
-					student.chkIn.push_back(studenttime);
-					SaveFileScore(inputpath, student);
-					cout << "Successfully check in" << endl;
-				}
 				else {
-					cout << "You have checked in before" << endl;
+					cout << "You can't check in " << endl;
 				}
 			}
 			else {
-				cout << "You can't check in " << endl;
+				ViewCheckinList(student, coursestudent[choice].id, id);
 			}
 		}
 		else {
-			ViewCheckinList(student, coursestudent[choice].id,id);
-		}
-	}
-	else {
-		inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
-		LoadScoreFile(student, inputpath);
-		if (choice1 == 0) {
-			SaveCheckInTime(studenttime);
-			if (isInTime(studenttime, coursestudent[0])) {
-				for (int i = 0; i < student.chkIn.size(); i++) {
-					if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
-						studenttime.cDate.m == student.chkIn[i].cDate.m &&
-						studenttime.cDate.d == student.chkIn[i].cDate.d) {
-						same = 1;
-						break;
+			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
+			LoadScoreFile(student, inputpath);
+			if (choice1 == 0) {
+				SaveCheckInTime(studenttime);
+				if (isInTime(studenttime, coursestudent[0])) {
+					for (int i = 0; i < student.chkIn.size(); i++) {
+						if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
+							studenttime.cDate.m == student.chkIn[i].cDate.m &&
+							studenttime.cDate.d == student.chkIn[i].cDate.d) {
+							same = 1;
+							break;
+						}
+					}
+					if (same == 0) {
+						student.chkIn.push_back(studenttime);
+						SaveFileScore(inputpath, student);
+						cout << "Successfully check in" << endl;
+					}
+					else {
+						cout << "You have checked in before" << endl;
 					}
 				}
-				if (same == 0) {
-					student.chkIn.push_back(studenttime);
-					SaveFileScore(inputpath, student);
-					cout << "Successfully check in" << endl;
-				}
 				else {
-					cout << "You have checked in before" << endl;
+					cout << "You can't check in " << endl;
+					
 				}
 			}
 			else {
-				cout << "You can't check in " << endl;
+				ViewCheckinList(student, coursestudent[0].id, id);
+				
 			}
 		}
-		else {
-			ViewCheckinList(student, coursestudent[0].id,id);
+		cout << "Press (-1) to return or (0) to exit " << endl;
+		cout << "Your choice : ";
+		cin >> return1;
+		while (return1 < -1 || return1 > 0 || cin.fail()) {
+			cin.clear();
+			cout << "Error , try again" << endl;
+			cout << "Your choice : ";
+			cin >> return1;
 		}
-	}
+	} while (return1 == -1);
 }
 void ViewAttendanceList(tt::vector<tt::score>& A , string course) {
 	tt::clearConsole();
@@ -301,8 +315,8 @@ void ViewAttendanceList(tt::vector<tt::score>& A , string course) {
 	cout << "\n";
 	for (int i = 0; i < A.size(); i++) {
 		cout << left << setw(10) << A[i].id << left << setw(7) << A[i].cls << left << setw(30) << A[i].studentName
-			<< left << setw(8) << course << left << setw(11) << A[i].chkIn[0].cDate.y << "/" << A[i].chkIn[0].cDate.m << "/" << A[i].chkIn[0].cDate.d 
-			<< left << setw(13) << A[i].chkIn[0].cTime.h << ":" << A[i].chkIn[0].cTime.m << ":" << A[i].chkIn[0].cTime.s << endl;
+			<< left << setw(8) << course << left << setw(11) << to_string(A[i].chkIn[0].cDate.y) + "/" + to_string(A[i].chkIn[0].cDate.m) + "/" + to_string(A[i].chkIn[0].cDate.d)
+			<< left << setw(13) << to_string(A[i].chkIn[0].cTime.h) + ":" + to_string(A[i].chkIn[0].cTime.m) + ":" + to_string(A[i].chkIn[0].cTime.s) << endl;
 		for (int i = 0; i < 79; i++) {
 			cout << "-";
 		}
@@ -336,10 +350,12 @@ void FindStudentCourse(int id, string coursename , tt::vector<string>& rightcour
 								coursestudent.push_back(courses[i]);
 								tmp = "./data/course/" + year + "/" + semester + "/" + courses[i].id;
 								rightcourse.push_back(tmp);
+								break;
 							}
 						}
 					}
-					
+					courses.clear();
+
 				}
 				fin1.close();
 			}
@@ -413,23 +429,31 @@ void CheckAttendance(string year,string semester,string course , tt::date Date,t
 	int id,same = 0;
 	string inputpath;
 	tt::score student;
-	inputpath = ".data/course/" + year + "/" + semester + "/" + course + ".dat";
+	tt::score addstudent;
+	inputpath = "./data/course/" + year + "/" + semester + "/" + course + ".dat";
 	fin.open(inputpath);
 	if (fin.is_open()) {
 		while (fin >> id) {
-			inputpath =  ".data/course/" + year + "/" + semester + "/" + course + "/" + to_string(id) + ".dat";
+			same = 0;
+			inputpath = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(id) + ".dat";
 			LoadScoreFile(student, inputpath);
 			for (int i = 0; i < student.chkIn.size(); i++) {
 				if (Date.y == student.chkIn[i].cDate.y &&
 					Date.m == student.chkIn[i].cDate.m &&
 					Date.d == student.chkIn[i].cDate.d) {
 					same = 1;
+					addstudent.chkIn.push_back(student.chkIn[i]);
 					break;
 				}
 			}
 			if (same == 1) {
-				A.push_back(student);
+				addstudent.id = id;
+				addstudent.studentName = student.studentName;
+				addstudent.cls = student.cls;
+				A.push_back(addstudent);
+				addstudent.chkIn.clear();
 			}
+			student.chkIn.clear();
 		}
 	}
 	else {
@@ -469,8 +493,8 @@ void ViewCheckinList(tt::score& A, string course , int id) {
 	cout << "\n";
 	for (int i = 0; i < A.chkIn.size(); i++) {
 		cout << left << setw(10) << id << left << setw(7) << A.cls << left << setw(30) << A.studentName
-			<< left << setw(8) << course << left << setw(11) << A.chkIn[i].cDate.y << "/" << A.chkIn[i].cDate.m << "/" << A.chkIn[i].cDate.d
-			<< left << setw(13) << A.chkIn[i].cTime.h << ":" << A.chkIn[i].cTime.m << ":" << A.chkIn[i].cTime.s << endl;
+			<< left << setw(8) << course << left << setw(11) << to_string(A.chkIn[i].cDate.y) + "/" + to_string(A.chkIn[i].cDate.m) + "/" + to_string(A.chkIn[i].cDate.d)
+			<< left << setw(13) << to_string(A.chkIn[i].cTime.h) + ":" + to_string(A.chkIn[i].cTime.m) + ":" + to_string(A.chkIn[i].cTime.s) << endl;
 		for (int i = 0; i < 79; i++) {
 			cout << "-";
 		}
@@ -483,7 +507,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 	ofstream fout;
 	string inputpath;
 	tt::vector<string> students;
-	tt::score temp;
+	tt::score temp,student;
 	tt::checkIn check;
 	tt::time tempt;
 
@@ -507,7 +531,8 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 		do {
 			cout << "Enter the ordinal number of the student you want to add : ";
 			cin >> number;
-			inputpath = "./data/course/" + year + "/" + semester + "/" + course + "/" + students[choice] + ".dat";
+
+			inputpath = "./data/course/" + year + "/" + semester + "/" + course + "/" + students[number] + ".dat";
 			LoadScoreFile(temp, inputpath);
 			cout << "Enter the time student check in : " << endl;
 			cout << "Hour : ";
@@ -523,10 +548,16 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			check.cTime = tempt;
 			temp.chkIn.push_back(check);
 			SaveFileScore(inputpath, temp);
-			A.push_back(temp);
+			student.id = stoi(students[number]);
+			student.studentName = temp.studentName;
+			student.chkIn.push_back(check);
+			student.cls = temp.cls;
+			A.push_back(student);
 			cout << "Do you want to add any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
+			student.chkIn.clear();
+			temp.chkIn.clear();
 
 		} while (choice1 != 0);
 	}
@@ -549,10 +580,128 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 				}
 			}
 			SaveFileScore(inputpath, temp);
+			A.erase(number);
 			cout << "Do you want to remove any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
 
 		} while (choice1 != 0);
 	}
+}
+int MainForAttendanceAndScoreboard() {
+	int choice, choice1;
+	tt::vector<tt::student>A;
+	tt::vector<tt::score>B;
+	string year, semester, course, inputpath;
+	string importfile;
+	tt::date Date;
+	tt::vector<tt::score> attstud;
+
+	cout << "\t\tWELCOME TO SCOREBOARD" << endl;
+	do {
+		cout << "THESE ARE THE FUNCTIONS: \n";
+		cout << "(1) View and export Scoreboard" << endl;
+		cout << "(2) Import Scoreboard" << endl;
+		cout << "(3) Edit Scoreboard" << endl;
+		cout << "(4) Check in course or view your check in (student)" << endl;
+		cout << "(5) View and export attendance of a course" << endl;
+		cout << "(6) Edit attendance" << endl;
+		cout << "(0) Exit" << endl;
+		cout << "Your choice :";
+		cin >> choice;
+		cin.ignore(1);
+		if (choice != 0) {
+			switch (choice)
+			{
+			case 1: {
+				SearchCourse(year, semester, course);
+				DecideToView(year, semester, course);
+				break;
+			}
+			case 2: {
+				cout << "Enter yout import file address here :";
+				getline(cin, importfile);
+				ImportCsv(importfile, B);
+				ViewStudentScoreBoard(B);
+				break;
+			}
+			case 3: {
+				SearchCourse(year, semester, course);
+				inputpath = "./data/course/" + year + "/" + semester + "/" + course + ".dat";
+				EditScore(inputpath, year, semester, course);
+				break;
+			}
+
+			case 4: {
+				CheckIn();
+				break;
+			}
+			case 5: {
+				SearchCourse(year, semester, course);
+				cout << "Enter the date you want to view attendance :" << endl;
+				cout << "Year : ";
+				cin >> Date.y;
+				cin.ignore();
+				cout << "Month : ";
+				cin >> Date.m;
+				cin.ignore();
+				cout << "Day : ";
+				cin >> Date.d;
+				cin.ignore();
+				CheckAttendance(year, semester, course, Date, attstud);
+				ViewAttendanceList(attstud, course);
+				cout << "Do you want to export this attendance list ?" << endl;
+				cout << "(1) Yes " << endl << "(0) No" << endl;
+				cout << "Your choice : ";
+				cin >> choice1;
+				while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice ";
+					cin >> choice1;
+				}
+				if (choice1 == 1) {
+					ExportAttendance(attstud, course);
+					cout << "Please check your exported attendance list in export folder" << endl;
+				}
+				break;
+			}
+			case 6: {
+				SearchCourse(year, semester, course);
+				cout << "Enter the date you want to view attendance :" << endl;
+				cout << "Year : ";
+				cin >> Date.y;
+				cin.ignore();
+				cout << "Month : ";
+				cin >> Date.m;
+				cin.ignore();
+				cout << "Day : ";
+				cin >> Date.d;
+				cin.ignore();
+				CheckAttendance(year, semester, course, Date, attstud);
+				ViewAttendanceList(attstud, course);
+				EditAttendance(year, semester, course, attstud, Date);
+				ViewAttendanceList(attstud, course);
+				cout << "Do you want to export this attendance list ?" << endl;
+				cout << "(1) Yes " << endl << "(0) No" << endl;
+				cout << "Your choice : ";
+				cin >> choice1;
+				while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice ";
+					cin >> choice1;
+				}
+				if (choice1 == 1) {
+					ExportAttendance(attstud, course);
+					cout << "Please check your exported attendance list in export folder" << endl;
+				}
+				break;
+			}
+			default:
+				break;
+			}
+		}
+	} while (choice != 0);
+	return 0;
 }
