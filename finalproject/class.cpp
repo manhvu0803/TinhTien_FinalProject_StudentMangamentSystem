@@ -370,12 +370,12 @@ void clss::menu()
                 char cfm;
                 cout << "\nEdit student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
                 tt::cinIg(cin, cfm);
-                if (cfm != 'Y' && cfm != 'y') cout << "Aborted";
-                else {
+                if (cfm != 'Y' && cfm != 'y') {
                     inputStudent(newStd);
                     if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id;
                     else cout << "Aborted";
                 }
+                else cout << "Aborted";
                 break;
             }
             case 4: {
