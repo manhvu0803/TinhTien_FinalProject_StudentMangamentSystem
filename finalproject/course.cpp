@@ -493,7 +493,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 					cout << ", " << notFound[i];
 				}
 			}
-			cout << " Not found!" << endl;
+			cout << " not found!" << endl;
+			getchar();
 			getchar();
 			tt::clearConsole();
 			notFound.clear();
@@ -627,16 +628,36 @@ void saveCourseStudentFile(tt::course& Course, tt::vector<int>& classStudent, st
 void importCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {
 	string newPath;
-	cout << "Input your file address: ";
-	cin >> newPath;
-	tt::clearConsole();
-	loadCsvFile(list, students, newPath);
-	outputCourseList(list, students);
-	cout << "\nPress Enter to continue...	";
-	if (list.size() != 0)
+	int choice = -1;
+	while (true)
+	{
+		cout << "Input your file address: ";
+		cin >> newPath;
+		tt::clearConsole();
+		if (newPath.size() < 5)
+		{
+			cout << "Error!!Please input full file name and type\n";
+			cout << "Input (0) to break or (1) to continue: ";
+			cin >> choice;
+			tt::clearConsole();
+		}
+		else
+		{
+			break;
+		}
+		if (choice == 0)break;
+	}
+	if (choice != 0)
+	{
+		loadCsvFile(list, students, newPath);
+		outputCourseList(list, students);
+		cout << "\nPress Enter to continue...	";
+		if (list.size() != 0)
+			getchar();
 		getchar();
-	getchar();
-	tt::clearConsole();
+		tt::clearConsole();
+	}
+
 }
 void output1Course(tt::course& Course, tt::vector<int>& classStudent)
 {

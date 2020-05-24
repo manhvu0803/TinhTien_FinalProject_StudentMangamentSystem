@@ -1,5 +1,5 @@
 #include "academicYear.h"
-
+#define _CRT_SECURE_NO_WARNINGS
 void academicYearMenu(int mode)
 {
 	int check = -1;
@@ -234,7 +234,8 @@ void saveYear(string filePath, tt::vector<string>& year)
 }
 void createYear(string filePath, tt::vector<string>& year)
 {
-	string input;
+	string temp;
+	int input;
 	int decide = -1;
 	bool seen = false, wrong = false;
 	char year1[5], year2[5];
@@ -242,15 +243,13 @@ void createYear(string filePath, tt::vector<string>& year)
 	{
 		seen = false;
 		wrong = false;
-		cout << "Input: 20XX-20XX\n";
-		cout << "Input your academic year: "; cin >> input;
-		input[4] = '-';
-		input.copy(year1, 4, 0);
-		input.copy(year2, 4, 5);
-		if (input.size() != 9 || atoi(year2) - atoi(year1) != 1)
+		cout << "Input started year: "; cin >> input;
+		if (input <= 2000 || input > 3000)
 		{
 			tt::clearConsole();
 			cout << "Your input " << input << " is wrong" << endl;
+			if (input <= 2000)cout << "It is too small" << endl;
+			else cout << "It is too big" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
 			wrong = true;
 			cin >> decide;
@@ -261,9 +260,15 @@ void createYear(string filePath, tt::vector<string>& year)
 			}
 		}
 		else
+		{
+			_itoa_s(input, year1, 10);
+			_itoa_s(input + 1, year2, 10);
+			temp += year1;
+			temp += '-';
+			temp += year2;
 			for (string a : year)
 			{
-				if (a == input)
+				if (a == temp)
 				{
 					tt::clearConsole();
 					cout << "Error!!!This year is already created!!!" << endl;
@@ -281,21 +286,22 @@ void createYear(string filePath, tt::vector<string>& year)
 					}
 				}
 			}
+		}
 		if (!seen && !wrong)
 		{
 			break;
 		}
 	}
 	tt::clearConsole();
-	string path = "./data/course/" + input;
+	string path = "./data/course/" + temp;
 	tt::makeDir(path + "/HK1");
 	tt::makeDir(path + "/HK2");
 	tt::makeDir(path + "/HK3");
-	ofstream myFile("data/course/" + input + "/semester.dat");
+	ofstream myFile("data/course/" + temp + "/semester.dat");
 	myFile.close();
-	year.push_back(input);
+	year.push_back(temp);
 	saveYear(filePath, year);
-	cout << "Academic year: " << input << " has been created!!\n";
+	cout << "Academic year: " << temp << " has been created!!\n";
 	cout << "Press Enter to continue... ";
 	getchar();
 	getchar();
@@ -304,12 +310,13 @@ void createYear(string filePath, tt::vector<string>& year)
 void deleteYear(string filePath, tt::vector<string>& year)
 {
 	int choice;
+	cout << "(" << 0 << "): Exit\n";
 	outputYear(year);
 	while (true)
 	{
 		cout << "\nEnter year No. : "; cin >> choice;
 		tt::clearConsole();
-		if (choice > 0 && choice <= year.size())
+		if (choice >= 0 && choice <= year.size())
 		{
 			break;
 		}
@@ -324,6 +331,8 @@ void deleteYear(string filePath, tt::vector<string>& year)
 				break;
 			}
 		}
+		cout << "(" << 0 << "): Exit\n";
+		outputYear(year);
 	}
 	if (choice != 0)
 	{

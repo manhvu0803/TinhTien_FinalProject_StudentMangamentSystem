@@ -457,12 +457,13 @@ void createSemester(string filePath, tt::vector<string>& semester)
 void deleteSemester(string filePath, tt::vector<string>& semester)
 {
 	int choice;
+	cout << "(" << 0 << "): Exit\n";
 	outputSemester(semester);
 	while (true)
 	{
 		cout << "\nEnter semester No. : "; cin >> choice;
 		tt::clearConsole();
-		if (choice > 0 && choice <= semester.size())
+		if (choice >= 0 && choice <= semester.size())
 		{
 			break;
 		}
@@ -477,6 +478,8 @@ void deleteSemester(string filePath, tt::vector<string>& semester)
 				break;
 			}
 		}
+		cout << "(" << 0 << "): Exit\n";
+		outputSemester(semester);
 	}
 	if (choice != 0)
 	{
