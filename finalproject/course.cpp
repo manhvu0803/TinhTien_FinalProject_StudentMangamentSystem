@@ -214,7 +214,6 @@ void courseMenu(int year, string semester, int mode)
 			}
 			if (check != 0)
 			{
-				int id = 0;
 				output1Course(List[n - 1], students[n - 1]);
 				int studentSize6 = students[n - 1].size();
 				add1Student(List[n - 1], students[n - 1]);
