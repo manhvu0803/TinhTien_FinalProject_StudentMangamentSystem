@@ -2,6 +2,7 @@
 #include <limits>
 #include "accountControl.h"
 #include "class.h"
+#include "academicYear.h"
 
 using namespace std;
 
@@ -39,8 +40,6 @@ int main()
         switch (choice) {
             case 0:
                 acc::saveToFile();
-                cout << "Logged out successfully. Press enter to continue...";
-                getchar();
                 tt::clearConsole();
                 user = acc::login();
                 break;
@@ -52,10 +51,11 @@ int main()
             case 2:
                 cin.ignore(256, '\n');
                 acc::changePassword(user);
+                getchar();
                 break;
             case 3:
                 if (user->type == 1);
-                else;
+                else academicYearMenu(user->type);
                 break;
             case 4:
                 if (user->type == 1);
