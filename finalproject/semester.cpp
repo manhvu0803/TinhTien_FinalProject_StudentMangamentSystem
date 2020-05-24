@@ -3,8 +3,10 @@
 #include <fstream>
 #include <direct.h>
 #include <iomanip>
+
 void semesterMenu(int year, int mode)
 {
+	bool checkInput = true;
 	int check = -1;
 	string filePath = ("data/course/");
 	filePath.append(to_string(year));
@@ -41,9 +43,9 @@ void semesterMenu(int year, int mode)
 					cout << "\nEnter 0: To exit\n";
 					cout << "Enter 1: Access course in academic year\n";
 					cout << "Enter your choice: ";
-					cin >> choice;
+					checkInput = tt::cinIg(cin, choice);
 					tt::clearConsole();
-					if (choice >= 0 && choice <= 1)
+					if (choice >= 0 && choice <= 1 && checkInput)
 					{
 						break;
 					}
@@ -51,7 +53,7 @@ void semesterMenu(int year, int mode)
 					{
 						cout << "Error!!! Choose agian!" << endl;
 						getchar();
-						getchar();
+						choice = 2;
 						tt::clearConsole();
 					}
 					cout << setfill('=') << setw(50) << "=" << endl;
@@ -67,6 +69,9 @@ void semesterMenu(int year, int mode)
 					break;
 				case 1:
 					changeToCourse(year, semester, mode);
+					check = 1;
+					break;
+				case 2:
 					check = 1;
 					break;
 				}
@@ -92,9 +97,9 @@ void semesterMenu(int year, int mode)
 				{
 					cout << "\nEnter 0: To exit\n";
 					cout << "Enter 1: Create new semester\n";
-					cout << "Enter your choice: "; cin >> choice;
+					cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 					tt::clearConsole();
-					if (choice >= 0 && choice <= 1)
+					if (choice >= 0 && choice <= 1 && checkInput)
 					{
 						break;
 					}
@@ -102,8 +107,8 @@ void semesterMenu(int year, int mode)
 					{
 						cout << "Error! Choose agian!" << endl;
 						getchar();
-						getchar();
 						tt::clearConsole();
+						choice = 4;
 					}
 				}
 				else
@@ -112,9 +117,9 @@ void semesterMenu(int year, int mode)
 					cout << "Enter 1: Create new semester\n";
 					cout << "Enter 2: Delete 1 semester\n";
 					cout << "Enter 3: Access courses in semester\n";
-					cout << "Enter your choice: "; cin >> choice;
+					cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 					tt::clearConsole();
-					if (choice >= 0 && choice <= 3)
+					if (choice >= 0 && choice <= 3 && checkInput)
 					{
 						break;
 					}
@@ -122,8 +127,8 @@ void semesterMenu(int year, int mode)
 					{
 						cout << "Error! Choose agian!" << endl;
 						getchar();
-						getchar();
 						tt::clearConsole();
+						choice = 4;
 					}
 				}
 				cout << setfill('=') << setw(50) << "=" << endl;
@@ -141,10 +146,14 @@ void semesterMenu(int year, int mode)
 				break;
 			case 2:
 				deleteSemester(filePath, semester);
+				check = 1;
 				break;
 			case 3:
 				changeToCourse(year, semester, mode);
 				check = -1;
+				break;
+			case 4:
+				check = 1;
 				break;
 			}
 		}
@@ -153,15 +162,16 @@ void semesterMenu(int year, int mode)
 }
 void changeToCourse(int year, tt::vector<string>& semester, int mode)
 {
+	bool checkInput = true;
 	cout << setfill('=') << setw(50) << "=" << endl;
 	outputSemester(semester);
 	cout << setfill('=') << setw(50) << "=" << endl;
 	int decide;
 	while (true)
 	{
-		cout << "Input the semester No. :"; cin >> decide;
+		cout << "Input the semester No. :"; checkInput = tt::cinIg(cin, decide);
 		tt::clearConsole();
-		if (decide >= 1 && decide <= semester.size())
+		if (decide >= 1 && decide <= semester.size() && checkInput)
 		{
 			break;
 		}
@@ -169,7 +179,8 @@ void changeToCourse(int year, tt::vector<string>& semester, int mode)
 		{
 			cout << "Error!!!No available semester!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
-			cin >> decide;
+			checkInput = tt::cinIg(cin, decide);
+			if (!checkInput)decide = 0;
 			tt::clearConsole();
 			if (decide == 0)
 			{
@@ -221,6 +232,7 @@ void saveSemester(string filePath, tt::vector<string>& semester)
 }
 void createSemester(string filePath, tt::vector<string>& semester)
 {
+	bool checkInput = true;
 	int size = semester.size();
 	int choice = -1;
 	switch (size)
@@ -233,7 +245,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 			cout << "Enter (2): HK2\n";
 			cout << "Enter (3): HK3\n";
 			cout << "Enter (4): All\n";
-			cout << "Enter your choice: "; cin >> choice;
+			cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 			tt::clearConsole();
 			if (choice < 0 || choice>5)
 			{
@@ -293,8 +305,9 @@ void createSemester(string filePath, tt::vector<string>& semester)
 				cout << "Enter (1): HK2\n";
 				cout << "Enter (2): HK3\n";
 				cout << "Enter (3): All\n";
-				cout << "Enter your choice: "; cin >> choice;
+				cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 				tt::clearConsole();
+				if (!checkInput)choice = 0;
 				if (choice < 0 || choice>4)
 				{
 					cout << "Error!!!Your choice is not available!!!\n";
@@ -308,8 +321,9 @@ void createSemester(string filePath, tt::vector<string>& semester)
 				cout << "Enter (1): HK1\n";
 				cout << "Enter (2): HK3\n";
 				cout << "Enter (3): All\n";
-				cout << "Enter your choice: "; cin >> choice;
+				cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 				tt::clearConsole();
+				if (!checkInput)choice = 0;
 				if (choice != 0)
 				{
 					choice += 3;
@@ -327,8 +341,9 @@ void createSemester(string filePath, tt::vector<string>& semester)
 				cout << "Enter (1): HK1\n";
 				cout << "Enter (2): HK2\n";
 				cout << "Enter (3): All\n";
-				cout << "Enter your choice: "; cin >> choice;
+				cout << "Enter your choice: "; checkInput = tt::cinIg(cin, choice);
 				tt::clearConsole();
+				if (!checkInput)choice = 0;
 				if (choice != 0)
 				{
 					choice += 6;
@@ -449,7 +464,6 @@ void createSemester(string filePath, tt::vector<string>& semester)
 	if (choice != 0)
 	{
 		getchar();
-		getchar();
 	}
 	tt::clearConsole();
 	saveSemester(filePath, semester);
@@ -457,12 +471,14 @@ void createSemester(string filePath, tt::vector<string>& semester)
 void deleteSemester(string filePath, tt::vector<string>& semester)
 {
 	int choice;
+	bool checkInput = true;
+	cout << "(" << 0 << "): Exit\n";
 	outputSemester(semester);
 	while (true)
 	{
-		cout << "\nEnter semester No. : "; cin >> choice;
+		cout << "\nEnter semester No. : "; checkInput = tt::cinIg(cin, choice);
 		tt::clearConsole();
-		if (choice > 0 && choice <= semester.size())
+		if (choice >= 0 && choice <= semester.size() && checkInput)
 		{
 			break;
 		}
@@ -470,19 +486,21 @@ void deleteSemester(string filePath, tt::vector<string>& semester)
 		{
 			cout << "Error!!!No available semester!!!" << endl;
 			cout << "Input (0) to break or (1) to continue: ";
-			cin >> choice;
+			checkInput = tt::cinIg(cin, choice);
+			if (!checkInput)choice = 0;
 			tt::clearConsole();
 			if (choice == 0)
 			{
 				break;
 			}
 		}
+		cout << "(" << 0 << "): Exit\n";
+		outputSemester(semester);
 	}
 	if (choice != 0)
 	{
 		cout << "Semester: " << semester[choice - 1] << " has been delete!";
 		semester.erase(choice - 1);
-		getchar();
 		getchar();
 		tt::clearConsole();
 	}
