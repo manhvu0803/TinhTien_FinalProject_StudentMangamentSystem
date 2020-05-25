@@ -38,6 +38,7 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents);
 void addStudent(tt::course& Course, tt::vector<int>& classStudents);
 void viewStudentList(tt::vector<int>& classStudent);
 int  maxdayinmonth(int month, int year);
+void titleName(int year, string semester);
 tt::course searchCourse(string filePath, string Id);
 tt::date getDate(string dato);
 #endif
