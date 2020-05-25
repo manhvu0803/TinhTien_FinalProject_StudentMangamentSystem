@@ -317,6 +317,7 @@ void createYear(string filePath, tt::vector<string>& year)
 	}
 	tt::clearConsole();
 	string path = "./data/course/" + temp;
+	tt::makeDir(path);
 	ofstream myFile("data/course/" + temp + "/semester.dat");
 	myFile.close();
 	year.push_back(temp);

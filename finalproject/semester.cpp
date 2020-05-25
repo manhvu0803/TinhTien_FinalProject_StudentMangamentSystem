@@ -236,7 +236,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 	int size = semester.size();
 	int choice = -1;
 	string path = "./";
-	path += filePath;
+	path += filePath + '/';
 	switch (size)
 	{
 	case 0:
