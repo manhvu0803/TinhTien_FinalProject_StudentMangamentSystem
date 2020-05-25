@@ -163,9 +163,10 @@ bool passwordCheck(string password, const char* type = "")
     do {
         cout << "Please enter your " << type << "password (enter \"" << cancelCmd << "\" to return):\n";
         input = passwordBuffer();
+        cout << '\n';
         if (input == cancelCmd) return false;
         if (input == password) return true;
-        cout << "Wrong password\n\n";
+        cout << "Wrong password\n";
     }
     while (true);
 }
@@ -202,12 +203,13 @@ account* acc::login()
         if (username == cancelCmd) return nullptr;
         currentAcc = getAccount(username);
         if (currentAcc) {
+            cout << '\n';
             if (passwordCheck(currentAcc->password)) break;
             else continue;
         }
         cout << "Account does not existed\n\n";
     }
-    while (!currentAcc);
+    while (true);
 
     return currentAcc;
 }
