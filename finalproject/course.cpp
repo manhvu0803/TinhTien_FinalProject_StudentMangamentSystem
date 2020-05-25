@@ -65,7 +65,6 @@ void courseMenu(int year, string semester, int mode)
 		}
 		else
 		{
-
 			while (choice != 0)
 			{
 				checkInput = true;
@@ -142,7 +141,6 @@ void courseMenu(int year, string semester, int mode)
 			tt::course temp;
 			tt::vector<int>classStudents;
 			cout << "New course: \n";
-			cin.ignore(1);
 			input1Course(temp, classStudents, List.size());
 			if (temp.number != -1)
 			{
@@ -929,12 +927,14 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 	if (check == 0)
 	{
 		newCourse.number = -1;
+		tt::clearConsole();
 		return;
 	}
 	cout << "\n";
 	cout << " End date          : \n"; check = inputDate(newCourse.endDate);
 	if (check == 0)
 	{
+		tt::clearConsole();
 		newCourse.number = -1;
 		return;
 	}
@@ -1320,6 +1320,9 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 		checkInput = true;
 		check = -1;
 		cout << "Student id: "; checkInput = tt::cinIg(cin, Id, true);
+		clss theClass;
+		tt::student hi = theClass.getStudent(Id);
+		if (hi.number == -1)Id = 0;
 		tt::clearConsole();
 		if (((int)log10(Id) + 1 == 7 || (int)log10(Id) + 1 == 8) && checkInput)
 		{
@@ -1410,7 +1413,12 @@ void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nh
 				_class.push_back(temp);
 			}
 		}
-		theClass.showClass(_class);
+		if (_class.size() != 0)
+			theClass.showClass(_class);
+		else
+		{
+			cout << "No student found!\n\n";
+		}
 		if (Drop.size() != 0)
 		{
 			int dropStudent = Drop.size();
@@ -1427,6 +1435,7 @@ void viewStudentList(tt::vector<int>& classStudent)// Đợi file class của Nh
 			}
 			cout << " dropped.";
 		}
+
 	}
 }
 tt::course searchCourse(string filePath, string Id)
@@ -1467,7 +1476,7 @@ int maxdayinmonth(int month, int year)
 }
 void titleName(int year, string semester)
 {
-	cout << setfill('=') << setw(51) << "=\n";
+	cout << setfill('=') << setw(50) << "=" << endl;
 	cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
 	cout << "*" << setfill('-') << setw(20) << year << "-" << year + 1 << ": " << semester << setfill('-') << setw(19) << "*" << endl;
 	cout << setfill('=') << setw(50) << "=" << endl;
