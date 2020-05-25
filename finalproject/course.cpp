@@ -334,6 +334,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 	{
 		cout << "Wrong data file";
 		getchar();
+		getchar();
 		list = emptyVec;
 		students = emptyStudents;
 		tt::clearConsole();
@@ -380,11 +381,6 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 				}
 				students.push_back(classStudents);
 				classStudents.clear();
-				if (studentList.size() == 0)
-				{
-					temp.number = -1;
-					notFound.push_back(token);
-				}
 				getline(check, token, ',');
 				getline(check, token, ',');
 				temp.lecturer = token;
@@ -485,6 +481,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 	else
 	{
 		cout << "File not found" << endl;
+		getchar();
 		getchar();
 		tt::clearConsole();
 	}
