@@ -402,18 +402,10 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 				temp.lecturer = token;
 				getline(check, token, ',');
 				getline(check, token, ',');
-				getline(check, token, '/');
-				temp.startDate.m = stoi(token);
-				getline(check, token, '/');
-				temp.startDate.d = stoi(token);
 				getline(check, token, ',');
-				temp.startDate.y = stoi(token);
-				getline(check, token, '/');
-				temp.endDate.m = stoi(token);
-				getline(check, token, '/');
-				temp.endDate.d = stoi(token);
+				temp.startDate = getDate(token);
 				getline(check, token, ',');
-				temp.endDate.y = stoi(token);
+				temp.endDate = getDate(token);
 				getline(check, token, ',');
 				token = tt::capitalize(token);
 				if (token == "MON" || token == "MONDAY")
@@ -509,6 +501,35 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		tt::clearConsole();
 	}
 	csvFile.close();
+}
+tt::date getDate(string dato)
+{
+	int _case;
+	tt::date theDate;
+	stringstream check(dato);
+	string temp;
+	if (dato.find('-') == string::npos) _case = 1;
+	else _case = 0;
+	switch (_case)
+	{
+	default:
+		getline(check, temp, '-');
+		theDate.m = stoi(temp);
+		getline(check, temp, '-');
+		theDate.d = stoi(temp);
+		getline(check, temp);
+		theDate.y = stoi(temp);
+		break;
+	case 1:
+		getline(check, temp, '/');
+		theDate.m = stoi(temp);
+		getline(check, temp, '/');
+		theDate.d = stoi(temp);
+		getline(check, temp);
+		theDate.y = stoi(temp);
+		break;
+	}
+	return theDate;
 }
 void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {

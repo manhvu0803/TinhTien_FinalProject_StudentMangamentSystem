@@ -12,7 +12,9 @@
 #include "class.h"
 #include <cstdio>
 #include "dataStructure.h"
+
 using namespace std;
+
 void courseMenu(int year, string semester, int mode);
 void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
 void loadDatFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath);
@@ -37,5 +39,5 @@ void addStudent(tt::course& Course, tt::vector<int>& classStudents);
 void viewStudentList(tt::vector<int>& classStudent);
 int  maxdayinmonth(int month, int year);
 tt::course searchCourse(string filePath, string Id);
-
+tt::date getDate(string dato);
 #endif
