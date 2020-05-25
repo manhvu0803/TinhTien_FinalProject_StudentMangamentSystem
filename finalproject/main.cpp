@@ -49,9 +49,7 @@ int main()
                 getchar();
                 break;
             case 2:
-                cin.ignore(256, '\n');
                 acc::changePassword(user);
-                getchar();
                 break;
             case 3:
                 if (user->type == 1);

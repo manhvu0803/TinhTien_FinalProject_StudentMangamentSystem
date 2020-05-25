@@ -221,7 +221,7 @@ void acc::changePassword(account* user)
     if (!passwordCheck(user->password, "old ")) return;
 
     string input;
-    do {
+    while (true) {
         cout << "Please enter your new password (at least 8 character):\n";
         input = passwordBuffer();
         if (input.length() >= 8) break;
@@ -231,10 +231,9 @@ void acc::changePassword(account* user)
         }
         cout << "Your password is too short\n";
     }
-    while (true);
 
     if (!cancel)
-        do {
+        while (true) {
             cout << "Please re-enter your new password (enter " << cancelCmd << " to exit):\n";
             string input2 = passwordBuffer();
             if (input2 == input) break;
@@ -244,13 +243,15 @@ void acc::changePassword(account* user)
             }
             cout << "Your password does not match\n";
         }
-        while (true);
+
 
     if (!cancel) {
         user->password = input;
         saveToFile();
         cout << "Password changed successfully\n";
     }
+    else cout << "Aborted\n";
+    getchar();
 }
 
 void acc::showProfile(account user)
