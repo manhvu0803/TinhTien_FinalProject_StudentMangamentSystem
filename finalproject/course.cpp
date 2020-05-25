@@ -17,18 +17,14 @@ void courseMenu(int year, string semester, int mode)
 	int choice = -1, title = -1, check;
 	tt::vector<tt::course> List;
 	tt::vector<tt::vector<int>> students;
-	cout << setfill('=') << setw(50) << "=" << endl;
-	cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
-	cout << setfill('=') << setw(50) << "=" << endl;
+	titleName(year, semester);
 	title = 0;
 	loadDatFile(List, students, filePath);
 	while (cont != 0)
 	{
 		if (title != 0)
 		{
-			cout << setfill('=') << setw(50) << "=" << endl;
-			cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
-			cout << setfill('=') << setw(50) << "=" << endl;
+			titleName(year, semester);
 			title = 0;
 		}
 		if (mode == 1)
@@ -36,9 +32,7 @@ void courseMenu(int year, string semester, int mode)
 			if (List.size() == 0)
 			{
 				tt::clearConsole();
-				cout << setfill('=') << setw(50) << "=" << endl;
-				cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
-				cout << setfill('=') << setw(50) << "=" << endl;
+				titleName(year, semester);
 				cout << "\nNothing to do here!\nPress Etner to return...";
 				getchar();
 				tt::clearConsole();
@@ -66,9 +60,7 @@ void courseMenu(int year, string semester, int mode)
 						getchar();
 						tt::clearConsole();
 					}
-					cout << setfill('=') << setw(50) << "=" << endl;
-					cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
-					cout << setfill('=') << setw(50) << "=" << endl;
+					titleName(year, semester);
 				}
 		}
 		else
@@ -120,9 +112,7 @@ void courseMenu(int year, string semester, int mode)
 						tt::clearConsole();
 					}
 				}
-				cout << setfill('=') << setw(50) << "=" << endl;
-				cout << "*" << right << setfill('-') << setw(30) << "COURSE MENU" << setfill('-') << setw(19) << "*" << endl;
-				cout << setfill('=') << setw(50) << "=" << endl;
+				titleName(year, semester);
 			}
 		}
 		switch (choice)
@@ -1474,4 +1464,11 @@ int maxdayinmonth(int month, int year)
 		return 29;
 	}
 	return 28;
+}
+void titleName(int year, string semester)
+{
+	cout << setfill('=') << setw(51) << "=\n";
+	cout << "*" << right << setfill('-') << setw(29) << "COURSE MENU" << setfill('-') << setw(20) << "*" << endl;
+	cout << "*" << setfill('-') << setw(20) << year << "-" << year + 1 << ": " << semester << setfill('-') << setw(19) << "*" << endl;
+	cout << setfill('=') << setw(50) << "=" << endl;
 }
