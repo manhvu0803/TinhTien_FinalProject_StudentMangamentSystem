@@ -34,7 +34,7 @@ void academicYearMenu(int mode)
 			{
 				while (choice != 0)
 				{
-					cout << "\nEnter 0: To exit\n";
+					cout << "\nEnter 0: Exit\n";
 					cout << "Enter 1: Access semester in academic year\n";
 					cout << "Enter your choice: ";
 					checkInput = tt::cinIg(cin, choice);
@@ -88,7 +88,7 @@ void academicYearMenu(int mode)
 				outputYear(year);
 				if (year.size() == 0)
 				{
-					cout << "\nEnter 0: To exit\n";
+					cout << "\nEnter 0: Exit\n";
 					cout << "Enter 1: Create new academic year\n";
 					cout << "Enter your choice: ";
 					checkInput = tt::cinIg(cin, choice);
@@ -107,7 +107,7 @@ void academicYearMenu(int mode)
 				}
 				else
 				{
-					cout << "\nEnter 0: To exit\n";
+					cout << "\nEnter 0: Exit\n";
 					cout << "Enter 1: Create new academic year\n";
 					cout << "Enter 2: Delete 1 academic year\n";
 					cout << "Enter 3: Access semester in academic year\n";

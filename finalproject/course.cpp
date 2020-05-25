@@ -42,7 +42,7 @@ void courseMenu(int year, string semester, int mode)
 				while (choice != 0)
 				{
 					checkInput = true;
-					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 0: Exit" << endl;
 					cout << " Enter 1: View course list" << endl;
 					cout << " Enter 2: View student list" << endl;
 					cout << " Enter your choice: ";
@@ -70,7 +70,7 @@ void courseMenu(int year, string semester, int mode)
 				checkInput = true;
 				if (List.size() == 0)
 				{
-					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 0: Exit" << endl;
 					cout << " Enter 1: Import courses" << endl;
 					cout << " Enter your choice: ";
 					checkInput = tt::cinIg(cin, choice, true);
@@ -88,7 +88,7 @@ void courseMenu(int year, string semester, int mode)
 				}
 				else
 				{
-					cout << " Enter 0: To exit" << endl;
+					cout << " Enter 0: Exit" << endl;
 					cout << " Enter 1: Import courses" << endl;
 					cout << " Enter 2: Add new course" << endl;
 					cout << " Enter 3: Edit course" << endl;
