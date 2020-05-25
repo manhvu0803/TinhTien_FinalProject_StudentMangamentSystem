@@ -308,8 +308,11 @@ void createYear(string filePath, tt::vector<string>& year)
 		}
 		if (!seen && !wrong)
 		{
-			temp.clear();
 			break;
+		}
+		else
+		{
+			temp.clear();
 		}
 	}
 	tt::clearConsole();
