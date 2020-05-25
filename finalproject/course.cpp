@@ -743,7 +743,7 @@ void output1CourseData(tt::course& Course)
 	}
 	case 5:
 	{
-		cout << " Study day     : Satday";
+		cout << " Study day     : Saturday";
 		break;
 	}
 	case 6:
@@ -957,7 +957,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 		cout << "Enter (2): Wednesday" << endl;
 		cout << "Enter (3): Thursday" << endl;
 		cout << "Enter (4): Friday" << endl;
-		cout << "Enter (5): Satday" << endl;
+		cout << "Enter (5): Saturday" << endl;
 		cout << "Enter (6): Sunday" << endl;
 		cout << " Dow     : "; check = tt::cinIg(cin, newCourse.DoW, true);
 		if (newCourse.DoW >= 0 && newCourse.DoW <= 6 || !check)
@@ -1160,7 +1160,7 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 			cout << " (2): Wednesday" << endl;
 			cout << " (3): Thursday" << endl;
 			cout << " (4): Friday" << endl;
-			cout << " (5): Satday" << endl;
+			cout << " (5): Saturday" << endl;
 			cout << " (6): Sunday" << endl;
 			cout << " Dow          : "; checkInput = tt::cinIg(cin, DoW);
 			if (DoW >= 0 && DoW <= 6 && checkInput)
