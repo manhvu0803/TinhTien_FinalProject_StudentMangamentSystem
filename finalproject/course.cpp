@@ -772,7 +772,7 @@ int  inputTime(tt::time& courseTime)
 		checkInput = true;
 		cout << "	  Input hour: ";
 		checkInput = tt::cinIg(cin, temp.h, true);
-		if (temp.h >= 7 && temp.h <= 19 && checkInput)
+		if (temp.h >= 6 && temp.h <= 23 && checkInput)
 		{
 			break;
 		}
@@ -986,7 +986,6 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 		return;
 	}
 	cout << "\n";
-	cin.ignore(1);
 	cout << " Room: "; getline(cin, newCourse.room);
 
 	tt::vector<tt::student> Student;
@@ -1109,7 +1108,6 @@ void editCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stude
 		cout << "Enter (10): End Hour" << endl;
 		cout << "Enter (11):  Whole course" << endl;
 	}
-	cin.ignore(1);
 	switch (choice)
 	{
 	case 1:
