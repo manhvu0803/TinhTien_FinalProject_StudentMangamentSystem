@@ -10,7 +10,7 @@ void academicYearMenu(int mode)
 	int choice = -1;
 	tt::vector<string> year;
 	scanYear(filePath, year);
-	if (mode == 1)
+	if (mode == 0)
 	{
 		while (cont != 0)
 		{

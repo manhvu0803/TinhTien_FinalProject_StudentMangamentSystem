@@ -16,7 +16,7 @@ void semesterMenu(int year, int mode)
 	int choice = -1;
 	tt::vector<string> semester;
 	scanSemester(filePath, semester);
-	if (mode == 1)
+	if (mode == 0)
 	{
 		while (cont != 0)
 		{

@@ -27,7 +27,7 @@ void courseMenu(int year, string semester, int mode)
 			titleName(year, semester);
 			title = 0;
 		}
-		if (mode == 1)
+		if (mode == 0)
 		{
 			if (List.size() == 0)
 			{
@@ -1476,3 +1476,4 @@ void titleName(int year, string semester)
 	cout << "*" << setfill('-') << setw(20) << year << "-" << year + 1 << ": " << semester << setfill('-') << setw(19) << "*" << endl;
 	cout << setfill('=') << setw(50) << "=" << endl;
 }
+
