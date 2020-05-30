@@ -22,4 +22,8 @@ void FindStudentCourse(int id, string coursename, tt::vector<string>& rightcours
 bool CheckStudentExist(int id, string inputpath);
 void LoadScoreFile(tt::score& student, string inputpath);
 void CheckAttendance(string year, string semester, string course, tt::date Date, tt::vector<tt::score>& A);
+void ViewCheckinList(tt::score& A, string course,int id);
+void EditAttendance(string year, string semester, string course, tt::vector<tt::score>& A, tt::date Date);
+void ExportAttendance(tt::vector<tt::score>& Att, string course);
+int MainForAttendanceAndScoreboard();
 #endif _ATTENDANCE_H_INCLUDED_
