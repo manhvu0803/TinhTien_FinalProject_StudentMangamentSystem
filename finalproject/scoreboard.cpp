@@ -11,24 +11,24 @@
 
 using namespace std;
 
-void ViewStudentScoreBoard(tt::vector<tt::score>& B,string year,string semester , string course) {
+void ViewStudentScoreBoard(tt::vector<tt::score>& B) {
 	tt::clearConsole();
-	cout << "\n\n\t\t=====YOUR SCOREBOARD=====\n";
-	for (int i = 0; i < 117; i++) {
+	cout << "\n\n\t\t\t\t=====YOUR SCOREBOARD=====\n";
+	for (int i = 0; i < 88; i++) {
 		cout << "-";
 	}
 	cout << "\n";
-	cout << left << setw(10) << "ID" << left << setw(10) << "Year" << left << setw(10) << "Semester" << left << setw(10) << "Course" << left << setw(7) << "Class" << left << setw(30) << "Name" << left << setw(10) << "Midterm"
+	cout << left << setw(10) << "ID"  << left << setw(8) << "Class" << left << setw(30) << "Name" << left << setw(10) << "Midterm"
 		<< left << setw(10) << "Final" << left << setw(10) << "Total" << left << setw(10) << "Bonus" << endl;
-	for (int i = 0; i < 117; i++) {
+	for (int i = 0; i < 88; i++) {
 		cout << "-";
 	}
 	cout << "\n";
 	for (int i = 0; i < B.size(); i++) {
-		cout << left << setw(10) << B[i].id << left << setw(10) << year << left << setw(10) << semester << left << setw(10) << course << left << setw(7) << B[i].cls << left << setw(30) << B[i].studentName
+		cout << left << setw(10) << B[i].id  << left << setw(8) << B[i].cls << left << setw(30) << B[i].studentName
 			<< left << setw(10) << B[i].mid << left << setw(10) << B[i].final << left << setw(10) << B[i].total
 			<< left << setw(10) << B[i].bonus << endl;
-		for (int i = 0; i < 117; i++) {
+		for (int i = 0; i < 88; i++) {
 			cout << "-";
 		}
 		cout << endl;
@@ -82,63 +82,89 @@ void LoadStudentCourse(ifstream& file, tt::vector<string>& course, string inputp
 
 	}
 }
-void SearchCourse(string &Year,string &Semester ,string &Course) {
-	ifstream file;
-	int choice1, choice2, choice3, choice4;
-	tt::vector<string> year;
-	tt::vector<string> semester;
-	tt::vector<tt::course> course;
+void MoveToYear(string& Year) {
 	string inputpath;
-		tt::clearConsole();
-		inputpath = "./data/course/year.dat";
-		LoadYearFile(inputpath, year);
-		cout << " Year(s):\n";
-		for (int i = 0; i < year.size(); i++) {
-			cout << "(" << i << ") " << year[i] << endl;
-		}
+	tt::vector<string> year;
+	int choice1;
+	tt::clearConsole();
+	inputpath = "./data/course/year.dat";
+	LoadYearFile(inputpath, year);
+	cout << " Year(s):\n";
+	for (int i = 0; i < year.size(); i++) {
+		cout << "(" << i << ") " << year[i] << endl;
+	}
+	cout << "Choose a year: ";
+	cin >> choice1;
+	while (choice1 < 0 || choice1 >= year.size() || cin.fail()) {
+		cin.clear();
+		cout << "Error , try again" << endl;
 		cout << "Choose a year: ";
 		cin >> choice1;
-		while (choice1 < 0 || choice1 >= year.size() || cin.fail()) {
-			cin.clear();
-			cout << "Error , try again" << endl;
-			cout << "Choose a year: ";
-			cin >> choice1;
-		}
-		tt::clearConsole();
-		inputpath = "./data/course/" + year[choice1] + "/semester.dat";
-		LoadFile(inputpath, semester);
-		cout << "Semester(s):\n";
-		for (int i = 0; i < semester.size(); i++) {
-			cout << "(" << i << ") " << semester[i] << endl;
-		}
+	}
+	Year = year[choice1];
+}
+void MoveToSemester(string &Semester , string Year) {
+	string inputpath;
+	tt::vector<string> semester;
+	int choice2;
+	tt::clearConsole();
+	inputpath = "./data/course/" + Year + "/semester.dat";
+	LoadFile(inputpath, semester);
+	cout << "Semester(s):\n";
+	for (int i = 0; i < semester.size(); i++) {
+		cout << "(" << i << ") " << semester[i] << endl;
+	}
+	cout << "Choose a semester: ";
+	cin >> choice2;
+	while (choice2 < -1 || choice2 >= semester.size() || cin.fail()) {
+		cin.clear();
+		cout << "Error , try again" << endl;
 		cout << "Choose a semester: ";
 		cin >> choice2;
-		while (choice2 < -1 || choice2 >= year.size() || cin.fail()) {
-			cin.clear();
-			cout << "Error , try again" << endl;
-			cout << "Choose a semester: ";
-			cin >> choice2;
+	}
+	Semester = semester[choice2];
+}
+void ChooseCourse(string Year , string Semester , string &Course , int type, string lecturer) {
+	string inputpath;
+	tt::vector<tt::course> course , tmp;
+	int choice3,count = 0;
+	tt::clearConsole();
+	inputpath = "./data/course/" + Year + "/" + Semester + "/course.dat";
+	LoadCourseFile(course, inputpath);
+	cout << "Course(s):\n";
+	for (int i = 0; i < course.size(); i++) {
+		if (type == 2 && course[i].lecturer == lecturer ) {
+			cout << "(" << count << ") " << course[i].id << endl;
+			tmp.push_back(course[i]);
+			count++;
+
 		}
-	
-		tt::clearConsole();
-		inputpath = "./data/course/" + year[choice1] + "/" + semester[choice2] + "/course.dat";
-		LoadCourseFile(course, inputpath);
-		cout << "Course(s):\n";
-		for (int i = 0; i < course.size(); i++) {
+		else if (type != 2) {
 			cout << "(" << i << ") " << course[i].id << endl;
 		}
-		cout << "Choose a course: ";
-		cin >> choice3;
+	}
+	cout << "Choose a course: ";
+	cin >> choice3;
+	if (type != 2) {
 		while (choice3 < -1 || choice3 >= course.size() || cin.fail()) {
 			cin.clear();
 			cout << "Error , try again" << endl;
 			cout << "Choose a course: ";
 			cin >> choice3;
 		}
-	Year = year[choice1];
-	Semester = semester[choice2];
-	Course = course[choice3].id;
-
+		Course = course[choice3].id;
+	}
+	else {
+		while (choice3 < -1 || choice3 >= count  || cin.fail()) {
+			cin.clear();
+			cout << "Error , try again" << endl;
+			cout << "Choose a course: ";
+			cin >> choice3;
+		}
+		Course = tmp[choice3].id;
+	}
+	tmp.clear();
+	course.clear();
 }
 void LoadFile(string inputpath, tt::vector<string> &A) {
 	ifstream fin;
@@ -210,7 +236,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard(Score,year,semester,course);
+			ViewStudentScoreBoard(Score);
 			cout << "Do you want to export this score board ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No" << endl;
 			cout << "Your choice : ";
@@ -310,7 +336,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				}
 				fin1.close();
 			}
-			ViewStudentScoreBoard(Score,year,semester,course);
+			ViewStudentScoreBoard(Score);
 			cout << "Do you want to export this scoreboard ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No" << endl;
 			cout << "Your choice : ";
@@ -377,37 +403,43 @@ void LoadCourseFile(tt::vector<tt::course>& list, string filePath)
 void ExportCsv(tt::vector<tt::score>&B , string year, string semester, string course) {
 	ofstream fout;
 	string outputpath;
-	outputpath = "./export/" + course + "_scoreboard.csv";
+	outputpath = "./export/" + year + "_" + semester + "_" + course + "_scoreboard.csv";
 	fout.open(outputpath);
 	if (!fout.is_open()) {
 		cout << "Can't open file export" << endl;
 	}
 	else {
-		fout << "ID," << "Year," << "Semester," << "Course," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
+		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
 		for (int i = 0; i < B.size(); i++) {
-			fout << B[i].id << "," << year << "," << semester << "," << course << "," << B[i].cls << "," << B[i].studentName << ","  << B[i].mid << "," << B[i].final << "," << B[i].total << "," << B[i].bonus << endl;
+			fout << B[i].id << "," << B[i].cls << "," << B[i].studentName << ","  << B[i].mid << "," << B[i].final << "," << B[i].total << "," << B[i].bonus << endl;
 		}
 	}
 	fout.close();
 }
-void ImportCsv(string importpath,tt::vector<tt::score>&B, string &year, string &semester, string &course) {
+void ImportCsv(tt::vector<tt::score>&B, string &year, string &semester, string &course , int &check , string importpath) {
 	ifstream fin;
 	string trash,tmp;
 	tt::score tmp2;
+	cout << "Put in the place you want to save this scoreboard in " << endl;
+	cout << "Input the year (Example : 2018-2019)" << endl;
+	cout << "Year : ";
+	getline(cin, year);
+	cout << "Input the semester (Example : HK1)" << endl;
+	cout << "Semester : ";
+	getline(cin, semester);
+	cout << "Input the course (Example : CTT008)" << endl;
+	cout << "Course : ";
+	getline(cin, course);
+
 	fin.open(importpath);
 	if (!fin.is_open()) {
 		cout << "Can't open file import" << endl;
 	}
 	else {
+		check = 1;
 		getline(fin, trash);
 		while (getline(fin, tmp, ',')) {
 			tmp2.id = stoi(tmp);
-			getline(fin, tmp, ',');
-			year = tmp;
-			getline(fin, tmp, ',');
-			semester = tmp;
-			getline(fin, tmp, ',');
-			course = tmp;
 			getline(fin, tmp, ',');
 			tmp2.cls = tmp;
 			getline(fin, tmp, ',');
@@ -521,7 +553,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 			Score.push_back(tmp);
 		}
 		fin1.close();
-		ViewStudentScoreBoard(Score,year,semester,course);
+		ViewStudentScoreBoard(Score);
 		cout << "\n\nDo you want to edit this student's score ?" << endl;
 		cout << "(1) Yes" << endl << "(2) No" << endl;
 		cout << "Your choice : ";
@@ -548,7 +580,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 				cout << "Bonus : ";
 				cin >> Score[0].bonus;
 				cin.ignore(1);
-				ViewStudentScoreBoard(Score,year,semester,course);
+				ViewStudentScoreBoard(Score);
 				cout << "\nDo you want to edit again ?" << endl;
 				cout << "(1) Yes " << endl << "(2) No" << endl;
 				cout << "Your choice: ";
@@ -615,5 +647,396 @@ void SaveScoreFromImport(tt::vector<tt::score> &B,string year,string semester,st
 		B[i].chkIn = temp.chkIn;
 		SaveFileScore(inputpath, B[i]);
 		temp.chkIn.clear();
+	}
+}
+void ViewScoreForStudent(int id) {
+	int choice, choice1,return1 = 0,check = 0;
+	string inputpath;
+	tt::vector<string> linkcourse;
+	string studentcourse;
+	tt::student A;
+	tt::score student;
+	tt::vector<tt::score> studentscore;
+	tt::vector<tt::course> coursestudent;
+	do {
+			tt::clearConsole();
+			FindStudent(A, id, studentcourse, check);
+			FindStudentCourse(id, studentcourse, linkcourse, coursestudent);
+				if (linkcourse.size() > 1) {
+					cout << "We have " << linkcourse.size() << "course(s)" << endl;
+					for (int i = 0; i < linkcourse.size(); i++) {
+						cout << "(" << i << "): " << linkcourse[i] << endl;
+					}
+					cout << "Your choice: ";
+					cin >> choice;
+					inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
+					LoadScoreFile(student, inputpath);
+					student.id = id;
+					studentscore.push_back(student);
+					ViewStudentScoreBoard(studentscore);
+					studentscore.clear();
+					cout << "Do you want to export this score board ?" << endl;
+					cout << "(1) Yes " << endl << "(0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cout << "Error , try again" << endl;
+						cout << "Your choice ";
+						cin >> choice1;
+					}
+					if (choice1 == 1) {
+						ExportCsvForStudent(student, studentcourse);
+						cout << "Please check your exported scoreboard in export folder" << endl;
+					}
+				}
+				else {
+					inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
+					LoadScoreFile(student, inputpath);
+					student.id = id;
+					studentscore.push_back(student);
+					ViewStudentScoreBoard(studentscore);
+					studentscore.clear();
+					cout << "Do you want to export this score board ?" << endl;
+					cout << "(1) Yes " << endl << "(0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cout << "Error , try again" << endl;
+						cout << "Your choice ";
+						cin >> choice1;
+					}
+					if (choice1 == 1) {
+						ExportCsvForStudent(student, studentcourse);
+						cout << "Please check your exported scoreboard in export folder" << endl;
+					}
+				}
+				check = 0;
+				linkcourse.clear();
+				coursestudent.clear();
+				studentscore.clear();
+		cout << "Press (-1) to return or (0) to exit " << endl;
+		cout << "Your choice : ";
+		cin >> return1;
+		while (return1 < -1 || return1 > 0 || cin.fail()) {
+			cin.clear();
+			cout << "Error , try again" << endl;
+			cout << "Your choice : ";
+			cin >> return1;
+		}
+	} while (return1 == -1);
+}
+void ExportCsvForStudent(tt::score &student , string course) {
+	ofstream fout;
+	string outputpath;
+	outputpath = "./export/" + course + "_" + to_string(student.id) + "_scoreboard.csv";
+	fout.open(outputpath);
+	if (!fout.is_open()) {
+		cout << "Can't open file export" << endl;
+	}
+	else {
+		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
+		fout << student.id << "," << student.cls << "," << student.studentName << "," << student.mid << "," << student.final << "," << student.total << "," << student.bonus << endl;
+	
+	}
+	fout.close();
+}
+int MainForScoreboardandAttendance(string information, int type) {
+	//string information = "Dinh Ba Tien";
+	//int type = 3;
+	if (type == 1) {
+		int choice = 0, goback;
+		int id = stoi(information);
+		string year, course, semester;
+		do {
+			tt::clearConsole();
+			cout << "SCOREBOARD: \n";
+			cout << "(1) View and export Scoreboard (student)" << endl;
+			cout << "ATTENDANCE: \n";
+			cout << "(2) Check in course" << endl;
+			cout << "(3) View your check in (student)" << endl;
+			cout << "(0) Exit" << endl;
+			cout << "Your choice :";
+			cin >> choice;
+			cin.ignore(1);
+			while (choice < 0 || choice > 3 || cin.fail()) {
+				cin.clear();
+				cout << "Error , try again" << endl;
+				cout << "Your choice: ";
+				cin >> choice;
+			}
+			switch (choice) {
+			case 1:
+			{
+				ViewScoreForStudent(id);
+				break;
+			}
+			case 2:
+			{
+				CheckIn(id);
+				break;
+			}
+			case 3:
+			{
+				ViewCheckIn(id);
+				break;
+			}
+			default:
+				break;
+			}
+			if (choice != 0) {
+				tt::clearConsole();
+				cout << "Press (-1) to return to the menu" << endl;
+				cout << "Your choice : ";
+				cin >> choice;
+				while (choice != -1 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice ";
+					cin >> choice;
+				}
+			}
+		} while (choice == -1);
+		return 0;
+	}
+	else if (type == 2) {
+		int choice, choice1, allow = 0;
+		string year, semester, course, importfile, inputpath, tmp;
+		tt::vector<tt::score> B;
+		tt::date Date;
+		tt::vector<tt::score> attstud;
+		do {
+			tt::clearConsole();
+			cout << "SCOREBOARD: \n";
+			cout << "(1) View and export Scoreboard" << endl;
+			cout << "(2) Import csv file " << endl;
+			cout << "(3) Edit score" << endl;
+			cout << "ATTENDANCE: \n";
+			cout << "(4) View and export Attendance of a course" << endl;
+			cout << "(5) Edit attendance" << endl;
+			cout << "(0) Exit" << endl;
+			cout << "Your choice :";
+			cin >> choice;
+			cin.ignore(1);
+			while (choice < 0 || choice > 5 || cin.fail()) {
+				cin.clear();
+				cout << "Error , try again" << endl;
+				cout << "Your choice: ";
+				cin >> choice;
+			}
+			switch (choice) {
+			case 1:
+			{
+				MoveToYear(year);
+				MoveToSemester(semester, year);
+				ChooseCourse(year, semester, course, type, information);
+				DecideToView(year, semester, course);
+				break;
+			}
+			case 2:
+			{
+				tt::clearConsole();
+				cout << "Please put yout import file into the import folder !" << endl;
+				cout << "\nEnter yout import file address here :";
+				getline(cin, importfile);
+				ImportCsv(B, year, semester, course, allow, importfile);
+				if (allow == 1) {
+					SaveScoreFromImport(B, year, semester, course);
+					ViewStudentScoreBoard(B);
+				}
+				break;
+			}
+			case 3:
+			{
+				do {
+					MoveToYear(year);
+					MoveToSemester(semester, year);
+					ChooseCourse(year, semester, course, type, information);
+					inputpath = "./data/course/" + year + "/" + semester + "/" + course + ".dat";
+					EditScore(inputpath, year, semester, course);
+					cout << "Do you want to edit another course's scoreboard ?" << endl;
+					cout << "(1) Yes or (0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+				} while (choice1 == 1);
+				break;
+			}
+			case 4:
+			{
+				int check1 = 0;
+				MoveToYear(year);
+				MoveToSemester(semester, year);
+				ChooseCourse(year, semester, course, type, information);
+				cout << "Enter the date you want to view attendance :" << endl;
+				cout << "Year : ";
+				cin >> Date.y;
+				cin.ignore();
+				cout << "Month : ";
+				cin >> Date.m;
+				cin.ignore();
+				cout << "Day : ";
+				cin >> Date.d;
+				cin.ignore();
+				CheckAttendance(year, semester, course, Date, attstud, check1);
+				if (check1 != 0) {
+					ViewAttendanceList(attstud, course);
+					cout << "Do you want to export this attendance list ?" << endl;
+					cout << "(1) Yes " << endl << "(0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cout << "Error , try again" << endl;
+						cout << "Your choice ";
+						cin >> choice1;
+					}
+					if (choice1 == 1) {
+						ExportAttendance(attstud, course);
+						cout << "Please check your exported attendance list in export folder" << endl;
+					}
+				}
+				break;
+			}
+			case 5:
+			{
+				int check1 = 0;
+				MoveToYear(year);
+				MoveToSemester(semester, year);
+				ChooseCourse(year, semester, course, type, information);
+				cout << "Enter the date you want to view attendance :" << endl;
+				cout << "Year : ";
+				cin >> Date.y;
+				cin.ignore();
+				cout << "Month : ";
+				cin >> Date.m;
+				cin.ignore();
+				cout << "Day : ";
+				cin >> Date.d;
+				cin.ignore();
+				CheckAttendance(year, semester, course, Date, attstud, check1);
+				if (check1 != 0) {
+					ViewAttendanceList(attstud, course);
+					EditAttendance(year, semester, course, attstud, Date);
+					ViewAttendanceList(attstud, course);
+					cout << "Do you want to export this attendance list ?" << endl;
+					cout << "(1) Yes " << endl << "(0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cout << "Error , try again" << endl;
+						cout << "Your choice ";
+						cin >> choice1;
+					}
+					if (choice1 == 1) {
+						ExportAttendance(attstud, course);
+						cout << "Please check your exported attendance list in export folder" << endl;
+					}
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			if (choice != 0) {
+				cout << "Press (-1) to return to the menu" << endl;
+				cout << "Your choice : ";
+				cin >> choice;
+				cin.ignore(1);
+				while (choice != -1 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice ";
+					cin >> choice;
+				}
+			}
+		} while (choice == -1);
+		return 0;
+	}
+	else {
+		int choice, choice1;
+		string year, semester, course, importfile, inputpath, lecturer;
+		tt::vector<tt::score> B;
+		tt::date Date;
+		tt::vector<tt::score> attstud;
+		do {
+			tt::clearConsole();
+			cout << "SCOREBOARD: \n";
+			cout << "(1) View and export Scoreboard" << endl;
+			cout << "ATTENDANCE: \n";
+			cout << "(2) View and export Attendance of a course" << endl;
+			cout << "(0) Exit" << endl;
+			cout << "Your choice :";
+			cin >> choice;
+			cin.ignore(1);
+			while (choice < 0 || choice > 5 || cin.fail()) {
+				cin.clear();
+				cout << "Error , try again" << endl;
+				cout << "Your choice: ";
+				cin >> choice;
+			}
+			switch (choice) {
+			case 1:
+			{
+				MoveToYear(year);
+				MoveToSemester(semester, year);
+				ChooseCourse(year, semester, course, type, information);
+				DecideToView(year, semester, course);
+				break;
+			}
+			case 2:
+			{
+				int check1 = 0;
+				MoveToYear(year);
+				MoveToSemester(semester, year);
+				ChooseCourse(year, semester, course, type, information);
+				cout << "Enter the date you want to view attendance :" << endl;
+				cout << "Year : ";
+				cin >> Date.y;
+				cin.ignore();
+				cout << "Month : ";
+				cin >> Date.m;
+				cin.ignore();
+				cout << "Day : ";
+				cin >> Date.d;
+				cin.ignore();
+				CheckAttendance(year, semester, course, Date, attstud, check1);
+				if (check1 != 0) {
+					ViewAttendanceList(attstud, course);
+					cout << "Do you want to export this attendance list ?" << endl;
+					cout << "(1) Yes " << endl << "(0) No" << endl;
+					cout << "Your choice : ";
+					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cout << "Error , try again" << endl;
+						cout << "Your choice ";
+						cin >> choice1;
+					}
+					if (choice1 == 1) {
+						ExportAttendance(attstud, course);
+						cout << "Please check your exported attendance list in export folder" << endl;
+					}
+				}
+				break;
+			}
+			default:
+				break;
+			}
+			if (choice != 0) {
+				tt::clearConsole();
+				cout << "Press (-1) to return to the menu" << endl;
+				cout << "Your choice : ";
+				cin >> choice;
+				while (choice != -1 || cin.fail()) {
+					cin.clear();
+					cout << "Error , try again" << endl;
+					cout << "Your choice ";
+					cin >> choice;
+				}
+			}
+		} while (choice == -1);
+		return 0;
 	}
 }
