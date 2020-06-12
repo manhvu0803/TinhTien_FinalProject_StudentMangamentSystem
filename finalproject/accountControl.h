@@ -33,4 +33,6 @@ namespace acc
     void showProfile(account user);
 }
 
+void schedule(tt::date t, int y, int id);
+
 #endif // ACCOUNTCONTROL_H_INCLUDED

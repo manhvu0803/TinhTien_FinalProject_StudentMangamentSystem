@@ -1,5 +1,7 @@
 #include <iostream>
 #include <limits>
+#include <chrono>
+#include <ctime>
 #include "accountControl.h"
 #include "class.h"
 #include "academicYear.h"
@@ -54,7 +56,13 @@ int main()
                 else academicYearMenu(user->type);
                 break;
             case 4:
-                if (user->type == 1);
+                if (user->type == 1) {
+                    tt::date now = tt::currentDate();
+                    cout << "Your schedule:\n";
+                    schedule(now, now.y - 1, stoi(user->id));
+                    schedule(now, now.y, stoi(user->id));
+                    getchar();
+                }
                 else {
                     ltr lec;
                     string name = lec.get(user->id).fullName;
