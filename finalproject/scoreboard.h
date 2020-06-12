@@ -28,4 +28,4 @@ void MoveToYear(string& Year);
 void MoveToSemester(string& Semester, string Year);
 void ChooseCourse(string Year, string Semester, string& Course, int type, string lecturer);
 int MainForScoreboardandAttendance(string information, int type);
-#endif _SCOREBOARD_H_INCLUDED_
+#endif

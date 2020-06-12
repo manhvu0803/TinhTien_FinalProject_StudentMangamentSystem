@@ -637,7 +637,9 @@ int ChangeDayToNumber(string line) {
 	else if(line == "SUN") {
 		return 6;
 	}
+	return -1;
 }
+
 void SaveScoreFromImport(tt::vector<tt::score> &B,string year,string semester,string course) {
 	string inputpath;
 	tt::score temp;
@@ -738,7 +740,7 @@ void ExportCsvForStudent(tt::score &student , string course) {
 	else {
 		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
 		fout << student.id << "," << student.cls << "," << student.studentName << "," << student.mid << "," << student.final << "," << student.total << "," << student.bonus << endl;
-	
+
 	}
 	fout.close();
 }
@@ -1008,7 +1010,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cout << "(1) Yes " << endl << "(0) No" << endl;
 					cout << "Your choice : ";
 					cin >> choice1;
-					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+					while ((choice1 != 1 && choice1 != 0) || cin.fail()) {
 						cin.clear();
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";

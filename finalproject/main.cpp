@@ -3,6 +3,7 @@
 #include "accountControl.h"
 #include "class.h"
 #include "academicYear.h"
+#include "scoreboard.h"
 
 using namespace std;
 
@@ -52,7 +53,7 @@ int main()
                 acc::changePassword(user);
                 break;
             case 3:
-                if (user->type == 1);
+                if (user->type == 1) MainForScoreboardandAttendance(user->id, 1);
                 else academicYearMenu(user->type);
                 break;
             case 4:
