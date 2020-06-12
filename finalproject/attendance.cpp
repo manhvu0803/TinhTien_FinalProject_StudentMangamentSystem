@@ -248,7 +248,6 @@ void CheckIn(int id) {
 		}
 		else {
 			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
-			cout << "link " << linkcourse[0] << '\n';
 			LoadScoreFile(student, inputpath);
 				SaveCheckInTime(studenttime);
 				if (isInTime(studenttime, coursestudent[0])) {
@@ -591,7 +590,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to remove any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
-			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+			while (choice1 != 0 && choice1 != 1 || cin.fail()) {
 				cin.clear();
 				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;

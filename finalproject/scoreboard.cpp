@@ -526,7 +526,7 @@ void DecideToView(string year , string semester, string course) {
 	while (choice != 0 && choice != 1 || cin.fail()) {
 		cin.clear();
 		cin.ignore(256,'\n');
-		cout << "Error , try again" << endl;
+		cout << "Error , try again " << endl;
 		cout << "Your choice: ";
 		cin >> choice;
 	}
