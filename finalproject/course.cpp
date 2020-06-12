@@ -1,6 +1,5 @@
 ﻿#include "course.h"
 #include "class.h"
-#define _CRT_SECURE_NO_WARNINGS
 
 tt::vector<tt::course> emptyVec;
 tt::vector<tt::vector<int>>emptyStudents;
