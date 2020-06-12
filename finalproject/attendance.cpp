@@ -248,31 +248,26 @@ void CheckIn(int id) {
 		}
 		else {
 			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
-			cout << "link " << linkcourse[0] << '\n';
+			//cout << "link " << linkcourse[0] << '\n';
 			LoadScoreFile(student, inputpath);
-				SaveCheckInTime(studenttime);
-				if (isInTime(studenttime, coursestudent[0])) {
-					for (int i = 0; i < student.chkIn.size(); i++) {
-						if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
-							studenttime.cDate.m == student.chkIn[i].cDate.m &&
-							studenttime.cDate.d == student.chkIn[i].cDate.d) {
-							same = 1;
-							break;
-						}
-					}
-					if (same == 0) {
-						student.chkIn.push_back(studenttime);
-						SaveFileScore(inputpath, student);
-						cout << "Successfully check in" << endl;
-					}
-					else {
-						cout << "You have checked in before" << endl;
-					}
-				}
-				else {
-					cout << "You can't check in " << endl;
-
-				}
+            SaveCheckInTime(studenttime);
+            if (isInTime(studenttime, coursestudent[0])) {
+                for (int i = 0; i < student.chkIn.size(); i++) {
+                    if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
+                        studenttime.cDate.m == student.chkIn[i].cDate.m &&
+                        studenttime.cDate.d == student.chkIn[i].cDate.d) {
+                        same = 1;
+                        break;
+                    }
+                }
+                if (same == 0) {
+                    student.chkIn.push_back(studenttime);
+                    SaveFileScore(inputpath, student);
+                    cout << "Successfully check in" << endl;
+                }
+                else cout << "You have checked in before" << endl;
+            }
+            else cout << "You can't check in. It's not that time yet" << endl;
 		}
 		student.chkIn.clear();
 		linkcourse.clear();

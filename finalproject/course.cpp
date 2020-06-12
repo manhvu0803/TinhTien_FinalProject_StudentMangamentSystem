@@ -3,8 +3,12 @@
 
 tt::vector<tt::course> emptyVec;
 tt::vector<tt::vector<int>>emptyStudents;
+
+string classYSDir = "./data/course/";
+
 void courseMenu(int year, string semester, int mode)
 {
+    classYSDir += to_string(year) + '-' + to_string(year + 1) + '/' + semester + '/';
 	bool checkInput = true;
 	string filePath = ("data/course/");
 	filePath.append(to_string(year));
@@ -449,7 +453,9 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
                 list.push_back(temp);
                 count++;
             }
+            tt::makeDir(classYSDir);
 		}
+
 		int n = notFound.size();
 		if (n != 0)
 		{
