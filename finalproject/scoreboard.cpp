@@ -14,21 +14,21 @@ using namespace std;
 void ViewStudentScoreBoard(tt::vector<tt::score>& B) {
 	tt::clearConsole();
 	cout << "\n\n\t\t\t\t=====YOUR SCOREBOARD=====\n";
-	for (int i = 0; i < 88; i++) {
+	for (int i = 0; i < 80; i++) {
 		cout << "-";
 	}
 	cout << "\n";
-	cout << left << setw(10) << "ID"  << left << setw(8) << "Class" << left << setw(30) << "Name" << left << setw(10) << "Midterm"
-		<< left << setw(10) << "Final" << left << setw(10) << "Total" << left << setw(10) << "Bonus" << endl;
-	for (int i = 0; i < 88; i++) {
+	cout << left << setw(10) << "ID"  << left << setw(8) << "Class" << left << setw(30) << "Name" << left << setw(8) << "Midterm"
+		<< left << setw(8) << "Final" << left << setw(8) << "Total" << left << setw(8) << "Bonus" << endl;
+	for (int i = 0; i < 80; i++) {
 		cout << "-";
 	}
 	cout << "\n";
 	for (int i = 0; i < B.size(); i++) {
 		cout << left << setw(10) << B[i].id  << left << setw(8) << B[i].cls << left << setw(30) << B[i].studentName
-			<< left << setw(10) << B[i].mid << left << setw(10) << B[i].final << left << setw(10) << B[i].total
-			<< left << setw(10) << B[i].bonus << endl;
-		for (int i = 0; i < 88; i++) {
+			<< left << setw(8) << B[i].mid << left << setw(8) << B[i].final << left << setw(8) << B[i].total
+			<< left << setw(8) << B[i].bonus << endl;
+		for (int i = 0; i < 80; i++) {
 			cout << "-";
 		}
 		cout << endl;
@@ -97,6 +97,7 @@ void MoveToYear(string& Year) {
 	cin >> choice1;
 	while (choice1 < 0 || choice1 >= year.size() || cin.fail()) {
 		cin.clear();
+		cin.ignore(256, '\n');
 		cout << "Error , try again" << endl;
 		cout << "Choose a year: ";
 		cin >> choice1;
@@ -118,6 +119,7 @@ void MoveToSemester(string &Semester , string Year) {
 	cin >> choice2;
 	while (choice2 < -1 || choice2 >= semester.size() || cin.fail()) {
 		cin.clear();
+		cin.ignore(256, '\n');
 		cout << "Error , try again" << endl;
 		cout << "Choose a semester: ";
 		cin >> choice2;
@@ -148,6 +150,7 @@ void ChooseCourse(string Year , string Semester , string &Course , int type, str
 	if (type != 2) {
 		while (choice3 < -1 || choice3 >= course.size() || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Choose a course: ";
 			cin >> choice3;
@@ -157,6 +160,7 @@ void ChooseCourse(string Year , string Semester , string &Course , int type, str
 	else {
 		while (choice3 < -1 || choice3 >= count  || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Choose a course: ";
 			cin >> choice3;
@@ -243,6 +247,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 			cin >> choice1;
 			while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 				cin.clear();
+				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
 				cout << "Your choice ";
 				cin >> choice1;
@@ -270,10 +275,24 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 			}
 			cout << "How many students you want to view score ? : ";
 			cin >> number;
+			while (number < 0 || number > ID.size() || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Your choice : ";
+				cin >> number;
+			}
 			cin.ignore();
 			for (int j = 0; j < number; j++) {
 				cout << "Enter ordinal number of the student : ";
 				cin >> number1;
+				while (number1 < 0 || number1 > ID.size() || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> number1;
+				}
 				cin.ignore();
 				Select.push_back(ID[number1]);
 				cout << endl;
@@ -284,14 +303,35 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 				cout << "(1) YES " << endl << "(2) NO" << endl;
 				cout << "Your choice : ";
 				cin >> decide;
+				while (decide != 1 || decide != 2 || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> decide;
+				}
 				cin.ignore();
 				if (decide == 1) {
 					cout << "How many students you want to add more ? : ";
 					cin >> number;
+					while (number < 0 || number > ID.size() || cin.fail()) {
+						cin.clear();
+						cin.ignore(256, '\n');
+						cout << "Error , try again" << endl;
+						cout << "Your choice : ";
+						cin >> number;
+					}
 					cin.ignore();
 					for (int j = 0; j < number; j++) {
 						cout << "Enter ordinal number of the student : ";
 						cin >> number1;
+						while (number1 < 0 || number1 >= number || cin.fail()) {
+							cin.clear();
+							cin.ignore(256, '\n');
+							cout << "Error , try again" << endl;
+							cout << "Your choice : ";
+							cin >> number1;
+						}
 						cin.ignore();
 						Select.push_back(ID[number1]);
 						cout << endl;
@@ -343,6 +383,7 @@ void PrintStudentScore(string inputpath, int choice,string year,string semester,
 			cin >> choice1;
 			while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 				cin.clear();
+				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
 				cout << "Your choice ";
 				cin >> choice1;
@@ -466,9 +507,7 @@ void LoadYearFile(string inputpath, tt::vector<string>& A) {
 		cout << "File cannot be found";
 	}
 	else {
-		while (getline(fin, year1,' ')) {
-			getline(fin, year2);
-			tmp = year1 + "-" + year2;
+		while (getline(fin, tmp)) {
 			A.push_back(tmp);
 		}
 		fin.close();
@@ -516,6 +555,13 @@ void EditScore(string inputpath, string year, string semester , string course) {
 		}
 		cout << "Enter the ordinal number of the student you want to edit score: ";
 		cin >> number;
+		while (number < 0 || number > ID.size() || cin.fail()) {
+			cin.clear();
+			cin.ignore(256, '\n');
+			cout << "Error , try again" << endl;
+			cout << "Your choice : ";
+			cin >> number;
+		}
 		cin.ignore(1);
 		studentfile = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(ID[number])+ ".dat";
 		fin1.open(studentfile);
@@ -560,6 +606,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 		cin >> choice;
 		while (choice != 1 && choice != 2 || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Your choice : ";
 			cin >> choice;
@@ -567,27 +614,51 @@ void EditScore(string inputpath, string year, string semester , string course) {
 		do{
 			tt::clearConsole();
 			if (choice == 1) {
-				cout << "\nEnter the new score: " << endl;
+				cout << "\nEnter the new score: (If the score doesn't exist , enter -1 )" << endl;
 				cout << "Midterm score : ";
 				cin >> Score[0].mid;
-				cin.ignore(1);
+				while (Score[0].mid < -1 || Score[0].mid > 10 || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> Score[0].mid;
+				}
 				cout << "Final score : ";
 				cin >> Score[0].final;
-				cin.ignore(1);
+				while (Score[0].final < -1 || Score[0].final > 10 || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> Score[0].final;
+				}
 				cout << "Total score : ";
 				cin >> Score[0].total;
-				cin.ignore(1);
+				while (Score[0].total < -1 || Score[0].total > 10 || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> Score[0].total;
+				}
 				cout << "Bonus : ";
 				cin >> Score[0].bonus;
-				cin.ignore(1);
+				while (Score[0].bonus < -1 || Score[0].bonus > 10 || cin.fail()) {
+					cin.clear();
+					cin.ignore(256, '\n');
+					cout << "Error , try again" << endl;
+					cout << "Your choice : ";
+					cin >> Score[0].bonus;
+				}
 				ViewStudentScoreBoard(Score);
 				cout << "\nDo you want to edit again ?" << endl;
 				cout << "(1) Yes " << endl << "(2) No" << endl;
 				cout << "Your choice: ";
 				cin >> choice1;
-				cin.ignore(1);
 				while (choice1 != 1 && choice1 != 2 || cin.fail()) {
 					cin.clear();
+					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
 					cout << "Your choice : ";
 					cin >> choice1;
@@ -669,6 +740,13 @@ void ViewScoreForStudent(int id) {
 					}
 					cout << "Your choice: ";
 					cin >> choice;
+					while (choice < 0 || choice > linkcourse.size() || cin.fail()) {
+						cin.clear();
+						cin.ignore(256, '\n');
+						cout << "Error , try again" << endl;
+						cout << "Your choice : ";
+						cin >> choice;
+					}
 					inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
 					LoadScoreFile(student, inputpath);
 					student.id = id;
@@ -681,6 +759,7 @@ void ViewScoreForStudent(int id) {
 					cin >> choice1;
 					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
+						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";
 						cin >> choice1;
@@ -703,6 +782,7 @@ void ViewScoreForStudent(int id) {
 					cin >> choice1;
 					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
+						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";
 						cin >> choice1;
@@ -721,6 +801,7 @@ void ViewScoreForStudent(int id) {
 		cin >> return1;
 		while (return1 < -1 || return1 > 0 || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Your choice : ";
 			cin >> return1;
@@ -743,8 +824,6 @@ void ExportCsvForStudent(tt::score &student , string course) {
 	fout.close();
 }
 int MainForScoreboardandAttendance(string information, int type) {
-	//string information = "Dinh Ba Tien";
-	//int type = 3;
 	if (type == 1) {
 		int choice = 0, goback;
 		int id = stoi(information);
@@ -762,6 +841,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 			cin.ignore(1);
 			while (choice < 0 || choice > 3 || cin.fail()) {
 				cin.clear();
+				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
 				cout << "Your choice: ";
 				cin >> choice;
@@ -792,6 +872,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 				cin >> choice;
 				while (choice != -1 || cin.fail()) {
 					cin.clear();
+					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
 					cout << "Your choice ";
 					cin >> choice;
@@ -821,6 +902,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 			cin.ignore(1);
 			while (choice < 0 || choice > 5 || cin.fail()) {
 				cin.clear();
+				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
 				cout << "Your choice: ";
 				cin >> choice;
@@ -859,6 +941,13 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cout << "(1) Yes or (0) No" << endl;
 					cout << "Your choice : ";
 					cin >> choice1;
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
+						cin.clear();
+						cin.ignore(256, '\n');
+						cout << "Error , try again" << endl;
+						cout << "Your choice : ";
+						cin >> choice1;
+					}
 				} while (choice1 == 1);
 				break;
 			}
@@ -887,6 +976,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cin >> choice1;
 					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
+						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";
 						cin >> choice1;
@@ -925,6 +1015,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cin >> choice1;
 					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
+						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";
 						cin >> choice1;
@@ -946,6 +1037,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 				cin.ignore(1);
 				while (choice != -1 || cin.fail()) {
 					cin.clear();
+					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
 					cout << "Your choice ";
 					cin >> choice;
@@ -972,6 +1064,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 			cin.ignore(1);
 			while (choice < 0 || choice > 5 || cin.fail()) {
 				cin.clear();
+				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
 				cout << "Your choice: ";
 				cin >> choice;
@@ -1010,6 +1103,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cin >> choice1;
 					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
+						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
 						cout << "Your choice ";
 						cin >> choice1;
@@ -1031,6 +1125,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 				cin >> choice;
 				while (choice != -1 || cin.fail()) {
 					cin.clear();
+					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
 					cout << "Your choice ";
 					cin >> choice;

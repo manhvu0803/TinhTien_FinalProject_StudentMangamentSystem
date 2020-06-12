@@ -178,6 +178,7 @@ void FindStudent(tt::student& A, int ID , string &course , int &check) {
 				cin >> choice;
 				while (choice < 0 || choice >= courses.size() || cin.fail()) {
 					cin.clear();
+					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
 					cout << "Choose a course: ";
 					cin >> choice;
@@ -212,6 +213,13 @@ void CheckIn(int id) {
 			}
 			cout << "Your choice: ";
 			cin >> choice;
+			while (choice < 0 || choice >= linkcourse.size() || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Choose a course: ";
+				cin >> choice;
+			}
 			inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
 			LoadScoreFile(student, inputpath);
 				SaveCheckInTime(studenttime);
@@ -273,6 +281,7 @@ void CheckIn(int id) {
 		cin >> return1;
 		while (return1 < -1 || return1 > 0 || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Your choice : ";
 			cin >> return1;
@@ -305,17 +314,14 @@ void ViewAttendanceList(tt::vector<tt::score>& A , string course) {
 }
 void FindStudentCourse(int id, string coursename , tt::vector<string>& rightcourse, tt::vector<tt::course> &coursestudent) {
 	ifstream fin,fin1, fin2, fin3, fin4;
-	string year, semester, inputpath;
-	string year1, year2,tmp;
+	string year, semester, inputpath,tmp;
 	tt::vector<tt::course> courses;
 	
 	bool check;
 	inputpath = "./data/course/year.dat";
 	fin.open(inputpath);
 	if (fin.is_open()) {
-		while (getline(fin, year1, ' ')) {
-			getline(fin, year2);
-			year = year1 + '-' + year2;
+		while (getline(fin, year)) {
 			inputpath = "./data/course/" + year + "/semester.dat";
 			fin1.open(inputpath);
 			if (fin1.is_open()) {
@@ -501,6 +507,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 	cin >> choice;
 	while (choice < 0 || choice >= year.size() || cin.fail()) {
 		cin.clear();
+		cin.ignore(256, '\n');
 		cout << "Error , try again" << endl;
 		cout << "Your choice : ";
 		cin >> choice;
@@ -540,6 +547,13 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to add any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
+			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Your choice : ";
+				cin >> choice1;
+			}
 			student.chkIn.clear();
 			temp.chkIn.clear();
 
@@ -553,6 +567,13 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 		do {
 			cout << "Enter the ordinal number of the student you want to remove : ";
 			cin >> number;
+			while (number < 0 || number >= A.size() || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Your choice : ";
+				cin >> number;
+			}
 			inputpath = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(A[choice].id) + ".dat";
 			LoadScoreFile(temp, inputpath);
 			for (int i = 0; i < temp.chkIn.size(); i++) {
@@ -568,6 +589,13 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to remove any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
+			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Your choice : ";
+				cin >> choice1;
+			}
 
 		} while (choice1 != 0);
 	}
@@ -592,6 +620,13 @@ void ViewCheckIn(int id) {
 			}
 			cout << "Your choice: ";
 			cin >> choice;
+			while (choice < 0 || choice >= linkcourse.size() || cin.fail()) {
+				cin.clear();
+				cin.ignore(256, '\n');
+				cout << "Error , try again" << endl;
+				cout << "Your choice : ";
+				cin >> choice;
+			}
 			inputpath = linkcourse[choice] + "/" + to_string(id) + ".dat";
 			LoadScoreFile(student, inputpath);
 			ViewCheckinList(student, coursestudent[choice].id, id);
@@ -604,8 +639,9 @@ void ViewCheckIn(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 < -1 || return1 > 0 || cin.fail()) {
+		while (return1 != -1 || return1 != 0 || cin.fail()) {
 			cin.clear();
+			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Your choice : ";
 			cin >> return1;
