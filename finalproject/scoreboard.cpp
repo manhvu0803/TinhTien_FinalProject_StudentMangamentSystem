@@ -557,7 +557,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 		}
 		cout << "Enter the ordinal number of the student you want to edit score: ";
 		cin >> number;
-		while (number < 0 || number > ID.size() || cin.fail()) {
+		while (number < 0 || number >= ID.size() || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
@@ -571,7 +571,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 			cout << "Can't open student file to edit" << endl;
 		}
 		else {
-			tmp.id = id;
+			tmp.id = ID[number];
 			getline(fin1, line);
 			tmp.cls = line;
 			getline(fin1, line);
