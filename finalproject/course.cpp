@@ -320,6 +320,10 @@ void makeCourseData(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& s
 		{
 			_itoa_s(students[i][j], name, 10);
 			ofstream myFile(filePath + list[i].id + "/" + name + ".dat");
+            clss cls;
+            tt::student newStd = cls.getStudent(students[i][j]);
+            myFile << newStd.cls << '\n' << newStd.lastName << ' ' << newStd.firstName << '\n';
+            myFile << "-1 -1 -1 -1";
 			myFile.close();
 		}
 	}
@@ -988,7 +992,7 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 
 	tt::vector<tt::student> Student;
 	clss theClass;
-	Student = theClass.getClass(newCourse.id);
+	Student = theClass.getClass(newCourse.className);
 	if (Student.size() != 0)
 	{
 		int n = Student.size();
@@ -997,7 +1001,6 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 			classStudents.push_back(Student[i].id);
 		}
 		tt::clearConsole();
-		cout << "New course has been created!";
 		getchar();
 		tt::clearConsole();
 	}
@@ -1005,11 +1008,11 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 	{
 		newCourse.number = -1;
 		tt::clearConsole();
-		cout << "Class not found!\n";
-		cout << "Press Enter to return! ";
+		cout << newCourse.className << " not found!\n";
 		getchar();
 		tt::clearConsole();
 	}
+    cout << "New course has been created!";
 
 }
 void inputCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)

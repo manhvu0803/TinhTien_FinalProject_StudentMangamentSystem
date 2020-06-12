@@ -242,11 +242,13 @@ void CheckIn(int id) {
 					}
 				}
 				else {
-					cout << "You can't check in " << endl;
+					cout << "This course is from " << coursestudent[choice].startTime.h << ':' << coursestudent[choice].startTime.h;
+					cout << " to " << coursestudent[choice].endTime.h << ':' << coursestudent[choice].endTime.h << '\n';
 				}
 		}
 		else {
 			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
+			cout << "link " << linkcourse[0] << '\n';
 			LoadScoreFile(student, inputpath);
 				SaveCheckInTime(studenttime);
 				if (isInTime(studenttime, coursestudent[0])) {

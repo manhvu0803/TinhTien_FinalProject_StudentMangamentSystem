@@ -4,6 +4,7 @@
 #include "class.h"
 #include "academicYear.h"
 #include "scoreboard.h"
+#include "lecturer.h"
 
 using namespace std;
 
@@ -54,7 +55,11 @@ int main()
                 break;
             case 4:
                 if (user->type == 1);
-                else;
+                else {
+                    ltr lec;
+                    string name = lec.get(user->id).fullName;
+                    MainForScoreboardandAttendance(name, user->type);
+                }
                 break;
             case 5:
                 if (user->type == 1);
