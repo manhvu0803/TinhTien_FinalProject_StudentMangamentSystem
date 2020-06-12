@@ -356,106 +356,99 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
 		tt::vector<tt::student> studentList;
 		tt::vector <string> notFound;
 		tt::vector<int>classStudents;
-		while (!csvFile.eof())
+		while (getline(csvFile, line))
 		{
 			tt::course temp;
-			if (line[0] == 'N')
-			{
-			}
-			else
-			{
-				stringstream check(line);
-				getline(check, token, ',');
-				temp.number = stoi(token);
-				getline(check, token, ',');
-				temp.id = token;
-				getline(check, token, ',');
-				temp.name = token;
-				getline(check, token, ',');
-				token = tt::capitalize(token);
-				temp.className = token;
-				studentList = theClass.getClass(temp.className);
-				int n = studentList.size();
-				for (int i = 0; i < n; ++i)
-				{
-					classStudents.push_back(studentList[i].id);
-				}
-				students.push_back(classStudents);
-				classStudents.clear();
-				getline(check, token, ',');
-				getline(check, token, ',');
-				temp.lecturer = token;
-				getline(check, token, ',');
-				getline(check, token, ',');
-				getline(check, token, ',');
-				temp.startDate = getDate(token);
-				getline(check, token, ',');
-				temp.endDate = getDate(token);
-				getline(check, token, ',');
-				token = tt::capitalize(token);
-				if (token == "MON" || token == "MONDAY")
-				{
-					temp.DoW = 0;
-				}
-				else
-				{
-					if (token == "TUE" || token == "TUESDAY")
-					{
-						temp.DoW = 1;
-					}
-					else
-					{
-						if (token == "WED" || token == "WEDNESDAY")
-						{
-							temp.DoW = 2;
-						}
-						else
-						{
-							if (token == "THU" || token == "THURSDAY")
-							{
-								temp.DoW = 3;
-							}
-							else
-							{
-								if (token == "FRI" || token == "FRIDAY")
-								{
-									temp.DoW = 4;
-								}
-								else
-								{
-									if (token == "SAT" || token == "SATURDAY")
-									{
-										temp.DoW = 5;
-									}
-									else
-									{
-										temp.DoW = 6;
-									}
-								}
-							}
-						}
-					}
-				}
-				getline(check, token, ',');
-				temp.startTime.h = stoi(token);
-				getline(check, token, ',');
-				temp.startTime.m = stoi(token);
-				temp.startTime.s = 0;
-				getline(check, token, ',');
-				temp.endTime.h = stoi(token);
-				getline(check, token, ',');
-				temp.endTime.m = stoi(token);
-				temp.endTime.s = 0;
-				getline(check, token);
-				temp.room = token;
-				if (temp.number != -1)
-				{
-					temp.number = count;
-					list.push_back(temp);
-					count++;
-				}
-			}
-			getline(csvFile, line);
+            stringstream check(line);
+            getline(check, token, ',');
+            temp.number = stoi(token);
+            getline(check, token, ',');
+            temp.id = token;
+            getline(check, token, ',');
+            temp.name = token;
+            getline(check, token, ',');
+            token = tt::capitalize(token);
+            temp.className = token;
+            studentList = theClass.getClass(temp.className);
+            int n = studentList.size();
+            for (int i = 0; i < n; ++i)
+            {
+                classStudents.push_back(studentList[i].id);
+            }
+            students.push_back(classStudents);
+            classStudents.clear();
+            getline(check, token, ',');
+            getline(check, token, ',');
+            temp.lecturer = token;
+            getline(check, token, ',');
+            getline(check, token, ',');
+            getline(check, token, ',');
+            temp.startDate = getDate(token);
+            getline(check, token, ',');
+            temp.endDate = getDate(token);
+            getline(check, token, ',');
+            token = tt::capitalize(token);
+            if (token == "MON" || token == "MONDAY")
+            {
+                temp.DoW = 0;
+            }
+            else
+            {
+                if (token == "TUE" || token == "TUESDAY")
+                {
+                    temp.DoW = 1;
+                }
+                else
+                {
+                    if (token == "WED" || token == "WEDNESDAY")
+                    {
+                        temp.DoW = 2;
+                    }
+                    else
+                    {
+                        if (token == "THU" || token == "THURSDAY")
+                        {
+                            temp.DoW = 3;
+                        }
+                        else
+                        {
+                            if (token == "FRI" || token == "FRIDAY")
+                            {
+                                temp.DoW = 4;
+                            }
+                            else
+                            {
+                                if (token == "SAT" || token == "SATURDAY")
+                                {
+                                    temp.DoW = 5;
+                                }
+                                else
+                                {
+                                    temp.DoW = 6;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            getline(check, token, ',');
+            temp.startTime.h = stoi(token);
+            getline(check, token, ',');
+            temp.startTime.m = stoi(token);
+            temp.startTime.s = 0;
+            getline(check, token, ',');
+            temp.endTime.h = stoi(token);
+            getline(check, token, ',');
+            temp.endTime.m = stoi(token);
+            temp.endTime.s = 0;
+            getline(check, token);
+            temp.room = token;
+            if (temp.number != -1)
+            {
+                temp.number = count;
+                list.push_back(temp);
+                count++;
+            }
 		}
 		int n = notFound.size();
 		if (n != 0)
@@ -1000,19 +993,16 @@ void input1Course(tt::course& newCourse, tt::vector<int>& classStudents, int num
 			classStudents.push_back(Student[i].id);
 		}
 		tt::clearConsole();
-		getchar();
-		tt::clearConsole();
 	}
 	else
 	{
 		newCourse.number = -1;
 		tt::clearConsole();
 		cout << newCourse.className << " not found!\n";
-		getchar();
-		tt::clearConsole();
 	}
     cout << "New course has been created!";
-
+    getchar();
+    tt::clearConsole();
 }
 void inputCourse(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& students, string filePath)
 {

@@ -12,3 +12,4 @@ Debug
 .sln
 *.csv
 *.save-failed
+*.cscope_file_list
