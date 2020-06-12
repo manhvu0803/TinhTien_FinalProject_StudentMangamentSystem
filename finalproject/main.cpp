@@ -20,17 +20,13 @@ int main()
         cout << "Enter 1: View profile\n";
         cout << "Enter 2: Change password\n";
         if (user->type == 1) {
-            cout << "Enter 3: Check in\n";
+            cout << "Enter 3: Check in and view scoreboard\n";
             cout << "Enter 4: View schedule\n";
-            cout << "Enter 5: View score\n";
         }
         else if (user->type > 1) {
             cout << "Enter 3: Course menu\n";
-            cout << "Enter 4: Attendance menu\n";
-            if (user->type > 2) {
-                cout << "Enter 5: Class menu\n";
-                cout << "Enter 6: Score menu\n";
-            }
+            cout << "Enter 4: Attendance and score menu\n";
+            if (user->type > 2) cout << "Enter 5: Class menu\n";
         }
         cout << "Enter 0: Log out\n\n";
 

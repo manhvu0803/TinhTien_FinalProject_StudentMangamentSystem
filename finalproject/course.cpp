@@ -1,4 +1,5 @@
 ﻿#include "course.h"
+#include "class.h"
 #define _CRT_SECURE_NO_WARNINGS
 
 tt::vector<tt::course> emptyVec;
@@ -190,28 +191,25 @@ void courseMenu(int year, string semester, int mode)
 					cout << "Input (0) to break or (1) to continue: ";
 					cin >> check;
 					tt::clearConsole();
-					if (check == 0)
-					{
-						break;
-					}
+					if (check == 0) break;
 				}
-				else
-				{
-					break;
-				}
+				else break;
 				outputCourseList(List, students);
 			}
 			if (check != 0)
 			{
-				int id = 0;
 				output1Course(List[n - 1], students[n - 1]);
 				int studentSize6 = students[n - 1].size();
-				add1Student(List[n - 1], students[n - 1]);
+				if (!add1Student(List[n - 1], students[n - 1])) break;
 				if (studentSize6 < students[n - 1].size())
 				{
 					char name[10];
 					_itoa_s(students[n - 1][studentSize6], name, 10);
 					ofstream myFile(filePath + List[n - 1].id + "/" + name + ".dat");
+					clss cls;
+					tt::student newStd = cls.getStudent(students[n - 1][studentSize6]);
+					myFile << newStd.cls << '\n' << newStd.lastName << ' ' << newStd.firstName << '\n';
+					myFile << "-1 -1 -1 -1";
 					myFile.close();
 				}
 				saveCourseList(List, students, filePath);
@@ -1304,7 +1302,8 @@ void remove1Student(tt::vector<int>& classStudent)
 	classStudent.erase(n - 1);
 	classStudent.shrink_to_fit();
 }
-void add1Student(tt::course& Course, tt::vector<int>& classStudents)
+
+bool add1Student(tt::course& Course, tt::vector<int>& classStudents)
 {
 	bool checkInput = true;
 	int Id, check;
@@ -1314,7 +1313,8 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 	{
 		checkInput = true;
 		check = -1;
-		cout << "Student id: "; checkInput = tt::cinIg(cin, Id, true);
+		cout << "Student id: ";
+		checkInput = tt::cinIg(cin, Id, true);
 		clss theClass;
 		tt::student hi = theClass.getStudent(Id);
 		if (hi.number == -1)Id = 0;
@@ -1331,10 +1331,7 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 					checkInput = tt::cinIg(cin, check, true);
 					tt::clearConsole();
 					if (!checkInput)check = 0;
-					if (check == 0)
-					{
-						break;
-					}
+					if (check == 0) return false;
 				}
 			}
 			if (check == -1)
@@ -1350,20 +1347,20 @@ void add1Student(tt::course& Course, tt::vector<int>& classStudents)
 			checkInput = tt::cinIg(cin, check, true);
 			tt::clearConsole();
 			if (!checkInput)check = 0;
-			if (check == 0)
-			{
-				break;
-			}
+			if (check == 0) return false;
 		}
 		viewStudentList(classStudents);
 	}
+
 	if (check != 0)
 	{
 		cout << "Student " << Id << " has been added!";
 		getchar();
 		tt::clearConsole();
-
+		return true;
 	}
+
+	return false;
 }
 void addStudent(tt::course& Course, tt::vector<int>& classStudents)// Optional
 {

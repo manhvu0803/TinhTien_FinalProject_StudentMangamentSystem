@@ -22,7 +22,7 @@ tt::vector<account> loginInfo;
 
 void acc::saveToFile()
 {
-    ofstream loginFile(loginFileDir);
+    ofstream loginFile(loginFileDir, ios::trunc);
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
         loginFile << loginInfo[i].username << ' ' << loginInfo[i].type << ' ' << loginInfo[i].id << ' ';
         loginFile << loginInfo[i].password << '\n';
