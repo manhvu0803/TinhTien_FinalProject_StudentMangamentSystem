@@ -369,7 +369,7 @@ void clss::menu()
                 char cfm;
                 cout << "\nEdit student " << newStd.id << " in class " << newStd.cls << " (Y/N)?: ";
                 tt::cinIg(cin, cfm);
-                if (cfm == 'Y' && cfm == 'y') {
+                if (cfm == 'Y' || cfm == 'y') {
                     inputStudent(newStd);
                     if (rewriteStudent(newStd.cls, newStd)) cout << "Updated student " << newStd.id;
                     else cout << "Aborted";
@@ -421,6 +421,8 @@ void clss::menu()
                     rewriteStudent(tmpStd.cls, tmpStd, 2);
                     studentToFile(newClass, tmpStd, false);
                     students[classPos(newClass)].push_back(tmpStd);
+                    ofstream file(classDir + newClass + '/' + to_string(tmpStd.id) + ".dat");
+                    file.close();
                     cout << "Moved student " << tmpStd.id << " from " << tmpStd.cls << " to " << newClass;
                 }
 
