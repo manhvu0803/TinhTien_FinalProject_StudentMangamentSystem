@@ -39,7 +39,7 @@ int CompareDate(tt::date A, tt::date B) {
 int SubtractDate(tt::date before, tt::date after) {
 	int result = 0;
 	for (int i = before.y; i < after.y; i++) {
-		if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0) {
+		if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0) {
 			result = result + 366;
 		}
 		else {
@@ -49,7 +49,7 @@ int SubtractDate(tt::date before, tt::date after) {
 	for (int i = 1; i < before.m; i++) {
 		switch (i) {
 		case 2: {
-			if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0) {
+			if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0) {
 				result = result - 29;
 			}
 			else {
@@ -72,7 +72,7 @@ int SubtractDate(tt::date before, tt::date after) {
 	for (int i = 1; i < after.m; i++) {
 		switch (i) {
 		case 2: {
-			if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0) {
+			if ((i % 4 == 0 && i % 100 != 0) || i % 400 == 0) {
 				result = result + 29;
 			}
 			else {
@@ -150,7 +150,7 @@ void FindStudent(tt::student& A, int ID , string &course , int &check) {
 	string choose;
 	tt::vector<tt::student> list;
 	tt::vector<string> courses;
-	int a,choice;
+	int choice;
 	fin.open("./data/classes/class.dat");
 	if (!fin.is_open()) {
 		cout << "Error" << endl;
@@ -194,7 +194,7 @@ void FindStudent(tt::student& A, int ID , string &course , int &check) {
 	}
 }
 void CheckIn(int id) {
-	int choice,choice1,same = 0, return1 = 0 , check = 0;
+	int choice, same = 0, return1 = 0 , check = 0;
 	string inputpath;
 	tt::vector<string> linkcourse;
 	string studentcourse;
@@ -242,7 +242,8 @@ void CheckIn(int id) {
 					}
 				}
 				else {
-					cout << "You can't check in " << endl;
+					cout << "This course is from " << coursestudent[choice].startTime.h << ':' << coursestudent[choice].startTime.h;
+					cout << " to " << coursestudent[choice].endTime.h << ':' << coursestudent[choice].endTime.h << '\n';
 				}
 		}
 		else {
@@ -269,7 +270,7 @@ void CheckIn(int id) {
 				}
 				else {
 					cout << "You can't check in " << endl;
-					
+
 				}
 		}
 		student.chkIn.clear();
@@ -316,7 +317,7 @@ void FindStudentCourse(int id, string coursename , tt::vector<string>& rightcour
 	ifstream fin,fin1, fin2, fin3, fin4;
 	string year, semester, inputpath,tmp;
 	tt::vector<tt::course> courses;
-	
+
 	bool check;
 	inputpath = "./data/course/year.dat";
 	fin.open(inputpath);
@@ -458,7 +459,7 @@ void ExportAttendance(tt::vector<tt::score> &Att, string course) {
 	if (fout.is_open()) {
 		fout << "ID," << "Class," << "StudentName," << "Date," << "CheckinTime"<< endl;
 		for (int i = 0; i < Att.size(); i++) {
-			fout << Att[i].id << "," << Att[i].cls << "," << Att[i].studentName << "," << Att[i].chkIn[0].cDate.y << "-" << Att[i].chkIn[0].cDate.m << "-" << Att[i].chkIn[0].cDate.d << "," 
+			fout << Att[i].id << "," << Att[i].cls << "," << Att[i].studentName << "," << Att[i].chkIn[0].cDate.y << "-" << Att[i].chkIn[0].cDate.m << "-" << Att[i].chkIn[0].cDate.d << ","
 				<< Att[i].chkIn[0].cTime.h << ":" << Att[i].chkIn[0].cTime.m << ":" << Att[i].chkIn[0].cTime.s << endl;
 		}
 		fout.close();
@@ -589,7 +590,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to remove any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
-			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+			while (choice1 != 0 && choice1 != 1 || cin.fail()) {
 				cin.clear();
 				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
@@ -634,7 +635,7 @@ void ViewCheckIn(int id) {
 		else {
 			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
 			LoadScoreFile(student, inputpath);
-			ViewCheckinList(student, coursestudent[0].id, id);	
+			ViewCheckinList(student, coursestudent[0].id, id);
 		}
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
@@ -650,18 +651,16 @@ void ViewCheckIn(int id) {
 		coursestudent.clear();
 		check = 0;
 		student.chkIn.clear();
-		
+
 	} while (return1 == -1);
 }
 bool LecturerAllow(string year, string semester , string course , string lecturer) {
 	string inputpath = "./data/course/" + year + "/" + semester + "/course.dat";
 	ifstream fin;
-	bool check = false;
 	tt::vector<tt::course> teacher;
 	LoadCourseFile(teacher, inputpath);
 	for (int i = 0; i < teacher.size(); i++) {
 		if (teacher[i].id == course && teacher[i].lecturer == lecturer) {
-			check = true;
 			break;
 		}
 	}

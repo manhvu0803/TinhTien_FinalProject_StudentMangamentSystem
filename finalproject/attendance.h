@@ -27,4 +27,4 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 void ExportAttendance(tt::vector<tt::score>& Att, string course);
 void ViewCheckIn(int id);
 bool LecturerAllow(string year, string semester, string course, string lecturer);
-#endif _ATTENDANCE_H_INCLUDED_
+#endif
