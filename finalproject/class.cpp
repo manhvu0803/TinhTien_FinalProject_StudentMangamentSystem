@@ -208,12 +208,6 @@ bool clss::import(istream& inFile, string className)
 
 bool clss::inputStudent(tt::student& newStd)
 {
-    cout << "Student number: ";
-    if (!tt::cinIg(cin, newStd.number) || newStd.number < 0 || newStd.number > 999) {
-        cout << "Student number cannot be negative and exceed 3 character\n";
-        newStd.id = -1;
-        return false;
-    }
     cout << "Family name and surname: ";
     getline(cin, newStd.lastName);
     cout << "Given name (first name): ";
@@ -256,7 +250,9 @@ tt::student clss::addStudentMenu(string className)
     newStd.id = id;
     newStd.cls = className;
     inputStudent(newStd);
-    students[classPos(className)].push_back(newStd);
+    int pos = classPos(className);
+    newStd.number = students[pos].size();
+    students[pos].push_back(newStd);
     return newStd;
 }
 
@@ -265,6 +261,7 @@ void clss::showClass(tt::vector<tt::student>& thisCls)
     cout << "No. |  ID         |    Name                          | Gender | Date of birth\n";
 
     for (int i = 0, lim = thisCls.size(); i < lim; ++i) {
+        cout.fill(' ');
         cout << "-------------------------------------------------------------------------------\n";
         cout << left << setw(4) << thisCls[i].number;
         cout << "| " << setw(12) << thisCls[i].id;
@@ -333,11 +330,12 @@ void clss::menu()
                 char cfm = 'y';
                 if (classPos(className) == -1) {
                     cout << "Class " << className << " doesn't exist. Do you want to create it? (Y/N): ";
-                    cin >> cfm;
-                    cin.clear();
-                    cin.ignore(ignoreMax, '\n');
+                    tt::cinIg(cin, cfm);
+                    className = tt::capitalize(className);
                     if (cfm == 'y' || cfm == 'Y') {
                         classes.push_back(className);
+                        classListToFile();
+                        tt::makeDir("./data/classes/" + className);
                         cout << "Created " << className << '\n';
                     }
                     else cout << "Aborted";
@@ -346,6 +344,7 @@ void clss::menu()
                 if (cfm == 'y' || cfm == 'T') {
                     tt::student newStd = addStudentMenu(className);
                     if (studentToFile(className, newStd)) {
+                        ofstream file("./data/classes/" + className + '/' + to_string(newStd.id) + ".dat");
                         cout << "Student added";
                         acc::createAccount(newStd);
                     }

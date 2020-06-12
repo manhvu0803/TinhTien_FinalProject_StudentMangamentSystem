@@ -235,6 +235,8 @@ void createSemester(string filePath, tt::vector<string>& semester)
 	bool checkInput = true;
 	int size = semester.size();
 	int choice = -1;
+	string path = "./";
+	path += filePath + '/';
 	switch (size)
 	{
 	case 0:
@@ -265,12 +267,14 @@ void createSemester(string filePath, tt::vector<string>& semester)
 				semester.push_back("HK1");
 				cout << "HK1 has been created\n";
 				ofstream myFile(filePath + "/HK1" + "/course.dat");
+				tt::makeDir(path + "HK1");
 				myFile.close();
 			}
 			if (choice == 2)
 			{
 				semester.push_back("HK2");
 				cout << "HK2 has been created\n";
+				tt::makeDir(path + "HK2");
 				ofstream myFile(filePath + "/HK2" + "/course.dat");
 				myFile.close();
 			}
@@ -278,6 +282,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 			{
 				semester.push_back("HK3");
 				cout << "HK3 has been created\n";
+				tt::makeDir(path + "HK3");
 				ofstream myFile(filePath + "/HK3" + "/course.dat");
 				myFile.close();
 			}
@@ -286,6 +291,9 @@ void createSemester(string filePath, tt::vector<string>& semester)
 				semester.push_back("HK1");
 				semester.push_back("HK2");
 				semester.push_back("HK3");
+				tt::makeDir(path + "HK1");
+				tt::makeDir(path + "HK2");
+				tt::makeDir(path + "HK3");
 				ofstream myFile(filePath + "/HK1" + "/course.dat");
 				myFile.close();
 				myFile.open(filePath + "/HK2" + "/course.dat");
@@ -365,6 +373,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		{
 			semester.push_back("HK2");
 			cout << "HK2 has been created\n";
+			tt::makeDir(path + "HK2");
 			ofstream myFile(filePath + "/HK2" + "/course.dat");
 			myFile.close();
 		}
@@ -372,6 +381,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		{
 			semester.push_back("HK3");
 			cout << "HK3 has been created\n";
+			tt::makeDir(path + "HK3");
 			ofstream myFile(filePath + "/HK3" + "/course.dat");
 			myFile.close();
 		}
@@ -380,6 +390,8 @@ void createSemester(string filePath, tt::vector<string>& semester)
 			semester.push_back("HK2");
 			semester.push_back("HK3");
 			cout << "HK2 and HK3 have been created\n";
+			tt::makeDir(path + "HK2");
+			tt::makeDir(path + "HK3");
 			ofstream myFile(filePath + "/HK2" + "/course.dat");
 			myFile.close();
 			myFile.open(filePath + "/HK3" + "/course.dat");
@@ -388,6 +400,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (choice == 4)
 		{
 			semester.push_back("HK1");
+			tt::makeDir(path + "HK1");
 			cout << "HK1 has been created\n";
 			ofstream myFile(filePath + "/HK1" + "/course.dat");
 			myFile.close();
@@ -395,6 +408,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (choice == 5)
 		{
 			semester.push_back("HK3");
+			tt::makeDir(path + "HK3");
 			cout << "HK3 has been created\n";
 			ofstream myFile(filePath + "/HK3" + "/course.dat");
 			myFile.close();
@@ -403,6 +417,8 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		{
 			semester.push_back("HK1");
 			semester.push_back("HK3");
+			tt::makeDir(path + "HK1");
+			tt::makeDir(path + "HK3");
 			cout << "HK1 and HK3 have been created\n";
 			ofstream myFile(filePath + "/HK1" + "/course.dat");
 			myFile.close();
@@ -412,6 +428,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (choice == 7)
 		{
 			semester.push_back("HK1");
+			tt::makeDir(path + "HK1");
 			cout << "HK1 has been created\n";
 			ofstream myFile(filePath + "/HK1" + "/course.dat");
 			myFile.close();
@@ -419,6 +436,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (choice == 8)
 		{
 			semester.push_back("HK2");
+			tt::makeDir(path + "HK2");
 			cout << "HK2 has been created\n";
 			ofstream myFile(filePath + "/HK2" + "/course.dat");
 			myFile.close();
@@ -427,6 +445,8 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		{
 			semester.push_back("HK1");
 			semester.push_back("HK2");
+			tt::makeDir(path + "HK1");
+			tt::makeDir(path + "HK2");
 			cout << "HK1 and HK2 has been created\n";
 			ofstream myFile(filePath + "/HK1" + "/course.dat");
 			myFile.close();
@@ -438,6 +458,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (semester[0][2] == '1' && semester[1][2] == '2')
 		{
 			cout << "HK3 has been created\n";
+			tt::makeDir(path + "HK3");
 			ofstream myFile(filePath + "/HK3" + "/course.dat");
 			myFile.close();
 			semester.push_back("HK3");
@@ -445,6 +466,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (semester[0][2] == '1' && semester[1][2] == '3')
 		{
 			cout << "HK2 has been created\n";
+			tt::makeDir(path + "HK2");
 			semester.push_back("HK2");
 			ofstream myFile(filePath + "/HK2" + "/course.dat");
 			myFile.close();
@@ -452,6 +474,7 @@ void createSemester(string filePath, tt::vector<string>& semester)
 		if (semester[0][2] == '2' && semester[1][2] == '3')
 		{
 			cout << "HK1 has been created\n";
+			tt::makeDir(path + "HK1");
 			ofstream myFile(filePath + "/HK1" + "/course.dat");
 			myFile.close();
 			semester.push_back("HK1");

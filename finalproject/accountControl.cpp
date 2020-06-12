@@ -22,7 +22,7 @@ tt::vector<account> loginInfo;
 
 void acc::saveToFile()
 {
-    ofstream loginFile(loginFileDir);
+    ofstream loginFile(loginFileDir, ios::trunc);
     for (size_t i = 0, lim = loginInfo.size(); i < lim; ++i) {
         loginFile << loginInfo[i].username << ' ' << loginInfo[i].type << ' ' << loginInfo[i].id << ' ';
         loginFile << loginInfo[i].password << '\n';
@@ -163,9 +163,10 @@ bool passwordCheck(string password, const char* type = "")
     do {
         cout << "Please enter your " << type << "password (enter \"" << cancelCmd << "\" to return):\n";
         input = passwordBuffer();
+        cout << '\n';
         if (input == cancelCmd) return false;
         if (input == password) return true;
-        cout << "Wrong password\n\n";
+        cout << "Wrong password\n";
     }
     while (true);
 }
@@ -202,12 +203,13 @@ account* acc::login()
         if (username == cancelCmd) return nullptr;
         currentAcc = getAccount(username);
         if (currentAcc) {
+            cout << '\n';
             if (passwordCheck(currentAcc->password)) break;
             else continue;
         }
         cout << "Account does not existed\n\n";
     }
-    while (!currentAcc);
+    while (true);
 
     return currentAcc;
 }
@@ -219,7 +221,7 @@ void acc::changePassword(account* user)
     if (!passwordCheck(user->password, "old ")) return;
 
     string input;
-    do {
+    while (true) {
         cout << "Please enter your new password (at least 8 character):\n";
         input = passwordBuffer();
         if (input.length() >= 8) break;
@@ -229,10 +231,9 @@ void acc::changePassword(account* user)
         }
         cout << "Your password is too short\n";
     }
-    while (true);
 
     if (!cancel)
-        do {
+        while (true) {
             cout << "Please re-enter your new password (enter " << cancelCmd << " to exit):\n";
             string input2 = passwordBuffer();
             if (input2 == input) break;
@@ -242,13 +243,15 @@ void acc::changePassword(account* user)
             }
             cout << "Your password does not match\n";
         }
-        while (true);
+
 
     if (!cancel) {
         user->password = input;
         saveToFile();
         cout << "Password changed successfully\n";
     }
+    else cout << "Aborted\n";
+    getchar();
 }
 
 void acc::showProfile(account user)
