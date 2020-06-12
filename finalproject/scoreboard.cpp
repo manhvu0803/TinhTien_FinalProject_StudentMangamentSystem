@@ -8,7 +8,6 @@
 #include "dataStructure.h"
 #include "utility.h"
 #include "attendance.h"
-#include "class.h"
 
 using namespace std;
 
@@ -149,7 +148,7 @@ void ChooseCourse(string Year , string Semester , string &Course , int type, str
 	cout << "Choose a course: ";
 	cin >> choice3;
 	if (type != 2) {
-		while (choice3 < 0 || choice3 >= course.size() || cin.fail()) {
+		while (choice3 < -1 || choice3 >= course.size() || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
@@ -481,9 +480,9 @@ void ImportCsv(tt::vector<tt::score>&B, string &year, string &semester, string &
 		check = 1;
 		getline(fin, trash);
 		while (getline(fin, tmp, ',')) {
-			trash = tmp;
-			getline(fin,tmp,',');
 			tmp2.id = stoi(tmp);
+			getline(fin, tmp, ',');
+			tmp2.cls = tmp;
 			getline(fin, tmp, ',');
 			tmp2.studentName = tmp;
 			getline(fin, tmp, ',');
@@ -523,9 +522,8 @@ void DecideToView(string year , string semester, string course) {
 	cout << "(1) Selected Students" << endl;
 	cout << "Your choice: ";
 	cin >> choice;
-	while (choice != 0 && choice != 1 || cin.fail()) {
+	while (choice < 0 || choice > 1 || cin.fail()) {
 		cin.clear();
-		cin.ignore(256,'\n');
 		cout << "Error , try again" << endl;
 		cout << "Your choice: ";
 		cin >> choice;
@@ -710,9 +708,7 @@ int ChangeDayToNumber(string line) {
 	else if(line == "SUN") {
 		return 6;
 	}
-	return -1;
 }
-
 void SaveScoreFromImport(tt::vector<tt::score> &B,string year,string semester,string course) {
 	string inputpath;
 	tt::score temp;
@@ -803,7 +799,7 @@ void ViewScoreForStudent(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 < -1 || return1 > 0 || cin.fail()) {
+		while (return1 != -1 && return1 != 0 || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
@@ -823,7 +819,7 @@ void ExportCsvForStudent(tt::score &student , string course) {
 	else {
 		fout << "ID," << "Class," << "StudentName," << "Midterm," << "Final," << "Total," << "Bonus" << endl;
 		fout << student.id << "," << student.cls << "," << student.studentName << "," << student.mid << "," << student.final << "," << student.total << "," << student.bonus << endl;
-
+	
 	}
 	fout.close();
 }
@@ -923,15 +919,11 @@ int MainForScoreboardandAttendance(string information, int type) {
 			case 2:
 			{
 				tt::clearConsole();
-				cout << "Please put your import file into the import folder !" << endl;
-				cout << "\nEnter your import file address here :";
+				cout << "Please put yout import file into the import folder !" << endl;
+				cout << "\nEnter yout import file address here :";
 				getline(cin, importfile);
 				ImportCsv(B, year, semester, course, allow, importfile);
 				if (allow == 1) {
-                    clss cls;
-                    for (int i = 0 ; i < B.size(); i++) {
-                        B[i].cls = cls.getStudent(B[i].id).cls;
-                    }
 					SaveScoreFromImport(B, year, semester, course);
 					ViewStudentScoreBoard(B);
 				}
@@ -1034,6 +1026,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 						cout << "Please check your exported attendance list in export folder" << endl;
 					}
 				}
+				attstud.clear();
 				break;
 			}
 			default:
@@ -1110,7 +1103,7 @@ int MainForScoreboardandAttendance(string information, int type) {
 					cout << "(1) Yes " << endl << "(0) No" << endl;
 					cout << "Your choice : ";
 					cin >> choice1;
-					while ((choice1 != 1 && choice1 != 0) || cin.fail()) {
+					while (choice1 != 1 && choice1 != 0 || cin.fail()) {
 						cin.clear();
 						cin.ignore(256, '\n');
 						cout << "Error , try again" << endl;
@@ -1123,13 +1116,13 @@ int MainForScoreboardandAttendance(string information, int type) {
 					}
 				}
 				attstud.clear();
-				check1 = 0;
 				break;
 			}
 			default:
 				break;
 			}
 			if (choice != 0) {
+				tt::clearConsole();
 				cout << "Press (-1) to return to the menu" << endl;
 				cout << "Your choice : ";
 				cin >> choice;
