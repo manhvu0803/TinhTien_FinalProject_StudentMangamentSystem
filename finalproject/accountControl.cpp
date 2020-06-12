@@ -288,3 +288,45 @@ void acc::showProfile(account user)
             cout << "false account\n";
     }
 }
+
+void schedule(tt::date t, int y, int user)
+{
+    string dir = "./data/course/" + to_string(y) + '-' + to_string(y + 1) + '/';
+    ifstream semF(dir + "semester.dat");
+    string sem;
+    while (getline(semF, sem)) {
+        ifstream cF(dir + sem + "/course.dat");
+        tt::course c;
+        while (cF >> c.number) {
+            cF.ignore(256, '\n');
+            getline(cF, c.id);
+            getline(cF, c.name);
+            getline(cF, c.className);
+            getline(cF, c.lecturer);
+            cF >> c.startDate.y >> c.startDate.m >> c.startDate.d;
+            cF >> c.endDate.y >> c.endDate.m >> c.endDate.d;
+            cF >> c.DoW >> c.startTime.h >> c.startTime.m >> c.endTime.h >> c.endTime.m;
+            cF.ignore(256, '\n');
+            getline(cF, c.room);
+            if (c.startDate.m <= t.m && c.endDate.m >= t.m) {
+                ifstream sF(dir + sem + '/' + c.id + ".dat");
+                int id;
+                while (sF >> id)
+                    if (id == user) {
+                        cout << c.name << ": " << c.startTime.h << ':' << c.startTime.m << " to " << c.endTime.h << ':' << c.endTime.m << ' ';
+                        switch (c.DoW) {
+                            case 0: cout << "Monday\n"; break;
+                            case 1: cout << "Tuesday\n"; break;
+                            case 2: cout << "Wednesday\n"; break;
+                            case 3: cout << "Thursday\n"; break;
+                            case 4: cout << "Friday\n"; break;
+                            case 5: cout << "Saturday\n"; break;
+                            case 6: cout << "Sunday\n"; break;
+                        }
+                        break;
+                    }
+            }
+        }
+
+    }
+}

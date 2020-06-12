@@ -155,6 +155,9 @@ bool clss::import(istream& inFile, string className)
 {
     className = tt::capitalize(className);
     tt::vector<tt::student> newClass;
+    tt::makeDir(classDir + className);
+
+    if (classPos(className) < 0) classes.push_back(className);
 
     string s, output;
     getline(inFile, s);
@@ -198,10 +201,11 @@ bool clss::import(istream& inFile, string className)
         }
 
         newClass.push_back(newStd);
+        ofstream file(classDir + className + '/' + to_string(newStd.id) + ".dat");
     }
 
     classToFile(className, newClass);
-    if (classPos(className) < 0) classes.push_back(className);
+    students.push_back(newClass);
     classListToFile();
     return true;
 }
