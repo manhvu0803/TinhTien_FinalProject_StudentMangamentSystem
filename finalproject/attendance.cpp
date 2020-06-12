@@ -547,7 +547,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to add any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
-			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+			while (choice1 != 0 && choice1 != 1 || cin.fail()) {
 				cin.clear();
 				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
