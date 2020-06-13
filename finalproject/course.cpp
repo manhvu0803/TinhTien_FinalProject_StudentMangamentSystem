@@ -380,9 +380,6 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
             for (int i = 0; i < n; ++i)
             {
                 classStudents.push_back(studentList[i].id);
-                ofstream file(classYSDir + temp.id + '/' + to_string(studentList[i].id));
-                file << studentList[i].cls << '\n' << studentList[i].lastName << ' ' << studentList[i].firstName;
-                file << "\n-1 -1 -1 -1";
             }
             students.push_back(classStudents);
             classStudents.clear();
