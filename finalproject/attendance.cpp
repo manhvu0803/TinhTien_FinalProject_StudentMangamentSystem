@@ -248,26 +248,30 @@ void CheckIn(int id) {
 		}
 		else {
 			inputpath = linkcourse[0] + "/" + to_string(id) + ".dat";
-			//cout << "link " << linkcourse[0] << '\n';
 			LoadScoreFile(student, inputpath);
-            SaveCheckInTime(studenttime);
-            if (isInTime(studenttime, coursestudent[0])) {
-                for (int i = 0; i < student.chkIn.size(); i++) {
-                    if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
-                        studenttime.cDate.m == student.chkIn[i].cDate.m &&
-                        studenttime.cDate.d == student.chkIn[i].cDate.d) {
-                        same = 1;
-                        break;
-                    }
-                }
-                if (same == 0) {
-                    student.chkIn.push_back(studenttime);
-                    SaveFileScore(inputpath, student);
-                    cout << "Successfully check in" << endl;
-                }
-                else cout << "You have checked in before" << endl;
-            }
-            else cout << "You can't check in. It's not that time yet" << endl;
+				SaveCheckInTime(studenttime);
+				if (isInTime(studenttime, coursestudent[0])) {
+					for (int i = 0; i < student.chkIn.size(); i++) {
+						if (studenttime.cDate.y == student.chkIn[i].cDate.y &&
+							studenttime.cDate.m == student.chkIn[i].cDate.m &&
+							studenttime.cDate.d == student.chkIn[i].cDate.d) {
+							same = 1;
+							break;
+						}
+					}
+					if (same == 0) {
+						student.chkIn.push_back(studenttime);
+						SaveFileScore(inputpath, student);
+						cout << "Successfully check in" << endl;
+					}
+					else {
+						cout << "You have checked in before" << endl;
+					}
+				}
+				else {
+					cout << "You can't check in " << endl;
+
+				}
 		}
 		student.chkIn.clear();
 		linkcourse.clear();
@@ -276,7 +280,7 @@ void CheckIn(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 < -1 || return1 > 0 || cin.fail()) {
+		while (return1 != -1 && return1 != 0 || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
@@ -586,7 +590,7 @@ void EditAttendance(string year, string semester, string course, tt::vector<tt::
 			cout << "Do you want to remove any one else ?" << endl;
 			cout << "(1) Yes " << endl << "(0) No " << endl;
 			cin >> choice1;
-			while (choice1 != 0 || choice1 != 1 || cin.fail()) {
+			while (choice1 != 0 && choice1 != 1 || cin.fail()) {
 				cin.clear();
 				cin.ignore(256, '\n');
 				cout << "Error , try again" << endl;
@@ -636,7 +640,7 @@ void ViewCheckIn(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 != -1 || return1 != 0 || cin.fail()) {
+		while (return1 != -1 && return1 != 0 || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
