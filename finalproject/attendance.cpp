@@ -280,7 +280,7 @@ void CheckIn(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 < -1 || return1 > 0 || cin.fail()) {
+		while (return1 != -1 && return1 != 0 || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
@@ -640,7 +640,7 @@ void ViewCheckIn(int id) {
 		cout << "Press (-1) to return or (0) to exit " << endl;
 		cout << "Your choice : ";
 		cin >> return1;
-		while (return1 != -1 || return1 != 0 || cin.fail()) {
+		while (return1 != -1 && return1 != 0 || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;

@@ -555,14 +555,17 @@ void EditScore(string inputpath, string year, string semester , string course) {
 		for (int i = 0; i < ID.size(); i++) {
 			cout << "(" << i << ") : " << ID[i] << endl;
 		}
-		cout << "Enter the ordinal number of the student you want to edit score: ";
+		cout << "Enter the ordinal number of the student you want to edit score (if you want to exit, enter " << ID.size() << "): ";
 		cin >> number;
-		while (number < 0 || number >= ID.size() || cin.fail()) {
+		while (number < 0 || number > ID.size() || cin.fail()) {
 			cin.clear();
 			cin.ignore(256, '\n');
 			cout << "Error , try again" << endl;
 			cout << "Your choice : ";
 			cin >> number;
+		}
+		if (number == ID.size()) {
+			return;
 		}
 		cin.ignore(1);
 		studentfile = "./data/course/" + year + "/" + semester + "/" + course + "/" + to_string(ID[number])+ ".dat";
@@ -623,7 +626,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 					cin.clear();
 					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
-					cout << "Your choice : ";
+					cout << "Midterm score : ";
 					cin >> Score[0].mid;
 				}
 				cout << "Final score : ";
@@ -632,7 +635,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 					cin.clear();
 					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
-					cout << "Your choice : ";
+					cout << "Final score : ";
 					cin >> Score[0].final;
 				}
 				cout << "Total score : ";
@@ -641,7 +644,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 					cin.clear();
 					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
-					cout << "Your choice : ";
+					cout << "Total score : ";
 					cin >> Score[0].total;
 				}
 				cout << "Bonus : ";
@@ -650,7 +653,7 @@ void EditScore(string inputpath, string year, string semester , string course) {
 					cin.clear();
 					cin.ignore(256, '\n');
 					cout << "Error , try again" << endl;
-					cout << "Your choice : ";
+					cout << "Bonus : ";
 					cin >> Score[0].bonus;
 				}
 				ViewStudentScoreBoard(Score);
@@ -924,8 +927,12 @@ int MainForScoreboardandAttendance(string information, int type) {
 			{
 				tt::clearConsole();
 				cout << "Please put your import file into the import folder !" << endl;
+				cout << "If you want to exit , write 0" << endl;
 				cout << "\nEnter your import file address here :";
 				getline(cin, importfile);
+				if (importfile == "0") {
+					break;
+				}
 				ImportCsv(B, year, semester, course, allow, importfile);
 				if (allow == 1) {
                     clss cls;
