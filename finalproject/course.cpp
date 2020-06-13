@@ -1,4 +1,5 @@
 ﻿#include "course.h"
+#include "lecturer.h"
 #include "class.h"
 
 tt::vector<tt::course> emptyVec;
@@ -368,6 +369,7 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
             temp.number = stoi(token);
             getline(check, token, ',');
             temp.id = token;
+            tt::makeDir(classYSDir + temp.id);
             getline(check, token, ',');
             temp.name = token;
             getline(check, token, ',');
@@ -378,14 +380,22 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
             for (int i = 0; i < n; ++i)
             {
                 classStudents.push_back(studentList[i].id);
+                ofstream file(classYSDir + temp.id + '/' + to_string(studentList[i].id));
+                file << studentList[i].cls << '\n' << studentList[i].lastName << ' ' << studentList[i].firstName;
+                file << "\n-1 -1 -1 -1";
             }
             students.push_back(classStudents);
             classStudents.clear();
+            tt::lecturer le;
             getline(check, token, ',');
+            le.username = token;
             getline(check, token, ',');
             temp.lecturer = token;
+            le.fullName = token;
             getline(check, token, ',');
+            le.degree = token;
             getline(check, token, ',');
+            le.gender = token[0];
             getline(check, token, ',');
             temp.startDate = getDate(token);
             getline(check, token, ',');
@@ -453,7 +463,8 @@ void loadCsvFile(tt::vector<tt::course>& list, tt::vector<tt::vector<int>>& stud
                 list.push_back(temp);
                 count++;
             }
-            tt::makeDir(classYSDir);
+			ltr lect;
+			lect.add(le);
 		}
 
 		int n = notFound.size();
