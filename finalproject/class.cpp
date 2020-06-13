@@ -201,6 +201,7 @@ bool clss::import(istream& inFile, string className)
         }
 
         newClass.push_back(newStd);
+        acc::createAccount(newStd);
         ofstream file(classDir + className + '/' + to_string(newStd.id) + ".dat");
     }
 

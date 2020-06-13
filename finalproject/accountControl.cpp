@@ -32,17 +32,13 @@ void acc::saveToFile()
 
 string acc::createUsername(string name)
 {
-    size_t pos1 = name.find(' ');
-    size_t pos2 = name.find(' ', pos1 + 1);
     string username = "";
-
-    username += (char)tolower(name[0]);
-    if (pos1 == string::npos) return username + name.substr(1);
-
-    username += (char)tolower(name[pos1 + 1]);
-    if (pos2 == string::npos) return  username + name.substr(pos1 + 1);
-
-    return username + (char)tolower(name[pos2 + 1]) + name.substr(pos2 + 2);
+    username += tolower(name[0]);
+    size_t last = name.find_last_of(' ');
+    if (last == string::npos) last = -1;
+    for (size_t i = 1, lim = name.length() - 1; i < lim; ++i)
+        if (name[i] == ' ' || i > last) username += tolower(name[i + 1]);
+    return username;
 }
 
 bool addAccount(account user)
